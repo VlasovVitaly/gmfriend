@@ -11,7 +11,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bootstrap4',
-    'debug_toolbar',
     'markdownx',
     'multiselectfield',
     'dnd5e.apps.Dnd5EConfig',
@@ -21,7 +20,6 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -101,3 +99,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MARKDOWNX_SERVER_CALL_LATENCY = 2000
 
 from .local_settings import *
+
+if ENABLE_DEBUG_TOOLBAR:
+    INSTALLED_APPS += ['debug_toolbar']
+    MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
