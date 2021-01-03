@@ -1,0 +1,82 @@
+{% extends "dnd5e/base.html" %}
+
+{% block before-content %}
+<nav class="m-4">
+    <ol class="breadcrumb bg-light">
+        <li class="breadcrumb-item"><a href="{% url 'dnd5e:adventure:detail' adventure.id %}">{{ adventure }}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'dnd5e:adventure:stage_detail' stage.id %}">{{ stage }}</a></li>
+        <li class="breadcrumb-item active"><a>{{ place }}</a>
+    </ol>
+</nav>
+{% endblock before-content %}
+
+{% block content %}
+<h3 id="main-header" class="text-center">{{ place }}</h3>
+<div class="row my-4 p-3 border-bottom">
+    <div class="col">
+        <div class="btn-group">
+            <button class="btn btn-light" type="button" data-toggle="modal" data-target="#place-description-modal">Описание</button>
+            <div id="place-description-modal" class="modal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Описание этапа</h5>
+                            <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                        </div>
+                        <div class="modal-body">{{ place.get_description }}</div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if stage.has_knowledges %}{% include "dnd5e/adventures/include/knowledges_button.html" %}{% endif %}
+            {% if place.maps.all %}
+                <button class="btn btn-light" type="button" data-toggle="collapse" data-target="#place-maps">
+                    <span>Карты </span>
+                    <span class="badge badge-primary">{{ place.maps.count }}</span>
+                </button>
+            {% endif %}
+            <div class="btn-group">
+                <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">Переход</button>
+                <div class="dropdown-menu">
+                    {% for zone in place.zones.all %}<a href="#zone-{{ zone.num }}" class="dropdown-item">{{ zone }}</a>{% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="place-maps" class="row collapse">
+    <div class="col">
+        {% for map in place.maps.all %}
+        <figure class="figure">
+            <img class="figure-img img-fluid" src="{{ map.image.url }}" width="{{ map.width }}" height="{{ map.height }}">
+            <figcaption class="figure-caption text-center">{{ map.name }}</figcaption>
+        </figure>
+        {% endfor %}
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+    {% for zone in place.zones.all %}
+        <h4 id="zone-{{ zone.num }}" class="p-3 border-bottom border-info">{{ zone }} <a href="#main-header">&#8593;</a></h4>
+        <div>
+        {% if zone.monsters.all %}
+            <a href="{% url 'dnd5e:adventure:monsters_interaction' zone_ct.id zone.id %}"class="btn btn-light">Монстры <span class="badge badge-primary">{{ zone.monsters.count }}</span></a>
+        {% endif %}
+        {% if zone.treasures.all %}<a class="btn btn-light" data-toggle="collapse" href="#zone-treasures-{{ zone.id }}">Сокровища <span class="badge badge-primary">{{ zone.treasures.count }}</span></a>{% endif %}
+        {% for npc in zone.npc.all %}<a href="{% url 'dnd5e:adventure:npc_detail' npc.id %}" target="_blank" class="btn btn-light">{{ npc }}</a>{% endfor %}
+        {% if zone.treasures.all %}
+            <div class="pl-2 py-3 collapse" id="zone-treasures-{{ zone.id }}">
+                <ul class="list-unstyled">
+                {% for treasure in zone.treasures.all %}<li>{{ treasure }}</li>{% endfor %}
+                </ul
+            </div>
+        {% endif %}
+        {% if zone.traps.all %}<button class="btn btn-light">Ловушки</button>{% endif %}
+        </div>
+        <div>{{ zone.get_description }}</div>
+    {% endfor %}
+    </div>
+</div>
+{% endblock content %}

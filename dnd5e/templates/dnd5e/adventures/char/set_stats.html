@@ -1,0 +1,111 @@
+{% extends "dnd5e/base.html" %}
+
+{% load static bootstrap4 %}
+
+{% block title %}Изменить характеристики для {{ char }}{% endblock title %}
+
+{% block javascript %}
+    {{ block.super }}
+    <script src="{% static 'js/set_stats.js' %}"></script>
+{% endblock javascript %}
+{% block before-content %}
+    <nav class="m-4">
+        <ol class="breadcrumb bg-light">
+            <li class="breadcrumb-item"><a href="{% url 'dnd5e:adventure:detail' adventure.id %}">{{ adventure }}</a></li>
+            <li class="breadcrumb-item active">TODO Персонажи</li>
+            <li class="breadcrumb-item"><a href="{% url 'dnd5e:adventure:character:detail' adventure.id char.id %}">{{ char }}</a></li>
+            <li class="breadcrumb-item">Изменить характеристики</li>
+        </ol>
+    </nav>
+{% endblock before-content %}
+
+{% block content %}
+<div class="row mt-3">
+    <div class="col">
+        {% if char.race.stat_bonus %}<div class="alert alert-primary">{{ char.race.stat_bonus }}</div>{% endif %}
+        {% if char.subrace.stat_bonus %}<div class="alert alert-primary">{{ char.subrace.stat_bonus }}</div>{% endif %}
+        <div class="card">
+            <h5 class="card-header text-center">Модификаторы характеристик</h5>
+            <div class="card-body">
+                <form id="edit-stats-form" action="" method="POST">
+                    {% csrf_token %}
+                    {{ formset.management_form }}
+                    <div class="form-row">
+                        <div class="col">
+                            {{ formset.forms.0.id }}
+                            {% bootstrap_field formset.forms.0.value addon_before='?' addon_before_class='input-group-text mod-label' %}
+                        </div>
+                        <div class="col">
+                            {{ formset.forms.1.id }}
+                            {% bootstrap_field formset.forms.1.value addon_before='?' addon_before_class='input-group-text mod-label' %}
+                        </div>
+                        <div class="col">
+                            {{ formset.forms.2.id }}
+                            {% bootstrap_field formset.forms.2.value addon_before='?' addon_before_class='input-group-text mod-label' %}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col">
+                            {{ formset.forms.3.id }}
+                            {% bootstrap_field formset.forms.3.value addon_before='?' addon_before_class='input-group-text mod-label' %}
+                        </div>
+                        <div class="col">
+                            {{ formset.forms.4.id }}
+                            {% bootstrap_field formset.forms.4.value addon_before='?' addon_before_class='input-group-text mod-label' %}
+                        </div>
+                        <div class="col">
+                            {{ formset.forms.5.id }}
+                            {% bootstrap_field formset.forms.5.value addon_before='?' addon_before_class='input-group-text mod-label' %}
+                        </div>
+                    </div>
+                    {% buttons %}
+                        <button class="btn btn-primary btn-block" type="summit">Изменить</button>
+                    {% endbuttons %}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% comment %}
+<div class="row mt-3">
+    <div class="col">
+        {% if char.race.stat_bonus %}<div class="alert alert-primary">{{ char.race.stat_bonus }}</div>{% endif %}
+        {% if char.subrace.stat_bonus %}<div class="alert alert-primary">{{ char.subrace.stat_bonus }}</div>{% endif %}
+        <div class="card">
+            <h5 class="card-header text-center">Модификаторы характеристик</h5>
+            <div class="card-body">
+                <form id="edit-stats-form" action="" method="POST">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <div class="col">
+                            {% bootstrap_field form.strength addon_before='?' addon_before_class='input-group-text mod-label' %}
+                        </div>
+                        <div class="col">
+                            {% bootstrap_field form.dexterity addon_before='?' addon_before_class='input-group-text mod-label' %}
+                        </div>
+                        <div class="col">
+                            {% bootstrap_field form.constitution addon_before='?' addon_before_class='input-group-text mod-label' %}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col">
+                            {% bootstrap_field form.intelligence addon_before='?' addon_before_class='input-group-text mod-label' %}
+                        </div>
+                        <div class="col">
+                            {% bootstrap_field form.wisdom addon_before='?' addon_before_class='input-group-text mod-label' %}
+                        </div>
+                        <div class="col">
+                            {% bootstrap_field form.charisma addon_before='?' addon_before_class='input-group-text mod-label' %}
+                        </div>
+                    </div>
+                    {% buttons %}
+                        <button class="btn btn-primary btn-block" type="summit">Изменить</button>
+                    {% endbuttons %}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endcomment %}
+{% endblock %}
+

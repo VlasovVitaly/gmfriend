@@ -1,0 +1,5 @@
+<div>
+    <ul>
+    {% for stage in adventure.stages.all %}<li><a href="{% url 'dnd5e:adventure:stage_detail' stage.id %}">{{ stage}}</a></li>{% endfor %}
+    </ul>
+</div>

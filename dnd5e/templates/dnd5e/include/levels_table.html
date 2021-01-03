@@ -1,0 +1,30 @@
+<h3>{{ name }}</h3>
+<table class="table table-striped table-bordered table-sm">
+    <thead class="thead-light">
+        <tr>
+            <th class="text-center align-baseline" rowspan="2">Уровень</th>
+            <th class="text-center align-baseline" rowspan="2">Бонус</th>
+            <th class="text-center align-baseline" rowspan="2">Умения</th>
+            <th class="text-center align-baseline" rowspan="2">Заговоры</th>
+            <th class="text-center align-baseline" rowspan="2">Заклинания</th>
+            <th class="text-center" colspan="9">Ячейки</th>
+        </tr>
+        <tr>
+            <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for lvl in data %}
+        <tr>
+            <td class="text-center">{{ lvl.0 }}</td>
+            <td class="text-center">{{ lvl.1 }}</td>
+            <td>{{ lvl.2 }}</td>
+            <td class="text-center">{{ lvl.3 }}</td>
+            <td class="text-center">{{ lvl.4 }}</td>
+            {% for slvl in lvl.5 %}
+            <td>{{ slvl }}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

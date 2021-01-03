@@ -1,0 +1,64 @@
+<div class="btn-group">
+    {% if place.zones__count %}
+        <a href="{% url 'dnd5e:adventure:place_detail' place.id %}" class="btn btn-primary">Подробно</a>
+    {% endif %}
+    {% if place.monsters__count %}
+        <button type="button" class="btn btn-light"{% if place.monsters__count %} data-toggle="modal" data-target="#place-{{ place.id }}-monsters"{% endif %}>
+            <span>Монстры </span>
+            <span class="badge badge-primary">{{ place.monsters__count }}</span>
+        </button>
+    {% endif %}
+    {% if place.traps__count %}
+        <button type="button" class="btn btn-light"{% if place.traps__count %} data-toggle="modal" data-target="#place-{{ place.id }}-traps"{% endif %}>
+            <span>Ловушки </span>
+            <span class="badge badge-primary">{{ place.traps__count }}</span>
+        </button>
+    {% endif %}
+    {% if place.npc.exists %}
+        <button class="btn btn-light dropdown-toggle" data-toggle="dropdown" type="button">
+            <span>НПЦ </span><span class="badge badge-primary">{{ place.npc.count }}</span>
+        </button>
+        <div class="dropdown-menu">
+        {% for npc in place.npc.all %}
+            <a href="{% url 'dnd5e:adventure:npc_detail' npc.id %}" target="_blank" class="dropdown-item">{{ npc }}</a>
+        {% endfor %}
+        </div>
+    {% endif %}
+</div>
+<div id="place-{{ place.id }}-monsters" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Монстры в {{ place }}</h5>
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <ul class="list-unstyled">
+                    {% for mon in place.monsters.all %}<li>{{ mon }}</li>{% endfor %}
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="place-{{ place.id }}-traps" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ловушки в {{ place }}</h5>
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <ul class="list-unstyled">
+                    {% for trap in place.traps.all %}<li>{{ trap }}</li>{% endfor %}
+                </ul>
+            </div>
+            <div class="modal-footer" style="border: none">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,15 @@
+<div class="card mt-4">
+    <div class="card-body">
+        <h3 class="card-title pb-3">{{ spell }}<span class="font-weight-normal float-right">{{ spell.school }}</span></h3>
+        <ul class="list-unstyled">
+            <li><strong>Уровень: </strong>{% if spell.level == 0 %}Заговор{% else %}{{ spell.level }}{% endif %}</li>
+            <li><strong>Время накладывания: </strong>{{ spell.casting_time }}</li>
+            <li><strong>Дистанция: </strong>{{ spell.casting_range }}</li>
+            <li><strong>Длительность: </strong>{{ spell.duration }}</li>
+            <li><strong>Компоненты: </strong>{{ spell.components }}</li>
+            <li><strong>Классы: </strong>{{ spell.classes.all|join:', ' }}</li>
+        </ul>
+        <br>
+        <p>{{ spell.description }}</p>
+    </div>
+</div>

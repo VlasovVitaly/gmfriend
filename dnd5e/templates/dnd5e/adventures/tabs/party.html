@@ -1,0 +1,6 @@
+<div>
+    <a href="{% url 'dnd5e:adventure:character:create' adventure.id %}" class="btn btn-light">Создать персонажа</a>
+</div>
+<ul class="list-group list-group-flush">
+    {% for ch in characters %}<li class="list-group-item"><a href="{% url 'dnd5e:adventure:character:detail' adventure.id ch.id %}">{{ ch }}</a></li>{% endfor %}
+</ul>

@@ -1,0 +1,5 @@
+<div>
+    <button class="btn btn-info">Добавить монстра к приключению</button>
+    <hr>
+    {% for mon in adventure.monsters.all %}<p>{{ mon }}</p>{% endfor %}
+</div>

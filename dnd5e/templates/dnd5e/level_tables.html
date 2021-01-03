@@ -1,0 +1,13 @@
+{% extends "dnd5e/base.html" %}
+
+{% block content %}
+<div class="row">
+    <nav>
+    </nav>
+    <div class="col-xs-12">
+        {% include "dnd5e/include/levels_table.html" with data=bard name="Бард" %}
+    </div>
+    <div class="col-xs-12">
+    </div>
+</div>
+{% endblock content %}

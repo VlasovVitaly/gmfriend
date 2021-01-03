@@ -1,0 +1,37 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a href="{% url 'dnd5e:index' %}" class="navbar-brand mb-0 h1">DnD5e</a><span class="navbar-brand mb-0 h1">|</span>
+    <div class="collapse navbar-collapse">
+        <ul class="navbar-nav">
+            <li class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">База знаний</a>
+                <div class="dropdown-menu">
+                    <a href="{% url 'dnd5e:monsters' %}" class="dropdown-item">Монстры</a>
+                    <a href="{% url 'dnd5e:spells' %}" class="dropdown-item">Заклинания</a>
+                    <a href="{% url 'dnd5e:levels' %}" class="dropdown-item">Уровни персонажей</a>
+                </div>
+            </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+            {% if user.is_anonymous %}
+                <li class="nav-item">
+                    <a href="{% url 'login' %}" class="nav-link active">
+                        <img class="rounded-circle mr-2" src="{% static 'img/default-avatar-30x30.png' %}" width=30 height=30>
+                        <span> Войти</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="nav-item dropdown">
+                    <a href="" class="nav-link dropdown-toggle" data-toggle="dropdown">
+                        <img class="rounded-circle mr-2" src="{% static 'img/default-avatar-30x30.png' %}" width=30 height=30>
+                        <span>{{ user }}</span>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="" class="dropdown-item">Профиль</a>
+                        <a href="{% url 'logout' %}" class="dropdown-item">Выход</a>
+                    </div>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>

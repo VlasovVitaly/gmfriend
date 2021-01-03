@@ -1,0 +1,33 @@
+{% extends "dnd5e/base.html" %}
+
+{% load bootstrap4 %}
+
+{% block title %}Создание персонажа{% endblock title %}
+
+{% block before-content %}
+    <nav class="m-4">
+        <ol class="breadcrumb bg-light">
+            <li class="breadcrumb-item"><a href="{% url 'dnd5e:adventure:detail' adventure.id %}">{{ adventure }}</a></li>
+            <li class="breadcrumb-item active">Создание нового персонажа</li>
+        </ol>
+    </nav>
+{% endblock before-content %}
+
+{% block content %}
+<div class="row mt-5 justify-content-center">
+    <div class="col-sm-12 col-md-8">
+        <div class="card">
+            <h5 class="card-header text-center">Базовые параметры</h5>
+            <div class="card-body">
+                <form action="" method="POST" class="form">
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    {% buttons %}
+                        <button class="btn btn-primary btn-block" type="summit">Создать</button>
+                    {% endbuttons %}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

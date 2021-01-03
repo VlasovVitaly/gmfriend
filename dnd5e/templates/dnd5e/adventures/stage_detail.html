@@ -1,0 +1,70 @@
+{% extends "dnd5e/base.html" %}
+
+{% block title %}{{ adventure }}: {{ stage.name }}{% endblock title %}
+
+{% block before-content %}
+    <nav class="m-4">
+        <ol class="breadcrumb bg-light">
+            <li class="breadcrumb-item"><a href="{% url 'dnd5e:adventure:detail' adventure.id %}">{{ adventure }}</a></li>
+            <li class="breadcrumb-item active">{{ stage }}</li>
+        </ol>
+    </nav>
+{% endblock before-content %}
+
+{% block content %}
+<h2 class="text-center mt-2">{{ stage }}</h2>
+<div class="row">{% spaceless %}
+    <div class="col">
+        <div class="btn-group">
+            {% if stage.has_knowledges %}
+                {% include "dnd5e/adventures/include/knowledges_button.html" %}
+            {% endif %}
+            {% if stage.maps.all %}
+                <button class="btn btn-light" type="button" data-toggle="collapse" data-target="#stage-maps">
+                    <span>Карты </span>
+                    <span class="badge badge-primary">{{ stage.maps.count }}</span>
+                </button>
+            {% endif %}
+        </div>
+    </div>
+</div>{% endspaceless %}
+<hr>
+{% if stage.maps.all %}
+<div id="stage-maps" class="row collapse">
+    <div class="col">
+        {% for map in stage.maps.all %}
+        <figure class="figure">
+            <img class="figure-img img-fluid" src="{{ map.image.url }}" width="{{ map.width }}" height="{{ map.height }}">
+            <figcaption class="figure-caption text-center">{{ map.name }}</figcaption>
+        </figure>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+<div class="row">
+    <div class="col">{{ stage.get_description }}</div>
+</div>
+<div class="row mt-4">
+    <div class="col">
+        <ul class="nav justify-content-center nav-pills mb-3">
+            {% for place in stage.places.all %}
+            <li class="nav-item">
+                <a class="nav-link{% if forloop.counter == 1 %} active{% endif %}" data-toggle="pill" href="#place-pill-{{ place.id }}">{{ place }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="tab-content">
+            {% for place in stage.places.with_related_data %}
+            <div id="place-pill-{{ place.id }}" class="tab-pane fade{% if forloop.counter == 1 %} show active{% endif %}">
+                <h4 class="text-center">{{ place }}</h4>
+                <div class="row">
+                    <div class="col">{% include "dnd5e/adventures/include/place_buttons.html" with place=place only %}</div>
+                </div>
+                <hr>
+                <div>{{ place.get_description }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

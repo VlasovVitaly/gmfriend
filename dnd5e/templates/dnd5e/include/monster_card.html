@@ -1,0 +1,59 @@
+{% load stats %}
+
+<div class="card mt-4">
+    <div class="card-body">
+        <h3 class="card-title pb-3 ml-4"><span>{{ mon }}</span></h3>
+        <h6 class="card-subtitle mb-2 text-muted text-lowercase">
+            <span>{{ mon.get_size_display }} </span>
+            <span>{{ mon.mtype.name }}{% if mon.subtype %} ({{ mon.subtype }})</span>{% endif %}
+            <span>{{ mon.get_alignment_display }}</span>
+        </h6>
+        <ul class="list-unstyled">
+            <li><strong>Класс брони: </strong>{{ mon.armor_class }}</li>
+            <li><strong>Здоровье: </strong>{{ mon.hit_points }} ({{ mon.hit_dice }})</li>
+            <li><strong>Скорость: </strong>{{ mon.speed }} фт.</li>
+            <li class="stats-block my-3 text-monospace">
+                <div class="text-center p-1 mr-1">
+                    <div><strong>STR</strong></div>
+                    <div><strong>{{ mon.strength|mod }}</strong>({{ mon.strength }})</div>
+                </div>
+                <div class="text-center p-1 mx-1">
+                    <div><strong>DEX</strong></div>
+                    <div><strong>{{ mon.dexterity|mod }}</strong>({{ mon.dexterity }})</div>
+                </div>
+                <div class="text-center p-1 mx-1">
+                    <div><strong>CON</strong></div>
+                    <div><strong>{{ mon.constitution|mod }}</strong>({{ mon.constitution }})</div>
+                </div>
+                <div class="text-center p-1 mx-1">
+                    <div><strong>INT</strong></div>
+                    <div><strong>{{ mon.intelligence|mod }}</strong>({{ mon.intelligence}})</div>
+                </div>
+                <div class="text-center p-1 mx-1"><div>
+                    <strong>WIZ</strong></div>
+                    <div><strong>{{ mon.wisdom|mod }}</strong>({{ mon.wisdom}})</div>
+                </div>
+                <div class="text-center p-1 ml-1">
+                    <div><strong>CHA</strong></div>
+                    <div><strong>{{ mon.charisma|mod }}</strong>({{ mon.charisma }})</div>
+                </div>
+            </li>
+            <li><strong>Пассив. внимательность: </strong>{{ mon.passive_perception }}</li>
+            <li><strong>Навыки: </strong>{{ mon.skills.all|join:', '|default:'Нет' }}</li>
+            <li><strong>Чувства: </strong>{{ mon.senses.all|join:', '|default:'Нет' }}</li>
+            <li><strong>Опастность: </strong>{{ mon.get_challenge_display }} ({{ mon.challenge }} exp.)</li>
+        </ul>
+        <h4 class="ml-3">Способности</h4>
+        <ul class="list-unstyled">
+        {% for trait in mon.traits.all %}
+            <li class="mb-1"><strong>{{ trait }}. </strong>{{ trait.description }}</li>
+        {% endfor %}
+        </ul>
+        <h4 class="ml-3">Действия</h4>
+        <ul class="list-unstyled">
+        {% for action in mon.actions.all %}
+            <li class="mb-1"><strong>{{ action }}. </strong>{{ action.description }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+</div>

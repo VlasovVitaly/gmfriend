@@ -1,0 +1,36 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+
+# Unit test / coverage reports
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+
+# Development static & media files
+/static/
+/media/
+
+# Environments
+.venv
+
+# Visual studo code
+.vscode
+
+# JetBrains
+.idea
+
+# Coverage html
+htmlcov/

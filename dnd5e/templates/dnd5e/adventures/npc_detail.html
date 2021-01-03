@@ -1,0 +1,53 @@
+{% extends "dnd5e/base.html" %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">{{ npc }}</h3>
+                <h6 class="card-subtitle mb-2 text-muted text-lowercase">
+                    <span>{{ npc.race }} {{ npc.get_gender_display }}</span>
+                    {% if npc.age %}<span>, {{ npc.age }} лет</span>{% endif %}
+                </h6>
+                <hr>
+                {% if npc.relations.all %}
+                <ul class="list-unstyled">
+                    {% for rel in npc.relations.all %}
+                        <li>{{ rel.get_relation_display }}: <a href="{% url 'dnd5e:adventure:npc_detail' rel.other_id %}">{{ rel.other }}</a></li>
+                    {% endfor %}
+                </ul>
+                <hr>
+                {% endif %}
+                {% if npc.knows.all %}
+                <ul class="list-unstyled">
+                    {% for k in npc.knows.all %}<li><strong>{{ k.title }}.</strong> {{ k.description }}</li>{% endfor %}
+                </ul>
+                <hr>
+                {% endif %}
+                {% if npc.start_quests.all %}
+                    <h6>Начинает задания:</h6>
+                    {% for quest in npc.start_quests.all  %}
+                    <div>
+                        <strong>{{ quest }}.</strong>
+                        {{ quest.get_description }}
+                        <p><strong>Награда: </strong>{{ quest.reward.all|join:', ' }}. Опыт: {{ quest.exp_reward }}</p>
+                    </div>
+                    {% endfor %}
+                    <hr>
+                {% endif %}
+                {% if npc.end_quests.all %}
+                    {% for quest in npc.end_quests.all %}
+                    <div class="card card-body my-3">
+                        <strong>{{ quest }}.</strong>
+                        {{ quest.get_description }}
+                        <p><strong>Награда: </strong>{{ quest.reward.all|join:', ' }}. Опыт: {{ quest.exp_reward }}</p>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                {{ npc.get_description }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

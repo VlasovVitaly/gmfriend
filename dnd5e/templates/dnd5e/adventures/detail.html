@@ -1,0 +1,35 @@
+{% extends "dnd5e/base.html" %}
+
+{% block content %}
+<h2 class="text-center mt-4 mb-4 pb-3">{{ adventure }}</h2>
+<div class="container-lg">
+    <div class="row">
+        <div class="col-3 border-right">
+            <div class="nav flex-column nav-pills">
+                <a href="#adventure-party" class="nav-link active" data-toggle="pill">Группа</a>
+                <a href="#adventure-history" class="nav-link" data-toggle="pill">Предыстория</a>
+                <a href="#adventure-npc" class="nav-link" data-toggle="pill">НПЦ</a>
+                <a href="#adventure-stages" class="nav-link" data-toggle="pill">Этапы</a>
+                <a href="#adventure-maps" class="nav-link" data-toggle="pill">Карты</a>
+                <a href="#adventure-monsters" class="nav-link" data-toggle="pill">Монстры</a>
+            </div>
+        </div>
+        <div class="col-9">
+            <div class="tab-content">
+                <div id="adventure-party" class="tab-pane fade show active">{% include "dnd5e/adventures/tabs/party.html" %}</div>
+                <div id="adventure-history" class="tab-pane fade">History</div>
+                <div id="adventure-npc" class="tab-pane fade">
+                    {% include "dnd5e/adventures/tabs/npc.html" %}
+                </div>
+                <div id="adventure-stages" class="tab-pane fade">
+                    {% include "dnd5e/adventures/tabs/stages.html" %}
+                </div>
+                <div id="adventure-maps" class="tab-pane fade">Maps</div>
+                <div id="adventure-monsters" class="tab-pane fade">
+                    {% include "dnd5e/adventures/tabs/monsters.html" %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,6 @@
+Pillow
+Django >= 3.0
+django-filter
+django-markdownx
+django-bootstrap4
+django-multiselectfield

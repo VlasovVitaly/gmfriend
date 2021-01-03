@@ -1,0 +1,23 @@
+<button class="btn btn-light" type="button" data-toggle="modal" data-target="#knowledges-modal">
+    <span>Знания </span><span class="badge badge-primary">{{ stage.knowledges__count }}</span>
+</button>
+<div id="knowledges-modal" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Знания</h5>
+                <button type="button" class="close" data-dismiss="modal"> 
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            {% for know in stage.knowledges.all %}
+                <p class="ml-3"><strong>{{ know.get_ktype_display }}.</strong> {{ know.title }}. {{ know.description }}</p>
+            {% endfor %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>

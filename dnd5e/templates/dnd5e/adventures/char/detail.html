@@ -1,0 +1,43 @@
+{% extends "dnd5e/base.html" %}
+
+{% block title %}{{ char }}{% endblock title %}
+
+{% block before-content %}
+    <nav class="m-4">
+        <ol class="breadcrumb bg-light">
+            <li class="breadcrumb-item"><a href="{% url 'dnd5e:adventure:detail' adventure.id %}">{{ adventure }}</a></li>
+            <li class="breadcrumb-item active">TODO Персонажи</li>
+            <li class="breadcrumb-item active">{{ char }}</li>
+        </ol>
+    </nav>
+{% endblock before-content %}
+
+{% block content %}
+<div class="row">
+    <div class="col">
+        <div class="btn-group">
+            <a href="{% url 'dnd5e:adventure:character:set_stats' adventure.id char.id %}" class="btn btn-primary">Ред. характеристики</a>
+            <a href="{% url 'dnd5e:adventure:character:set_background' adventure.id char.id %}" class="btn btn-primary">Ред. предысторию</a>
+            <a href="{% url 'dnd5e:adventure:character:set_skills' adventure.id char.id %}" class="btn btn-primary">Выбрать навыки</a>
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">{{ char.name }}{% if char.party_id %} из {{ char.party }}{% endif %}</h4>
+                <hr>
+                <ul class="list-unstyled">
+                    <li><strong>Раса: </strong>{% if char.subrace %}{{ char.subrace }}{% else %}{{ char.race }}{% endif %}</li>
+                    <li><strong>Класс: </strong>{{ char.klass }} {{ char.level }} уровень</li>
+                    <li><strong>Пол: </strong>{{ char.get_gender_display }}</li>
+                    <li><strong>Возраст: </strong>{{ char.age }}</li>
+                    <li><strong>Мировозрение: </strong>{{ char.get_alignment_display }}</li>
+                    <li><strong>Спассброски: </strong></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

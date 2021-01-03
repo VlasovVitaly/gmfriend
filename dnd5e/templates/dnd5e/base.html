@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block navbar %}{% spaceless %}{% include "dnd5e/include/navbar.html" %}{% endspaceless %}{% endblock %}
+
+{% block styles %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/dnd5e.css' %}">
+{% endblock styles %}
