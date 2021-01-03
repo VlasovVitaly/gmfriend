@@ -98,6 +98,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Markdown settings
 MARKDOWNX_SERVER_CALL_LATENCY = 2000
 
+ENABLE_DEBUG_TOOLBAR = False
+
 from .local_settings import *
 
 if ENABLE_DEBUG_TOOLBAR:

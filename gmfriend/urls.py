@@ -13,7 +13,7 @@ urlpatterns = [
     path('markdownx/', include('markdownx.urls')),
 ]
 
-if settings.DEBUG:
+if settings.DEBUG and settings.ENABLE_DEBUG_TOOLBAR:
     import debug_toolbar
     from django.conf.urls.static import static
 
