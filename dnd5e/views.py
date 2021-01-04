@@ -4,9 +4,7 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .filters import MonsterFilter, SpellFilter
-from .forms import (
-    AddCharSkillProficiency, CharacterBackgroundForm, CharacterForm, CharacterStatsFormset
-)
+from .forms import AddCharSkillProficiency, CharacterBackgroundForm, CharacterForm, CharacterStatsFormset
 from .models import (
     NPC, Adventure, AdventureMonster, Character, CharacterAbilities, Monster, Place, Skill, Spell, Stage, Zone
 )

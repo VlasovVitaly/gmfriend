@@ -1,17 +1,16 @@
-from math import floor
 import random
+from math import floor
 
-from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
-from django.utils.safestring import mark_safe
 from django.core.exceptions import ValidationError
+from django.db import models
+from django.utils.safestring import mark_safe
 
-from multiselectfield import MultiSelectField
 from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
-
+from multiselectfield import MultiSelectField
 
 GENDER_CHOICES = (
     (1, 'Муж.'),

@@ -1,12 +1,11 @@
 import json
 import re
-from random import randint
 from functools import reduce
+from random import randint
 
-from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
+from django.views.decorators.http import require_POST
 
 DEFAULT_ANSWER = 'Я ничего не понимаю'
 REGULAR_TROW_RE = re.compile(r'^(кинь|брось) (?P<count>[1-9]) д (?P<sides>4|6|8|12|20) ?($|(?P<sign>плюс|минус) (?P<mod>[\d]+))$')

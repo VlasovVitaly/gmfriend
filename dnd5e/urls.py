@@ -1,8 +1,7 @@
-from django.urls import path, include
+from django.urls import include, path
 
 from . import views
 from .alice import alice_api
-
 
 app_name = 'dnd5e'
 

@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Character, CharacterBackground, Skill, CharacterAbilities
+from .models import Character, CharacterAbilities, CharacterBackground, Skill
 
 
 class CharacterForm(forms.ModelForm):

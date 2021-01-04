@@ -1,10 +1,9 @@
-import django_filters
-from django.db import models
 from django import forms
+from django.db import models
 
-from .models import Spell, SpellSchool, Class, Monster, MonsterType, RuleBook
-from .models import SIZE_CHOICES
+import django_filters
 
+from .models import SIZE_CHOICES, Class, Monster, MonsterType, RuleBook, Spell, SpellSchool
 
 LEVEL_CHOICES = (
     (0, 'Заговор'),

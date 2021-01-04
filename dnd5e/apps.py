@@ -1,7 +1,7 @@
 from django.apps import AppConfig
 from django.db.models.signals import pre_save
 
-from .signals import update_slug, set_monster_hp
+from .signals import set_monster_hp, update_slug
 
 
 class Dnd5EConfig(AppConfig):
