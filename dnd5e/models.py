@@ -527,6 +527,7 @@ class Feature(models.Model):
     )
     source_id = models.PositiveIntegerField(blank=True, null=True, default=None)
     source = GenericForeignKey('content_type', 'source_id')
+    source_condition = models.SmallIntegerField(verbose_name='Условие получения', blank=True, null=True, default=None)
 
     class Meta:
         ordering = ['name']
@@ -567,7 +568,7 @@ class Race(models.Model):
         'Language', related_name='races', related_query_name='race', verbose_name='Владение языками'
     )
     size = models.CharField(max_length=1, choices=SIZE_CHOICES, verbose_name='Размер')
-
+    features = GenericRelation(Feature, object_id_field='source_id')
     stat_bonus = models.CharField(max_length=128, blank=True, null=True, default=None)
 
     class Meta:
@@ -593,7 +594,7 @@ class Subrace(models.Model):
     )
     name = models.CharField(max_length=32, verbose_name='Название')
     aka = models.CharField(max_length=32, verbose_name='Альт. название', blank=True, null=True, default=None)
-
+    features = GenericRelation(Feature, object_id_field='source_id')
     stat_bonus = models.CharField(max_length=128, blank=True, null=True, default=None)
 
     class Meta:
@@ -624,6 +625,7 @@ class Class(models.Model):
     saving_trows = models.ManyToManyField(
         'Ability', related_name='+', verbose_name='Спассброски', blank=True
     )
+    features = GenericRelation(Feature, object_id_field='source_id')
 
     class Meta:
         ordering = ['name']
@@ -647,6 +649,7 @@ class Background(models.Model):
         'Skill', related_name='+', verbose_name='Владение навыками', blank=True
     )
     path_label = models.CharField(max_length=32, null=True, blank=True, default=None)
+    features = GenericRelation(Feature, object_id_field='source_id')
 
     class Meta:
         ordering = ['name']
