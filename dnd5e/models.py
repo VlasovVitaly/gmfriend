@@ -964,6 +964,7 @@ class Character(models.Model):
         class_saving_trows = self.klass.saving_trows.all()
         abilities = []
 
+        # Initial abilities values
         for ability in Ability.objects.all():
             to_add = CharacterAbilities(character=self, ability=ability)
             if ability in class_saving_trows:
@@ -971,8 +972,15 @@ class Character(models.Model):
             abilities.append(to_add)
         CharacterAbilities.objects.bulk_create(abilities)
 
-        # char.saving_trows.set(char.klass.saving_trows.all())
+        # Skill proficiency
         self.skills_proficiency.set(self.background.skills_proficiency.all())
+
+        # Features
+        feats = self.race.features.order_by().union(self.background.features.order_by())
+        feats = feats.union(self.subrace.features.order_by()) if self.subrace else feats
+        # TODO class features
+
+        self.features.set(feats)
 
     def get_skills_proficiencies(self):
         return self.skills_proficiency.annotate(
@@ -989,6 +997,25 @@ class Character(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class CharacterFeatures(models.Model):
+    character = models.OneToOneField(
+        Character, on_delete=models.CASCADE, verbose_name='персонаж',
+        related_name='features', related_query_name='feature'
+    )
+    feature = models.ForeignKey(Feature, on_delete=models.CASCADE, verbose_name='особенность')
+
+    class Meta:
+        default_permissions = ()
+        verbose_name = 'Характеристика персонажа'
+        verbose_name_plural = 'Характеристики персонажей'
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+
+    def __str__(self):
+        return f'Особенность персонажа "{self.char}": {self.feature}'
 
 
 class CharacterAbilities(models.Model):
