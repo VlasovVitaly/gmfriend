@@ -1000,7 +1000,7 @@ class Character(models.Model):
 
 
 class CharacterFeatures(models.Model):
-    character = models.OneToOneField(
+    character = models.ForeignKey(
         Character, on_delete=models.CASCADE, verbose_name='персонаж',
         related_name='features', related_query_name='feature'
     )
