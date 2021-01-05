@@ -521,7 +521,10 @@ class Feature(models.Model):
     name = models.CharField(max_length=64, db_index=True, unique=True)
     description = models.TextField()
 
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, blank=True, null=True, default=None)
+    content_type = models.ForeignKey(
+        ContentType, on_delete=models.CASCADE, related_name='+', blank=True, null=True, default=None,
+        limit_choices_to={'app_label': 'dnd5e', 'model__in': ['class', 'race', 'subrace', 'background']}
+    )
     source_id = models.PositiveIntegerField(blank=True, null=True, default=None)
     source = GenericForeignKey('content_type', 'source_id')
 
