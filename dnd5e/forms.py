@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Character, CharacterAbilities, CharacterBackground, Skill
+from .models import Character, CharacterAbilities, CharacterBackground, Skill, Language
 
 
 class CharacterForm(forms.ModelForm):
@@ -75,3 +75,12 @@ class AddCharSkillProficiency(forms.Form):
             raise forms.ValidationError(f'Можно выбрать только {self.skills_limit} навыка')
 
         return skills
+
+
+class AddCharLanguageFromBackground(forms.Form):
+    langs = forms.ModelMultipleChoiceField(queryset=Language.objects.none())
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['langs'].queryset = Language.objects.all()  # TODO change it to something

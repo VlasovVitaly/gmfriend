@@ -4,7 +4,7 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .filters import MonsterFilter, SpellFilter
-from .forms import AddCharSkillProficiency, CharacterBackgroundForm, CharacterForm, CharacterStatsFormset
+from .forms import AddCharSkillProficiency, CharacterBackgroundForm, CharacterForm, CharacterStatsFormset, AddCharLanguageFromBackground
 from .models import (
     NPC, Adventure, AdventureMonster, Character, CharacterAbilities, Monster, Place, Skill, Spell, Stage, Zone
 )
@@ -116,6 +116,20 @@ def set_character_background(request, adv_id, char_id):
     context = {'char': char, 'adventure': adventure, 'form': form}
 
     return render(request, 'dnd5e/adventures/char/set_background.html', context)
+
+
+@login_required
+def set_languages(request, adv_id, char_id):
+    char = get_object_or_404(Character, id=char_id)
+    adventure = get_object_or_404(Adventure, id=adv_id)
+
+    context = {
+        'char': char, 'adventure': adventure,
+        'current': char.languages.all(),
+        'form': AddCharLanguageFromBackground(data=request.POST or None)
+    }
+
+    return render(request, 'dnd5e/adventures/char/set-languages.html', context)
 
 
 @login_required
