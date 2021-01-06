@@ -644,7 +644,6 @@ class Background(models.Model):
     name = models.CharField(max_length=32, db_index=True, unique=True, verbose_name='Название')
     orig_name = models.CharField(max_length=128, null=True, blank=True, default=None)
     description = MarkdownxField(verbose_name='Описание')
-    feats = models.ManyToManyField('Feature', related_name='+', verbose_name='Умения', blank=True)
     skills_proficiency = models.ManyToManyField(
         'Skill', related_name='+', verbose_name='Владение навыками', blank=True
     )
@@ -976,11 +975,22 @@ class Character(models.Model):
         self.skills_proficiency.set(self.background.skills_proficiency.all())
 
         # Features
-        feats = self.race.features.order_by().union(self.background.features.order_by())
-        feats = feats.union(self.subrace.features.order_by()) if self.subrace else feats
+        CharacterFeatures.objects.bulk_create(
+            [CharacterFeatures(character=self, feature=feat) for feat in self.race.features.all()]
+        )
+        CharacterFeatures.objects.bulk_create(
+            [CharacterFeatures(character=self, feature=feat) for feat in self.background.features.all()]
+        )
+        if self.subrace:
+            CharacterFeatures.objects.bulk_create(
+                [CharacterFeatures(character=self, feature=feat) for feat in self.subrace.features.all()]
+            )
+
+        #feats = self.race.features.order_by().union(self.background.features.order_by())
+        #feats = feats.union(self.subrace.features.order_by()) if self.subrace else feats
         # TODO class features
 
-        self.features.set(feats)
+        # self.features.set(feats)
 
     def get_skills_proficiencies(self):
         return self.skills_proficiency.annotate(
@@ -1015,7 +1025,7 @@ class CharacterFeatures(models.Model):
         return f'[{self.__class__.__name__}]: {self.id}'
 
     def __str__(self):
-        return f'Особенность персонажа "{self.char}": {self.feature}'
+        return f'Особенность персонажа "{self.character}": {self.feature}'
 
 
 class CharacterAbilities(models.Model):
