@@ -521,6 +521,14 @@ class Feature(models.Model):
     name = models.CharField(max_length=64, db_index=True, unique=True)
     description = models.TextField()
 
+    content_type = models.ForeignKey(
+        ContentType, on_delete=models.CASCADE, related_name='+', blank=True, null=True, default=None,
+        limit_choices_to={'app_label': 'dnd5e', 'model__in': ['class', 'race', 'subrace', 'background']}
+    )
+    source_id = models.PositiveIntegerField(blank=True, null=True, default=None)
+    source = GenericForeignKey('content_type', 'source_id')
+    source_condition = models.SmallIntegerField(verbose_name='Условие получения', blank=True, null=True, default=None)
+
     class Meta:
         ordering = ['name']
         default_permissions = ()
@@ -560,7 +568,7 @@ class Race(models.Model):
         'Language', related_name='races', related_query_name='race', verbose_name='Владение языками'
     )
     size = models.CharField(max_length=1, choices=SIZE_CHOICES, verbose_name='Размер')
-
+    features = GenericRelation(Feature, object_id_field='source_id')
     stat_bonus = models.CharField(max_length=128, blank=True, null=True, default=None)
 
     class Meta:
@@ -586,7 +594,7 @@ class Subrace(models.Model):
     )
     name = models.CharField(max_length=32, verbose_name='Название')
     aka = models.CharField(max_length=32, verbose_name='Альт. название', blank=True, null=True, default=None)
-
+    features = GenericRelation(Feature, object_id_field='source_id')
     stat_bonus = models.CharField(max_length=128, blank=True, null=True, default=None)
 
     class Meta:
@@ -617,6 +625,7 @@ class Class(models.Model):
     saving_trows = models.ManyToManyField(
         'Ability', related_name='+', verbose_name='Спассброски', blank=True
     )
+    features = GenericRelation(Feature, object_id_field='source_id')
 
     class Meta:
         ordering = ['name']
@@ -635,11 +644,11 @@ class Background(models.Model):
     name = models.CharField(max_length=32, db_index=True, unique=True, verbose_name='Название')
     orig_name = models.CharField(max_length=128, null=True, blank=True, default=None)
     description = MarkdownxField(verbose_name='Описание')
-    feats = models.ManyToManyField('Feature', related_name='+', verbose_name='Умения', blank=True)
     skills_proficiency = models.ManyToManyField(
         'Skill', related_name='+', verbose_name='Владение навыками', blank=True
     )
     path_label = models.CharField(max_length=32, null=True, blank=True, default=None)
+    features = GenericRelation(Feature, object_id_field='source_id')
 
     class Meta:
         ordering = ['name']
@@ -954,6 +963,7 @@ class Character(models.Model):
         class_saving_trows = self.klass.saving_trows.all()
         abilities = []
 
+        # Initial abilities values
         for ability in Ability.objects.all():
             to_add = CharacterAbilities(character=self, ability=ability)
             if ability in class_saving_trows:
@@ -961,8 +971,26 @@ class Character(models.Model):
             abilities.append(to_add)
         CharacterAbilities.objects.bulk_create(abilities)
 
-        # char.saving_trows.set(char.klass.saving_trows.all())
+        # Skill proficiency
         self.skills_proficiency.set(self.background.skills_proficiency.all())
+
+        # Features
+        CharacterFeatures.objects.bulk_create(
+            [CharacterFeatures(character=self, feature=feat) for feat in self.race.features.all()]
+        )
+        CharacterFeatures.objects.bulk_create(
+            [CharacterFeatures(character=self, feature=feat) for feat in self.background.features.all()]
+        )
+        if self.subrace:
+            CharacterFeatures.objects.bulk_create(
+                [CharacterFeatures(character=self, feature=feat) for feat in self.subrace.features.all()]
+            )
+
+        #feats = self.race.features.order_by().union(self.background.features.order_by())
+        #feats = feats.union(self.subrace.features.order_by()) if self.subrace else feats
+        # TODO class features
+
+        # self.features.set(feats)
 
     def get_skills_proficiencies(self):
         return self.skills_proficiency.annotate(
@@ -979,6 +1007,25 @@ class Character(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class CharacterFeatures(models.Model):
+    character = models.ForeignKey(
+        Character, on_delete=models.CASCADE, verbose_name='персонаж',
+        related_name='features', related_query_name='feature'
+    )
+    feature = models.ForeignKey(Feature, on_delete=models.CASCADE, verbose_name='особенность')
+
+    class Meta:
+        default_permissions = ()
+        verbose_name = 'Характеристика персонажа'
+        verbose_name_plural = 'Характеристики персонажей'
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+
+    def __str__(self):
+        return f'Особенность персонажа "{self.character}": {self.feature}'
 
 
 class CharacterAbilities(models.Model):
@@ -1008,7 +1055,7 @@ class CharacterAbilities(models.Model):
         return self.mod
 
     def __str__(self):
-        return str(self.ability)
+        return f'{self.ability}: {self.mod} ({self.value})'
 
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'
