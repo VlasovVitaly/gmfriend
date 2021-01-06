@@ -34,6 +34,7 @@
                     <li><strong>Пол: </strong>{{ char.get_gender_display }}</li>
                     <li><strong>Возраст: </strong>{{ char.age }}</li>
                     <li><strong>Мировозрение: </strong>{{ char.get_alignment_display }}</li>
+                    <li><strong>Владение языками: </strong>{% for lang in char.languages.all %}{{ lang.name }} {% endfor %}</li>
                     <li><strong>Спассброски: </strong></li>
                 </ul>
             </div>

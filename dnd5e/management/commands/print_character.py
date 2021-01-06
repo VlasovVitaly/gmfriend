@@ -17,6 +17,8 @@ class Command(BaseCommand):
         self.stdout.write(f'Класс: {char.klass}')
         self.stdout.write(f'Предыстория: {char.background}')
 
+        self.stdout.write(f'Владение языками: {", ".join(lang.name for lang in char.languages.all())}')
+
         self.stdout.write('\nХарактеристики:')
         for ability in char.abilities.all():
             self.stdout.write(f'    {str(ability):18} ->  {ability.mod:+2d} [{ability.value:2d}]')
