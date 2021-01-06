@@ -1055,7 +1055,7 @@ class CharacterAbilities(models.Model):
         return self.mod
 
     def __str__(self):
-        return str(self.ability)
+        return f'{self.ability}: {self.mod} ({self.value})'
 
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'
