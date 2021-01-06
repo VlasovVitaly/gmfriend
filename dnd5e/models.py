@@ -952,6 +952,7 @@ class Character(models.Model):
         'Skill', related_name='char_proficiencies', related_query_name='char_proficiency',
         verbose_name='Мастерство в навыках'
     )
+    features = models.ManyToManyField(Feature, related_name='+', verbose_name='Умения', blank=True)
 
     class Meta:
         ordering = ['name', 'level']
@@ -975,22 +976,11 @@ class Character(models.Model):
         self.skills_proficiency.set(self.background.skills_proficiency.all())
 
         # Features
-        CharacterFeatures.objects.bulk_create(
-            [CharacterFeatures(character=self, feature=feat) for feat in self.race.features.all()]
-        )
-        CharacterFeatures.objects.bulk_create(
-            [CharacterFeatures(character=self, feature=feat) for feat in self.background.features.all()]
-        )
-        if self.subrace:
-            CharacterFeatures.objects.bulk_create(
-                [CharacterFeatures(character=self, feature=feat) for feat in self.subrace.features.all()]
-            )
-
-        #feats = self.race.features.order_by().union(self.background.features.order_by())
-        #feats = feats.union(self.subrace.features.order_by()) if self.subrace else feats
+        feats = self.race.features.order_by().union(self.background.features.order_by())
+        feats = feats.union(self.subrace.features.order_by()) if self.subrace else feats
         # TODO class features
 
-        # self.features.set(feats)
+        self.features.set(feats)
 
     def get_skills_proficiencies(self):
         return self.skills_proficiency.annotate(
@@ -1007,25 +997,6 @@ class Character(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class CharacterFeatures(models.Model):
-    character = models.ForeignKey(
-        Character, on_delete=models.CASCADE, verbose_name='персонаж',
-        related_name='features', related_query_name='feature'
-    )
-    feature = models.ForeignKey(Feature, on_delete=models.CASCADE, verbose_name='особенность')
-
-    class Meta:
-        default_permissions = ()
-        verbose_name = 'Характеристика персонажа'
-        verbose_name_plural = 'Характеристики персонажей'
-
-    def __repr__(self):
-        return f'[{self.__class__.__name__}]: {self.id}'
-
-    def __str__(self):
-        return f'Особенность персонажа "{self.character}": {self.feature}'
 
 
 class CharacterAbilities(models.Model):
