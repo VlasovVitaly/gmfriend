@@ -22,7 +22,7 @@ class CharacterForm(forms.ModelForm):
 class CharStatsForm(forms.ModelForm):
     class Meta:
         model = CharacterAbilities
-        fields = ['value', 'ability']
+        fields = ['value']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
