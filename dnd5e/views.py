@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
+from django.http import Http404
 
 from .filters import MonsterFilter, SpellFilter
 from .forms import AddCharSkillProficiency, CharacterBackgroundForm, CharacterForm, CharacterStatsFormset, AddCharLanguageFromBackground
@@ -120,11 +121,14 @@ def set_character_background(request, adv_id, char_id):
 
 @login_required
 def set_languages(request, adv_id, char_id):
-    char = get_object_or_404(Character, id=char_id)
     adventure = get_object_or_404(Adventure, id=adv_id)
+    char = get_object_or_404(Character, id=char_id, adventure=adventure)
+
+    max_languages = char.background.known_languages
+    if not max_languages:
+        raise Http404()
 
     possible_langs = Language.objects.exclude(id__in=char.race.languages.values('id'))
-    max_languages = char.background.known_languages
     form = AddCharLanguageFromBackground(
         data=request.POST or None, languages=possible_langs, limit=max_languages,
         initial={'langs': char.languages.exclude(id__in=char.race.languages.values('id'))}
