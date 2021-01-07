@@ -649,6 +649,7 @@ class Background(models.Model):
     )
     path_label = models.CharField(max_length=32, null=True, blank=True, default=None)
     features = GenericRelation(Feature, object_id_field='source_id')
+    known_languages = models.PositiveSmallIntegerField(default=0)
 
     class Meta:
         ordering = ['name']
