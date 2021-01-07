@@ -38,6 +38,7 @@
                     <li><strong>Возраст: </strong>{{ char.age }}</li>
                     <li><strong>Мировозрение: </strong>{{ char.get_alignment_display }}</li>
                     <li><strong>Владение языками: </strong>{% for lang in char.languages.all %}{{ lang.name }} {% endfor %}</li>
+                    <li><strong>Владение инструментами: </strong>{% for tool in char.tools_proficiency.all %}{{ tool.name|capfirst }} {% empty %}Нет{% endfor %}</li>
                     <li><strong>Спассброски: </strong></li>
                 </ul>
             </div>

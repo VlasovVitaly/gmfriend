@@ -644,6 +644,9 @@ class Class(models.Model):
         'Ability', related_name='+', verbose_name='Спассброски', blank=True
     )
     features = GenericRelation(Feature, object_id_field='source_id')
+    tools_proficiency = models.ManyToManyField(
+        Tool, related_name='+', verbose_name='Владение инструментами', blank=True
+    )
 
     class Meta:
         ordering = ['name']
@@ -1012,6 +1015,11 @@ class Character(models.Model):
         # TODO class features
 
         self.features.set(feats)
+
+        # Tools proficiency
+        tools = self.background.tools_proficiency.order_by()
+        tools = tools.union(self.klass.tools_proficiency.order_by())
+        self.tools_proficiency.set(tools)
 
     def get_skills_proficiencies(self):
         return self.skills_proficiency.annotate(
