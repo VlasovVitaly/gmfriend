@@ -669,6 +669,10 @@ class Background(models.Model):
     features = GenericRelation(Feature, object_id_field='source_id')
     known_languages = models.PositiveSmallIntegerField(default=0)
 
+    tools_proficiency = models.ManyToManyField(
+        Tool, related_name='+', verbose_name='Владение инструментами', blank=True
+    )
+
     class Meta:
         ordering = ['name']
         default_permissions = ()
@@ -973,6 +977,9 @@ class Character(models.Model):
     )
     languages = models.ManyToManyField('Language', related_name='+', verbose_name='Владение языками', editable=False)
     features = models.ManyToManyField(Feature, related_name='+', verbose_name='Умения', editable=False)
+    tools_proficiency = models.ManyToManyField(
+        Tool, related_name='+', verbose_name='Владение инструментами', editable=False
+    )
 
     class Meta:
         ordering = ['name', 'level']
