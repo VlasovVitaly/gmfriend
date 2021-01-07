@@ -283,6 +283,24 @@ class Knowledge(models.Model):
         return f'{self.get_ktype_display()} -> {self.title}'
 
 
+class Tool(models.Model):
+    name = models.CharField(max_length=64)
+    cost = CostField(verbose_name='Стоимость')
+    description = models.TextField(verbose_name='Описание', blank=True)
+
+    class Meta:
+        ordering = ['name']
+        default_permissions = ()
+        verbose_name = 'Инструмент'
+        verbose_name_plural = 'Инструменты'
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id} {self.name}'
+
+    def __str__(self):
+        return f'{self.name}'
+
+
 class Stuff(models.Model):
     name = models.CharField(max_length=64)
     cost = CostField(verbose_name='Стоимость')
@@ -626,6 +644,9 @@ class Class(models.Model):
         'Ability', related_name='+', verbose_name='Спассброски', blank=True
     )
     features = GenericRelation(Feature, object_id_field='source_id')
+    tools_proficiency = models.ManyToManyField(
+        Tool, related_name='+', verbose_name='Владение инструментами', blank=True
+    )
 
     class Meta:
         ordering = ['name']
@@ -650,6 +671,10 @@ class Background(models.Model):
     path_label = models.CharField(max_length=32, null=True, blank=True, default=None)
     features = GenericRelation(Feature, object_id_field='source_id')
     known_languages = models.PositiveSmallIntegerField(default=0)
+
+    tools_proficiency = models.ManyToManyField(
+        Tool, related_name='+', verbose_name='Владение инструментами', blank=True
+    )
 
     class Meta:
         ordering = ['name']
@@ -955,6 +980,9 @@ class Character(models.Model):
     )
     languages = models.ManyToManyField('Language', related_name='+', verbose_name='Владение языками', editable=False)
     features = models.ManyToManyField(Feature, related_name='+', verbose_name='Умения', editable=False)
+    tools_proficiency = models.ManyToManyField(
+        Tool, related_name='+', verbose_name='Владение инструментами', editable=False
+    )
 
     class Meta:
         ordering = ['name', 'level']
@@ -987,6 +1015,11 @@ class Character(models.Model):
         # TODO class features
 
         self.features.set(feats)
+
+        # Tools proficiency
+        tools = self.background.tools_proficiency.order_by()
+        tools = tools.union(self.klass.tools_proficiency.order_by())
+        self.tools_proficiency.set(tools)
 
     def get_skills_proficiencies(self):
         return self.skills_proficiency.annotate(
