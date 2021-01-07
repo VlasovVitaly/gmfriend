@@ -283,6 +283,24 @@ class Knowledge(models.Model):
         return f'{self.get_ktype_display()} -> {self.title}'
 
 
+class Tool(models.Model):
+    name = models.CharField(max_length=64)
+    cost = CostField(verbose_name='Стоимость')
+    description = models.TextField(verbose_name='Описание', blank=True)
+
+    class Meta:
+        ordering = ['name']
+        default_permissions = ()
+        verbose_name = 'Инструмент'
+        verbose_name_plural = 'Инструменты'
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id} {self.name}'
+
+    def __str__(self):
+        return f'{self.name}'
+
+
 class Stuff(models.Model):
     name = models.CharField(max_length=64)
     cost = CostField(verbose_name='Стоимость')
