@@ -1,0 +1,50 @@
+
+{% extends "dnd5e/base.html" %}
+
+{% load static bootstrap4 %}
+
+{% block title %}Изменить владение языками для {{ char }}{% endblock title %}
+
+{% block styles %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/bootstrap-select.min.css' %}">
+{% endblock styles %}
+
+{% block javascript %}
+    {{ block.super }}
+    <script src="{% static 'js/bootstrap-select.min.js' %}"></script>
+{% endblock javascript %}
+
+{% block before-content %}
+    <nav class="m-4">
+        <ol class="breadcrumb bg-light">
+            <li class="breadcrumb-item"><a href="{% url 'dnd5e:adventure:detail' adventure.id %}">{{ adventure }}</a></li>
+            <li class="breadcrumb-item active">TODO Персонажи</li>
+            <li class="breadcrumb-item"><a href="{% url 'dnd5e:adventure:character:detail' adventure.id char.id %}">{{ char }}</a></li>
+            <li class="breadcrumb-item">Владение языками</li>
+        </ol>
+    </nav>
+{% endblock before-content %}
+
+{% block content %}
+<div class="row mt-3">
+    <div class="col">
+        <div class="card">
+            <h5 class="card-header text-center">Владение языками</h5>
+            <div class="card-body">
+                <h5 class="card-title">Известные языки</h5>
+                <ul class="list-group">
+                    {% for lang in current %}<li class="list-group-item bg-light">{{ lang }}</li>{% endfor %}
+                </ul>
+                <hr>
+                <h5 class="card-title">Выбрать владние языками. (Макс: {{ max_languages }})</h5>
+                <form action="" method="POST" class="form-inline">
+                    {% csrf_token %}
+                    {% bootstrap_field form.langs show_label=False %}
+                    {% bootstrap_button "Изменить" button_type="submit" button_class="btn-primary" %}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

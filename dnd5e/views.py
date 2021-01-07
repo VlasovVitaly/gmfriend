@@ -2,11 +2,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
+from django.http import Http404
 
 from .filters import MonsterFilter, SpellFilter
-from .forms import AddCharSkillProficiency, CharacterBackgroundForm, CharacterForm, CharacterStatsFormset
+from .forms import AddCharSkillProficiency, CharacterBackgroundForm, CharacterForm, CharacterStatsFormset, AddCharLanguageFromBackground
 from .models import (
-    NPC, Adventure, AdventureMonster, Character, CharacterAbilities, Monster, Place, Skill, Spell, Stage, Zone
+    NPC, Adventure, AdventureMonster, Character, CharacterAbilities, Monster, Place, Skill, Spell, Stage, Zone, Language
 )
 
 
@@ -116,6 +117,37 @@ def set_character_background(request, adv_id, char_id):
     context = {'char': char, 'adventure': adventure, 'form': form}
 
     return render(request, 'dnd5e/adventures/char/set_background.html', context)
+
+
+@login_required
+def set_languages(request, adv_id, char_id):
+    adventure = get_object_or_404(Adventure, id=adv_id)
+    char = get_object_or_404(Character, id=char_id, adventure=adventure)
+
+    max_languages = char.background.known_languages
+    if not max_languages:
+        raise Http404()
+
+    possible_langs = Language.objects.exclude(id__in=char.race.languages.values('id'))
+    form = AddCharLanguageFromBackground(
+        data=request.POST or None, languages=possible_langs, limit=max_languages,
+        initial={'langs': char.languages.exclude(id__in=char.race.languages.values('id'))}
+    )
+
+    if form.is_valid():
+        with transaction.atomic():
+            char.languages.set(
+                char.race.languages.order_by().union(form.cleaned_data['langs'].order_by()), clear=True
+            )
+
+    context = {
+        'char': char, 'adventure': adventure,
+        'current': char.languages.all(),
+        'max_languages': max_languages,
+        'form': form,
+    }
+
+    return render(request, 'dnd5e/adventures/char/set_languages.html', context)
 
 
 @login_required

@@ -649,6 +649,7 @@ class Background(models.Model):
     )
     path_label = models.CharField(max_length=32, null=True, blank=True, default=None)
     features = GenericRelation(Feature, object_id_field='source_id')
+    known_languages = models.PositiveSmallIntegerField(default=0)
 
     class Meta:
         ordering = ['name']
@@ -952,7 +953,8 @@ class Character(models.Model):
         'Skill', related_name='char_proficiencies', related_query_name='char_proficiency',
         verbose_name='Мастерство в навыках'
     )
-    features = models.ManyToManyField(Feature, related_name='+', verbose_name='Умения', blank=True)
+    languages = models.ManyToManyField('Language', related_name='+', verbose_name='Владение языками', editable=False)
+    features = models.ManyToManyField(Feature, related_name='+', verbose_name='Умения', editable=False)
 
     class Meta:
         ordering = ['name', 'level']
@@ -974,6 +976,10 @@ class Character(models.Model):
 
         # Skill proficiency
         self.skills_proficiency.set(self.background.skills_proficiency.all())
+
+        # Languages
+        langs = self.race.languages.all()
+        self.languages.set(langs)
 
         # Features
         feats = self.race.features.order_by().union(self.background.features.order_by())
