@@ -289,12 +289,14 @@ class Tool(models.Model):
     CAT_ARTISANS = 5
     CAT_MUSICAL = 10
     CAT_GAMBLE = 15
+    CAT_TRANSPORT = 20
 
     CATEGORIES = (
         (CAT_REGULAR, 'Без категории'),
         (CAT_ARTISANS, 'Инструменты ремеслиников'),
         (CAT_MUSICAL, 'Музыкальные инструменты'),
         (CAT_GAMBLE, 'Игровой набор'),
+        (CAT_TRANSPORT, 'Транстпорт'),
     )
 
     name = models.CharField(max_length=64)
