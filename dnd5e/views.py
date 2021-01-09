@@ -176,6 +176,18 @@ def set_skills_proficiency(request, adv_id, char_id):
 
 
 @login_required
+def resolve_char_choices(request, adv_id, char_id):
+    adventure = get_object_or_404(Adventure, id=adv_id)
+    char = get_object_or_404(Character, id=char_id, adventure=adventure)
+
+    context = {
+        'adventure': adventure, 'char': char
+    }
+
+    return render(request, 'dnd5e/adventures/char/resolve_choices.html', context)
+
+
+@login_required
 def stage_detail(request, stage_id):
     stage = get_object_or_404(Stage.objects.prefetch_detail().annotate_detail(), id=stage_id)
 

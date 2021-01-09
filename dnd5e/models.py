@@ -1042,6 +1042,12 @@ class Character(models.Model):
         tools = tools.union(self.klass.tools_proficiency.order_by())
         self.tools_proficiency.set(tools)
 
+        # Generate choices
+        background_choices = self.background.choices.all()
+        print(background_choices)
+        for choice in background_choices:
+            CharacterAdvancmentChoice.objects.create(character=self, choice=choice, reason=self.background)
+
     def get_skills_proficiencies(self):
         return self.skills_proficiency.annotate(
             from_background=models.Exists(

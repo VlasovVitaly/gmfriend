@@ -1,0 +1,20 @@
+{% extends "dnd5e/base.html" %}
+
+{% load static bootstrap4 %}
+
+{% block title %}Выбор для {{ char }}{% endblock title %}
+
+{% block before-content %}
+    <nav class="m-4">
+        <ol class="breadcrumb bg-light">
+            <li class="breadcrumb-item"><a href="{% url 'dnd5e:adventure:detail' adventure.id %}">{{ adventure }}</a></li>
+            <li class="breadcrumb-item active">TODO Персонажи</li>
+            <li class="breadcrumb-item"><a href="{% url 'dnd5e:adventure:character:detail' adventure.id char.id %}">{{ char }}</a></li>
+            <li class="breadcrumb-item">Выбор для персонажа</li>
+        </ol>
+    </nav>
+{% endblock before-content %}
+
+{% block content %}
+    <h2>SADASDAS</h2>
+{% endblock content %}
