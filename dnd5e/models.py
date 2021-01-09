@@ -12,6 +12,7 @@ from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
 from multiselectfield import MultiSelectField
 
+
 GENDER_CHOICES = (
     (1, 'Муж.'),
     (2, 'Жен.'),
@@ -579,6 +580,23 @@ class Trap(models.Model):
         return f'{self.name}'
 
 
+class AdvancmentChoice(models.Model):
+    code = models.CharField(max_length=24, verbose_name='Код')
+    text = models.TextField(verbose_name='Отображаемый текст')
+
+    class Meta:
+        ordering = ['code']
+        default_permissions = ()
+        verbose_name = 'Выбор для персонажа'
+        verbose_name_plural = 'Выборы для персонажей'
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+
+    def __str__(self):
+        return f'{self.code}'
+
+
 class Race(models.Model):
     name = models.CharField(max_length=64, db_index=True, unique=True, verbose_name='Название')
     speed = models.PositiveIntegerField(verbose_name='Скорость', null=True, blank=True, default=None)
@@ -674,6 +692,9 @@ class Background(models.Model):
 
     tools_proficiency = models.ManyToManyField(
         Tool, related_name='+', verbose_name='Владение инструментами', blank=True
+    )
+    choices = models.ManyToManyField(
+        AdvancmentChoice, related_name='+', verbose_name='Выборы для персонажа', blank=True
     )
 
     class Meta:
@@ -1036,6 +1057,31 @@ class Character(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class CharacterAdvancmentChoice(models.Model):
+    character = models.ForeignKey(
+        Character, on_delete=models.CASCADE, related_name='choices', related_query_name='choice'
+    )
+    choice = models.ForeignKey(
+        AdvancmentChoice, on_delete=models.CASCADE, related_name='+'
+    )
+    reason_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    reason_object_id = models.PositiveIntegerField()
+    reason = GenericForeignKey('reason_content_type', 'reason_object_id')
+    selected = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['character', 'choice']
+        default_permissions = ()
+        verbose_name = 'Выбор персонажа'
+        verbose_name_plural = 'Выборы персонажа'
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+
+    def __str__(self):
+        return f'Выбор персонажа #{self.character_id}'
 
 
 class CharacterAbilities(models.Model):
