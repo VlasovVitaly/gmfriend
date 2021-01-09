@@ -285,7 +285,20 @@ class Knowledge(models.Model):
 
 
 class Tool(models.Model):
+    CAT_REGULAR = 0
+    CAT_ARTISANS = 5
+    CAT_MUSICAL = 10
+    CAT_GAMBLE = 15
+
+    CATEGORIES = (
+        (CAT_REGULAR, 'Без категории'),
+        (CAT_ARTISANS, 'Инструменты ремеслиников'),
+        (CAT_MUSICAL, 'Музыкальные инструменты'),
+        (CAT_GAMBLE, 'Игровой набор'),
+    )
+
     name = models.CharField(max_length=64)
+    category = models.PositiveSmallIntegerField(default=CAT_REGULAR, choices=CATEGORIES)
     cost = CostField(verbose_name='Стоимость')
     description = models.TextField(verbose_name='Описание', blank=True)
 
