@@ -9,6 +9,7 @@ from .forms import AddCharSkillProficiency, CharacterBackgroundForm, CharacterFo
 from .models import (
     NPC, Adventure, AdventureMonster, Character, CharacterAbilities, Monster, Place, Skill, Spell, Stage, Zone, Language
 )
+from .choices import ALL_CHOICES
 
 
 def index(request):
@@ -44,8 +45,9 @@ def adventure_detail(request, adv_id):
 def character_detail(request, adv_id, char_id):
     char = get_object_or_404(Character, id=char_id)
     adventure = get_object_or_404(Adventure, id=adv_id)
+    choices = char.choices.filter(selected=False)
 
-    context = {'char': char, 'adventure': adventure}
+    context = {'char': char, 'adventure': adventure, 'choices': choices}
 
     return render(request, 'dnd5e/adventures/char/detail.html', context)
 
@@ -176,12 +178,25 @@ def set_skills_proficiency(request, adv_id, char_id):
 
 
 @login_required
+@transaction.atomic()
 def resolve_char_choices(request, adv_id, char_id):
     adventure = get_object_or_404(Adventure, id=adv_id)
     char = get_object_or_404(Character, id=char_id, adventure=adventure)
 
+    choice = char.choices.filter(selected=False).first()
+
+    selector = ALL_CHOICES[choice.choice.code](char)
+    form = selector.get_form(request, char)
+
+    if form.is_valid():
+        selector.apply_data(form.cleaned_data)
+        choice.selected = True
+        choice.save(update_fields=['selected'])
+
+        # TODO return redirect on self
+
     context = {
-        'adventure': adventure, 'char': char
+        'adventure': adventure, 'char': char, 'choice': choice, 'form': form
     }
 
     return render(request, 'dnd5e/adventures/char/resolve_choices.html', context)

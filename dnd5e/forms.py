@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Character, CharacterAbilities, CharacterBackground, Skill, Language
+from .models import Character, CharacterAbilities, CharacterBackground, Skill, Language, Tool
 
 
 class CharacterForm(forms.ModelForm):
@@ -95,3 +95,23 @@ class AddCharLanguageFromBackground(forms.Form):
             raise forms.ValidationError(f'Можно выбрать только {self.langs_limit} языка')
 
         return langs
+
+
+class SelectToolProficiency(forms.Form):
+    tools = forms.ModelMultipleChoiceField(queryset=Tool.objects.none())
+
+    def __init__(self, *args, queryset, limit, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.limit = limit
+
+        self.fields['tools'].queryset = queryset
+        self.fields['tools'].widget.attrs = {'class': 'selectpicker', 'data-max-options': limit}
+
+    def clean_tools(self):
+        tools = self.cleaned_data['tools']
+
+        if tools.count() > self.limit:
+            raise forms.ValidationError(f'Можно выбрать только {self.limit} инструмент(ов)')
+
+        return tools

@@ -4,6 +4,16 @@
 
 {% block title %}Выбор для {{ char }}{% endblock title %}
 
+{% block styles %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/bootstrap-select.min.css' %}">
+{% endblock styles %}
+
+{% block javascript %}
+    {{ block.super }}
+    <script src="{% static 'js/bootstrap-select.min.js' %}"></script>
+{% endblock javascript %}
+
 {% block before-content %}
     <nav class="m-4">
         <ol class="breadcrumb bg-light">
@@ -16,5 +26,18 @@
 {% endblock before-content %}
 
 {% block content %}
-    <h2>SADASDAS</h2>
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">{{ choice.reason }}: {{ choice.choice.text }}</div>
+                <div class="card-body">
+                    <form method="POST" class="form-inline">
+                        {% csrf_token %}
+                        {% bootstrap_form form show_label=False %}
+                        {% bootstrap_button "Изменить" button_type="submit" button_class="btn-primary" %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock content %}
