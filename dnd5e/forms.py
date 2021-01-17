@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Character, CharacterAbilities, CharacterBackground, Skill, Language, Tool
+from .models import Character, CharacterAbilities, CharacterBackground, Skill, Language, Tool, Feature
 
 
 class CharacterForm(forms.ModelForm):
@@ -115,3 +115,13 @@ class SelectToolProficiency(forms.Form):
             raise forms.ValidationError(f'Можно выбрать только {self.limit} инструмент(ов)')
 
         return tools
+
+
+class SelectFeatureForm(forms.Form):
+    feature = forms.ModelChoiceField(queryset=Feature.objects.none())
+
+    def __init__(self, *args, queryset, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['feature'].queryset = queryset
+        self.fields['feature'].widget.attrs = {'class': 'selectpicker'}

@@ -554,6 +554,7 @@ class Zone(models.Model):
 class Feature(models.Model):
     name = models.CharField(max_length=64, db_index=True, unique=True)
     description = models.TextField()
+    group = models.CharField(max_length=12, verbose_name='Группа умений', blank=True)
 
     content_type = models.ForeignKey(
         ContentType, on_delete=models.CASCADE, related_name='+', blank=True, null=True, default=None,
@@ -695,6 +696,48 @@ class Class(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ClassLevels(models.Model):
+    klass = models.ForeignKey(Class, on_delete=models.CASCADE, related_name='level_feats', verbose_name='Класс')
+    level = models.PositiveSmallIntegerField(verbose_name='Уровень')
+    proficiency_bonus = models.PositiveSmallIntegerField(verbose_name='Бонус мастерства')
+
+    class Meta:
+        ordering = ['klass', 'level']
+        default_permissions = ()
+        verbose_name = 'Таблица уровней'
+        verbose_name_plural = 'Таблицы уровней'
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+
+    def __str__(self):
+        return f'{self.klass} {self.level}'
+
+
+class ClassLevelAdvance(models.Model):
+    class_level = models.ForeignKey(
+        ClassLevels, on_delete=models.CASCADE, verbose_name='Уровень класса',
+        related_name='advantages', related_query_name='advantage'
+    )
+    advance_content_type = models.ForeignKey(
+        ContentType, on_delete=models.CASCADE,
+        limit_choices_to={'app_label': 'dnd5e', 'model__in': ['feature', 'advancmentchoice']}
+    )
+    advance_object_id = models.PositiveIntegerField()
+    advance = GenericForeignKey('advance_content_type', 'advance_object_id')
+
+    class Meta:
+        default_permissions = ()
+        verbose_name = 'Преимущество уровня'
+        verbose_name_plural = 'Преимущества уровней'
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+
+    def __str__(self):
+        return f'{self.class_level} {self.advance}'
 
 
 class Background(models.Model):
@@ -1051,9 +1094,14 @@ class Character(models.Model):
         # Features
         feats = self.race.features.order_by().union(self.background.features.order_by())
         feats = feats.union(self.subrace.features.order_by()) if self.subrace else feats
-        # TODO class features
-
         self.features.set(feats)
+
+        current_advance_level = self.klass.level_feats.get(level=self.level)
+        for adv in current_advance_level.advantages.all():
+            if isinstance(adv.advance, Feature):
+                self.features.add(adv.advance)
+            elif isinstance(adv.advance, AdvancmentChoice):
+                CharacterAdvancmentChoice.objects.create(character=self, choice=adv.advance, reason=self.klass)
 
         # Tools proficiency
         tools = self.background.tools_proficiency.order_by()
@@ -1061,9 +1109,7 @@ class Character(models.Model):
         self.tools_proficiency.set(tools)
 
         # Generate choices
-        background_choices = self.background.choices.all()
-        print(background_choices)
-        for choice in background_choices:
+        for choice in self.background.choices.all():
             CharacterAdvancmentChoice.objects.create(character=self, choice=choice, reason=self.background)
 
     def get_skills_proficiencies(self):

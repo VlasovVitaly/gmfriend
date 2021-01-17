@@ -40,7 +40,8 @@
                     <li><strong>Мировозрение: </strong>{{ char.get_alignment_display }}</li>
                     <li><strong>Владение языками: </strong>{% for lang in char.languages.all %}{{ lang.name }} {% endfor %}</li>
                     <li><strong>Владение инструментами: </strong>{% for tool in char.tools_proficiency.all %}{{ tool.name|capfirst }} {% empty %}Нет{% endfor %}</li>
-                    <li><strong>Спассброски: </strong></li>
+                    <li><strong>Умения и особенности: </strong></li>
+                    {% for feat in char.features.all %}<li><span class="badge badge-light">{{ feat.source }}</span>{{ feat }}</li>{% endfor %}
                 </ul>
             </div>
         </div>

@@ -1,5 +1,5 @@
 from django.apps import apps
-from .forms import SelectToolProficiency
+from .forms import SelectToolProficiency, SelectFeatureForm
 
 dnd5e_app = apps.app_configs['dnd5e']
 
@@ -28,8 +28,23 @@ class PROF_TOOLS_003(PROF_TOOLS_001):
     queryset = dnd5e_app.get_model('tool').objects.filter(category=5)  # Artisian
 
 
+class CLASS_WAR_001:
+    form_class = SelectFeatureForm
+    queryset = dnd5e_app.get_model('feature').objects.filter(group='fight_style')
+
+    def __init__(self, character):
+        self.character = character
+
+    def get_form(self, request, character):
+        return self.form_class(data=request.POST or None, queryset=self.queryset)
+
+    def apply_data(self, data):
+        self.character.features.add(data['feature'])
+
+
 ALL_CHOICES = {
     'PROF_TOOLS_001': PROF_TOOLS_001,
     'PROF_TOOLS_002': PROF_TOOLS_002,
     'PROF_TOOLS_003': PROF_TOOLS_003,
+    'CLASS_WAR_001': CLASS_WAR_001,
 }
