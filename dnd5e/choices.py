@@ -39,7 +39,8 @@ class CLASS_WAR_001:
         return self.form_class(data=request.POST or None, queryset=self.queryset)
 
     def apply_data(self, data):
-        self.character.features.add(data['feature'])
+        CharacterFeature = dnd5e_app.get_model('characterfeature')
+        CharacterFeature.objects.create(character=self.character, feature=data['feature'])
 
 
 ALL_CHOICES = {

@@ -552,9 +552,21 @@ class Zone(models.Model):
 
 
 class Feature(models.Model):
+    RECHARGE_CONSTANT = 0
+    RECHARGE_SHORT_REST = 10
+    RECHARGE_LONG_REST = 20
+
+    RECHARGE_CHOICES = (
+        (RECHARGE_CONSTANT, 'Не требуется'),
+        (RECHARGE_SHORT_REST, 'Короткий отдых'),
+        (RECHARGE_LONG_REST, 'Длинный отдых'),
+    )
+
     name = models.CharField(max_length=64, db_index=True, unique=True)
     description = models.TextField()
     group = models.CharField(max_length=12, verbose_name='Группа умений', blank=True)
+    stackable = models.BooleanField(default=False)
+    rechargeable = models.PositiveSmallIntegerField(choices=RECHARGE_CHOICES, default=RECHARGE_CONSTANT)
 
     content_type = models.ForeignKey(
         ContentType, on_delete=models.CASCADE, related_name='+', blank=True, null=True, default=None,
@@ -569,6 +581,15 @@ class Feature(models.Model):
         default_permissions = ()
         verbose_name = 'Умение'
         verbose_name_plural = 'Умения'
+
+    def apply_for_character(self, character, **kwargs):
+        if self.stackable:
+            char_feat, created = character.features.get_or_create(feature=self, defaults={'max_charges': 1})
+            if not created:
+                char_feat.max_charges = models.F('max_charges') + 1
+                char_feat.save(update_fields=['max_charges'])
+        else:
+            CharacterFeature.objects.create(character=character, feature=self)
 
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'
@@ -606,6 +627,9 @@ class AdvancmentChoice(models.Model):
         default_permissions = ()
         verbose_name = 'Выбор для персонажа'
         verbose_name_plural = 'Выборы для персонажей'
+
+    def apply_for_character(self, character, reason):
+        CharacterAdvancmentChoice.objects.create(character=character, choice=self, reason=reason)
 
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'
@@ -732,6 +756,9 @@ class ClassLevelAdvance(models.Model):
         default_permissions = ()
         verbose_name = 'Преимущество уровня'
         verbose_name_plural = 'Преимущества уровней'
+
+    def apply_for_character(self, character):
+        self.advance.apply_for_character(character, reason=self.class_level.klass)
 
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'
@@ -1061,7 +1088,6 @@ class Character(models.Model):
         verbose_name='Мастерство в навыках'
     )
     languages = models.ManyToManyField('Language', related_name='+', verbose_name='Владение языками', editable=False)
-    features = models.ManyToManyField(Feature, related_name='+', verbose_name='Умения', editable=False)
     tools_proficiency = models.ManyToManyField(
         Tool, related_name='+', verbose_name='Владение инструментами', editable=False
     )
@@ -1092,16 +1118,13 @@ class Character(models.Model):
         self.languages.set(langs)
 
         # Features
-        feats = self.race.features.order_by().union(self.background.features.order_by())
-        feats = feats.union(self.subrace.features.order_by()) if self.subrace else feats
-        self.features.set(feats)
+        features = self.race.features.order_by().union(self.background.features.order_by())
+        features = features.union(self.subrace.features.order_by()) if self.subrace else features
+        for feat in features:
+            CharacterFeature.objects.create(character=self, feature=feat)
 
-        current_advance_level = self.klass.level_feats.get(level=self.level)
-        for adv in current_advance_level.advantages.all():
-            if isinstance(adv.advance, Feature):
-                self.features.add(adv.advance)
-            elif isinstance(adv.advance, AdvancmentChoice):
-                CharacterAdvancmentChoice.objects.create(character=self, choice=adv.advance, reason=self.klass)
+        for advantage in self.klass.level_feats.get(level=self.level).advantages.all():
+            advantage.apply_for_character(self)
 
         # Tools proficiency
         tools = self.background.tools_proficiency.order_by()
@@ -1122,11 +1145,42 @@ class Character(models.Model):
     def get_skills(self):
         return Skill.objects.for_character(self)
 
+    def level_up(self):
+        klass_level = self.klass.level_feats.get(level=self.level + 1)
+        for advantage in klass_level.advantages.all():
+            advantage.apply_for_character(self)
+
+        self.level = models.F('level') + 1
+        self.save(update_fields=['level'])
+
+        self.refresh_from_db()
+
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'
 
     def __str__(self):
         return self.name
+
+
+class CharacterFeature(models.Model):
+    character = models.ForeignKey(
+        Character, on_delete=models.CASCADE, related_name='features', related_query_name='feature'
+    )
+    feature = models.ForeignKey(Feature, on_delete=models.CASCADE, related_name='+')
+    max_charges = models.PositiveSmallIntegerField(null=True, blank=True, default=None)
+    used = models.PositiveSmallIntegerField(blank=True, default=0)
+
+    class Meta:
+        ordering = ['character', 'feature']
+        default_permissions = ()
+        verbose_name = 'Особенность персонажа'
+        verbose_name_plural = 'Особенности персонажей'
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+
+    def __str__(self):
+        return f'{self.character}: {self.feature}'
 
 
 class CharacterAdvancmentChoice(models.Model):
