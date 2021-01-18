@@ -722,6 +722,25 @@ class Class(models.Model):
         return self.name
 
 
+class SubClass(models.Model):
+    parent = models.ForeignKey(Class, on_delete=models.CASCADE, verbose_name='Родительский класс')
+    name = models.CharField(max_length=64, verbose_name='Название')
+    book = models.ForeignKey(
+        RuleBook, on_delete=models.SET_NULL, verbose_name='Книга правил', null=True, default=None
+    )
+
+    class Meta:
+        default_permissions = ()
+        verbose_name = 'Архетип'
+        verbose_name_plural = 'Архетипы'
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.name}'
+
+    def __str__(self):
+        return f'{self.parent}: {self.name}'
+
+
 class ClassLevels(models.Model):
     klass = models.ForeignKey(Class, on_delete=models.CASCADE, related_name='level_feats', verbose_name='Класс')
     level = models.PositiveSmallIntegerField(verbose_name='Уровень')
