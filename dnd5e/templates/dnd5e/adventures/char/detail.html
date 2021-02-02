@@ -34,7 +34,7 @@
                 <hr>
                 <ul class="list-unstyled">
                     <li><strong>Раса: </strong>{% if char.subrace %}{{ char.subrace }}{% else %}{{ char.race }}{% endif %}</li>
-                    <li><strong>Класс: </strong>{{ char.klass }} {{ char.level }} уровень</li>
+                    <li><strong>Класс: </strong>{% if char.subclass %}{{ char.subclass }}{% else %}{{ char.klass }}{% endif %} {{ char.level }} уровень</li>
                     <li><strong>Пол: </strong>{{ char.get_gender_display }}</li>
                     <li><strong>Возраст: </strong>{{ char.age }}</li>
                     <li><strong>Мировозрение: </strong>{{ char.get_alignment_display }}</li>

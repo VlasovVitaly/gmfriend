@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Character, CharacterAbilities, CharacterBackground, Skill, Language, Tool, Feature
+from .models import Character, CharacterAbilities, CharacterBackground, Skill, Language, Tool, Feature, Subclass
 
 
 class CharacterForm(forms.ModelForm):
@@ -125,3 +125,13 @@ class SelectFeatureForm(forms.Form):
 
         self.fields['feature'].queryset = queryset
         self.fields['feature'].widget.attrs = {'class': 'selectpicker'}
+
+
+class SelectSubclassForm(forms.Form):
+    subclass = forms.ModelChoiceField(queryset=Subclass.objects.none())
+
+    def __init__(self, *args, queryset, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['subclass'].queryset = queryset
+        self.fields['subclass'].widget.attrs = {'class': 'selectpicker'}

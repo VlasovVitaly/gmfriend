@@ -708,6 +708,9 @@ class Class(models.Model):
     tools_proficiency = models.ManyToManyField(
         Tool, related_name='+', verbose_name='Владение инструментами', blank=True
     )
+    level_feats = GenericRelation(
+        'ClassLevels', object_id_field='class_object_id', content_type_field='class_content_type'
+    )
 
     class Meta:
         ordering = ['name']
@@ -722,12 +725,13 @@ class Class(models.Model):
         return self.name
 
 
-class SubClass(models.Model):
+class Subclass(models.Model):
     parent = models.ForeignKey(Class, on_delete=models.CASCADE, verbose_name='Родительский класс')
     name = models.CharField(max_length=64, verbose_name='Название')
     book = models.ForeignKey(
         RuleBook, on_delete=models.SET_NULL, verbose_name='Книга правил', null=True, default=None
     )
+    level_feats = GenericRelation('ClassLevels', object_id_field='class_object_id')
 
     class Meta:
         default_permissions = ()
@@ -742,12 +746,17 @@ class SubClass(models.Model):
 
 
 class ClassLevels(models.Model):
-    klass = models.ForeignKey(Class, on_delete=models.CASCADE, related_name='level_feats', verbose_name='Класс')
+    class_content_type = models.ForeignKey(
+        ContentType, on_delete=models.CASCADE,
+        limit_choices_to={'app_label': 'dnd5e', 'model__in': ['class', 'subclass']}
+    )
+    class_object_id = models.PositiveIntegerField()
+    klass = GenericForeignKey('class_content_type', 'class_object_id')
     level = models.PositiveSmallIntegerField(verbose_name='Уровень')
     proficiency_bonus = models.PositiveSmallIntegerField(verbose_name='Бонус мастерства')
 
     class Meta:
-        ordering = ['klass', 'level']
+        ordering = ['class_content_type', 'class_object_id', 'level']
         default_permissions = ()
         verbose_name = 'Таблица уровней'
         verbose_name_plural = 'Таблицы уровней'
@@ -1092,8 +1101,10 @@ class Character(models.Model):
         Subrace, on_delete=models.CASCADE, related_name='+', verbose_name='Разновидность расы', blank=True, null=True
     )
     klass = models.ForeignKey(
-        Class, on_delete=models.CASCADE, verbose_name='Класс',
-        related_name='+', related_query_name='+'
+        Class, on_delete=models.CASCADE, verbose_name='Класс', related_name='+'
+    )
+    subclass = models.ForeignKey(
+        Subclass, on_delete=models.CASCADE, verbose_name='Архетип', related_name='+', null=True, default=None
     )
     level = models.PositiveSmallIntegerField(default=1, verbose_name='Уровень')
     proficiency = models.PositiveSmallIntegerField(verbose_name='Мастерство', default=2)
