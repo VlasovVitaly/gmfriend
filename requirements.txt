@@ -4,3 +4,4 @@ django-filter
 django-markdownx
 django-bootstrap4
 django-multiselectfield
+tabulate
