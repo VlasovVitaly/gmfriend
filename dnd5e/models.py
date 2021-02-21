@@ -94,6 +94,12 @@ DAMAGE_TYPES = (
 CONDITIONS = (
     ('Poison', 'Отравление'),
     ('Exhaust', 'Истощение'),
+    ('Deafened', 'Глухота'),
+    ('Blinded', 'Ослепление'),
+    ('Paralyzed', 'Паралич'),
+    ('Charmed', 'Очарование'),
+    ('Petrified', 'Окаменение'),
+    ('Frightened', 'Испруг'),
 )
 
 
@@ -575,7 +581,7 @@ class Feature(models.Model):
     )
     source_id = models.PositiveIntegerField(blank=True, null=True, default=None)
     source = GenericForeignKey('content_type', 'source_id')
-    source_condition = models.SmallIntegerField(verbose_name='Условие получения', blank=True, null=True, default=None)
+    post_action = models.CharField(max_length=32, blank=True, null=True, default=None)
 
     class Meta:
         ordering = ['name']
@@ -591,6 +597,12 @@ class Feature(models.Model):
                 char_feat.save(update_fields=['max_charges'])
         else:
             CharacterFeature.objects.create(character=character, feature=self)
+
+        if self.post_action:
+            from .choices import ALL_CHOICES
+
+            action = ALL_CHOICES[self.post_action]()
+            action.apply(character)
 
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'
@@ -1163,6 +1175,24 @@ class Character(models.Model):
         verbose_name = 'Персонаж'
         verbose_name_plural = 'Персонажи'
 
+    def _apply_class_advantages(self, level):
+        try:
+            klass_advantage = self.klass.level_feats.get(level=level)
+        except ClassLevels.DoesNotExist:
+            return
+
+        for advantage in klass_advantage.advantages.all():
+            advantage.apply_for_character(self)
+
+    def _apply_subclass_advantages(self, level):
+        try:
+            subclass_advantage = self.subclass.level_feats.get(level=level)
+        except ClassLevels.DoesNotExist:
+            return
+
+        for advantage in subclass_advantage.advantages.all():
+            advantage.apply_for_character(self)
+
     def init(self):
         class_saving_trows = self.klass.saving_trows.all()
         abilities = []
@@ -1211,9 +1241,10 @@ class Character(models.Model):
         return Skill.objects.for_character(self)
 
     def level_up(self):
-        klass_level = self.klass.level_feats.get(level=self.level + 1)
-        for advantage in klass_level.advantages.all():
-            advantage.apply_for_character(self)
+        self._apply_class_advantages(self.level + 1)
+
+        if self.subclass:
+            self._apply_subclass_advantages(self.level + 1)
 
         self.level = models.F('level') + 1
         self.save(update_fields=['level'])
@@ -1236,7 +1267,7 @@ class CharacterFeature(models.Model):
     used = models.PositiveSmallIntegerField(blank=True, default=0)
 
     class Meta:
-        ordering = ['character', 'feature']
+        ordering = ['character', 'feature__content_type', 'feature__source_id', 'feature__name']
         default_permissions = ()
         verbose_name = 'Особенность персонажа'
         verbose_name_plural = 'Особенности персонажей'
@@ -1473,7 +1504,6 @@ class MonsterTrait(models.Model):
         'Monster', on_delete=models.CASCADE, related_name='traits', related_query_name='trait'
     )
     name = models.CharField(max_length=64, db_index=True)
-    orig_name = models.CharField(max_length=64, db_index=True)
     description = models.TextField()
     order = models.PositiveSmallIntegerField(default=1)
 
@@ -1499,7 +1529,6 @@ class MonsterAction(models.Model):
         'Monster', on_delete=models.CASCADE, related_name='actions', related_query_name='action'
     )
     name = models.CharField(max_length=64, db_index=True)
-    orig_name = models.CharField(max_length=64, blank=True)
     order = models.PositiveSmallIntegerField(default=1)
     description = models.TextField()
 
