@@ -1,5 +1,5 @@
 from django.apps import apps
-from .forms import SelectToolProficiency, SelectFeatureForm, SelectSubclassForm
+from .forms import SelectToolProficiency, SelectFeatureForm, SelectSubclassForm, SelectAbilityAdvanceForm
 
 dnd5e_app = apps.app_configs['dnd5e']
 
@@ -56,10 +56,20 @@ class CLASS_ROG_001:
     def apply_data(self, data):
         self.character.subclass = data['subclass']
         self.character.save(update_fields=['subclass'])
-        print("Apply subclass rugue", self.character.level)
+
+
+class CHAR_ADVANCE_001:
+    form_class = SelectAbilityAdvanceForm
+
+    def get_form(self, request, character):
+        return self.form_class(data=request.POST or None)
+
+    def apply_data(self, data):
+        print("apply", data)
 
 
 ALL_CHOICES = {
+    'CHAR_ADVANCE_001': CHAR_ADVANCE_001,
     'PROF_TOOLS_001': PROF_TOOLS_001,
     'PROF_TOOLS_002': PROF_TOOLS_002,
     'PROF_TOOLS_003': PROF_TOOLS_003,

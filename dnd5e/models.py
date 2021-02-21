@@ -1,5 +1,6 @@
 import random
 from math import floor
+from collections import defaultdict
 
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
@@ -570,7 +571,7 @@ class Feature(models.Model):
 
     content_type = models.ForeignKey(
         ContentType, on_delete=models.CASCADE, related_name='+', blank=True, null=True, default=None,
-        limit_choices_to={'app_label': 'dnd5e', 'model__in': ['class', 'race', 'subrace', 'background']}
+        limit_choices_to={'app_label': 'dnd5e', 'model__in': ['class', 'subclass', 'race', 'subrace', 'background']}
     )
     source_id = models.PositiveIntegerField(blank=True, null=True, default=None)
     source = GenericForeignKey('content_type', 'source_id')
@@ -621,6 +622,7 @@ class AdvancmentChoice(models.Model):
     name = models.CharField(max_length=64, blank=True, null=True, default=None)
     code = models.CharField(max_length=24, verbose_name='Код')
     text = models.TextField(verbose_name='Отображаемый текст')
+    oneshoot = models.BooleanField(default=False, verbose_name='Одноразовый выбор')
 
     class Meta:
         ordering = ['code']
@@ -635,9 +637,7 @@ class AdvancmentChoice(models.Model):
         return f'[{self.__class__.__name__}]: {self.id}'
 
     def __str__(self):
-        if self.name:
-            return f'[{self.code}] {self.name}'
-        return f'{self.code}'
+        return self.name
 
 
 class Race(models.Model):
@@ -731,7 +731,9 @@ class Subclass(models.Model):
     book = models.ForeignKey(
         RuleBook, on_delete=models.SET_NULL, verbose_name='Книга правил', null=True, default=None
     )
-    level_feats = GenericRelation('ClassLevels', object_id_field='class_object_id')
+    level_feats = GenericRelation(
+        'ClassLevels', object_id_field='class_object_id', content_type_field='class_content_type'
+    )
 
     class Meta:
         default_permissions = ()
@@ -745,6 +747,33 @@ class Subclass(models.Model):
         return f'{self.parent}: {self.name}'
 
 
+class ClassLevelTableManager(models.Manager):
+    def for_subclass(self, subclass, with_features=False):
+        subclass_ct = ContentType.objects.get_for_model(subclass.__class__)
+        class_ct = ContentType.objects.get_for_model(subclass.parent.__class__)
+
+        class_qs = self.get_queryset().filter(class_content_type=class_ct, class_object_id=subclass.parent.id)
+        subclass_qs = self.get_queryset().filter(class_content_type=subclass_ct, class_object_id=subclass.id)
+
+        ret_data = {'rows': list(), 'features': list()}
+
+        combined_level_features = defaultdict(list)
+        for level_feature in class_qs.order_by().union(subclass_qs.order_by()).order_by():
+            for advance in level_feature.advantages.all():
+                combined_level_features[level_feature.level].append(str(advance.advance))
+                if with_features and advance.is_feature:
+                    ret_data['features'].append(advance.advance)
+
+        for level in class_qs:
+            row_data = {
+                'level': level.level, 'klass': str(subclass), 'proficiency': f'{level.proficiency_bonus:+}',
+                'features': ', '.join(combined_level_features[level.level])
+            }
+            ret_data['rows'].append(row_data)
+
+        return ret_data
+
+
 class ClassLevels(models.Model):
     class_content_type = models.ForeignKey(
         ContentType, on_delete=models.CASCADE,
@@ -754,6 +783,8 @@ class ClassLevels(models.Model):
     klass = GenericForeignKey('class_content_type', 'class_object_id')
     level = models.PositiveSmallIntegerField(verbose_name='Уровень')
     proficiency_bonus = models.PositiveSmallIntegerField(verbose_name='Бонус мастерства')
+
+    tables = ClassLevelTableManager()
 
     class Meta:
         ordering = ['class_content_type', 'class_object_id', 'level']
@@ -784,6 +815,10 @@ class ClassLevelAdvance(models.Model):
         default_permissions = ()
         verbose_name = 'Преимущество уровня'
         verbose_name_plural = 'Преимущества уровней'
+
+    @property
+    def is_feature(self):
+        return isinstance(self.advance, Feature)
 
     def apply_for_character(self, character):
         self.advance.apply_for_character(character, reason=self.class_level.klass)

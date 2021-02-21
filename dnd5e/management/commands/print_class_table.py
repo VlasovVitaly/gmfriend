@@ -2,36 +2,55 @@ from django.core.management.base import BaseCommand, CommandError
 
 from tabulate import tabulate
 
-from dnd5e.models import Class
+from dnd5e.models import Class, Subclass, ClassLevels
 
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('class_id', nargs='?', type=int, help='Class ID')
+        parser.add_argument('subclass_id', nargs='?', type=int, help='Subclass ID')
 
-    def print_table(self, class_id):
+    def print_table(self, subclass_id, with_features=False):
         try:
-            klass = Class.objects.get(id=class_id)
-        except Class.DoesNotExist:
-            raise CommandError(f'Can not find class with id {class_id}')
+            subclass = Subclass.objects.get(id=1)
+        except Subclass.DoesNotExist:
+            raise CommandError('Can not find subclass with id ')
 
-        to_print = []
-        for lvl_feat in klass.level_feats.all():
-            to_add = [lvl_feat.level, str(lvl_feat.klass), f'{lvl_feat.proficiency_bonus:+}']
-            to_add.append(', '.join([str(adv.advance) for adv in lvl_feat.advantages.all()]))
-            to_print.append(to_add)
+        subclass_levels_data = ClassLevels.tables.for_subclass(subclass, with_features)
+        tabled_data = tabulate(
+            subclass_levels_data['rows'], tablefmt='simple',
+            headers={'level': 'Ур.', 'klass': 'Класс', 'proficiency': 'БМ', 'features': 'Умения'},
+        )
 
-        self.stdout.write('\n')
-        self.stdout.write(tabulate(to_print, headers=['Ур', 'Класс', 'БМ', 'Умения'], tablefmt='simple'))
-        self.stdout.write('\n')
+        self.stdout.write(f'\n{tabled_data}\n\n')
 
-    def pirnt_all_classes(self):
+        if with_features:
+            self.print_features(subclass_levels_data['features'])
+
+    def print_features(self, features):
+        for feat in features:
+            self.stdout.write('-' * 80)
+            self.stdout.write(f'{feat.name.upper()}')
+            self.stdout.write(feat.description)
+            self.stdout.write('\n')
+
+    def print_all_classes(self):
         values = Class.objects.values_list('id', 'name', 'orig_name')
         self.stdout.write(tabulate(values, headers=['ID', 'Название', 'Ориг. название'], tablefmt='pretty'))
 
+    def print_all_subclasses(self, class_id):
+        values = Subclass.objects.filter(parent_id=class_id).values_list('id', 'name')
+        self.stdout.write(tabulate(values, headers=['ID', 'Название'], tablefmt='pretty'))
+
     def handle(self, *args, **options):
         class_id = options.get('class_id')
+        subclass_id = options.get('subclass_id')
+        with_features = options['verbosity'] >= 2
+
         if class_id:
-            self.print_table(class_id)
+            if subclass_id:
+                self.print_table(subclass_id, with_features)
+            else:
+                self.print_all_subclasses(class_id)
         else:
-            self.pirnt_all_classes()
+            self.print_all_classes()
