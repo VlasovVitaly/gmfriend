@@ -6,11 +6,13 @@
 
 {% block styles %}
     {{ block.super }}
+    {{ form.media.css }}
     <link rel="stylesheet" href="{% static 'css/bootstrap-select.min.css' %}">
 {% endblock styles %}
 
 {% block javascript %}
     {{ block.super }}
+    {{ form.media.js }}
     <script src="{% static 'js/bootstrap-select.min.js' %}"></script>
 {% endblock javascript %}
 
@@ -26,6 +28,9 @@
 {% endblock before-content %}
 
 {% block content %}
+    {% if template %}
+        {% include "dnd5e/adventures/include/choices/advance_001.html" %}
+    {% else %}
     <div class="row">
         <div class="col">
             <div class="card">
@@ -40,4 +45,5 @@
             </div>
         </div>
     </div>
+    {% endif %}
 {% endblock content %}

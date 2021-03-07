@@ -1,6 +1,7 @@
 from django import forms
 
-from .models import Character, CharacterAbilities, CharacterBackground, Skill, Language, Tool, Feature, Subclass, Ability
+from .widgets import AbilityListBoxSelect
+from .models import Character, CharacterAbilities, CharacterBackground, Skill, Language, Tool, Feature, Subclass
 
 
 class CharacterForm(forms.ModelForm):
@@ -138,4 +139,9 @@ class SelectSubclassForm(forms.Form):
 
 
 class SelectAbilityAdvanceForm(forms.Form):
-    abilities = forms.ModelMultipleChoiceField(queryset=Ability.objects.all())
+    abilities = forms.ModelMultipleChoiceField(queryset=CharacterAbilities.objects.none(), widget=AbilityListBoxSelect)
+
+    def __init__(self, *args, queryset, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['abilities'].queryset = queryset

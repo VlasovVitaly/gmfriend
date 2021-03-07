@@ -61,16 +61,24 @@ class CLASS_ROG_001:
 
 
 class CHAR_ADVANCE_001:
+    template = 'dnd5e/adventures/include/choices/advance_001.html'
     form_class = SelectAbilityAdvanceForm
 
     def __init__(self, character):
         self.character = character
 
     def get_form(self, request, character):
-        return self.form_class(data=request.POST or None)
+        return self.form_class(
+            data=request.POST or None, files=request.FILES or None,
+            queryset=dnd5e_app.get_model('characterabilities').objects.filter(character=character)
+        )
 
     def apply_data(self, data):
-        print("apply", data)
+        abilities = data['abilities']
+        if len(abilities) == 2:
+            abilities.increase_value(1)
+        elif len(abilities) == 1:
+            abilities.increase_value(2)
 
 
 class POST_FEAT_001:

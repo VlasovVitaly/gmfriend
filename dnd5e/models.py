@@ -1304,6 +1304,11 @@ class CharacterAdvancmentChoice(models.Model):
         return f'Выбор персонажа #{self.character_id}'
 
 
+class CharacterAbilitiesQueryset(models.QuerySet):
+    def increase_value(self, value):
+        self.update(value=models.F('value') + value )
+
+
 class CharacterAbilities(models.Model):
     character = models.ForeignKey(
         Character, on_delete=models.CASCADE, related_name='abilities', related_query_name='ability'
@@ -1313,6 +1318,8 @@ class CharacterAbilities(models.Model):
     saving_trow_proficiency = models.BooleanField(
         verbose_name='Мастерство в спасброске', default=False, editable=False
     )
+
+    objects = CharacterAbilitiesQueryset.as_manager()
 
     class Meta:
         default_permissions = ()

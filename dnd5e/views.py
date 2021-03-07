@@ -1,8 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.http import Http404
+
 
 from .filters import MonsterFilter, SpellFilter
 from .forms import AddCharSkillProficiency, CharacterBackgroundForm, CharacterForm, CharacterStatsFormset, AddCharLanguageFromBackground
@@ -193,10 +194,11 @@ def resolve_char_choices(request, adv_id, char_id):
         choice.selected = True
         choice.save(update_fields=['selected'])
 
-        # TODO return redirect on self
+        return redirect(reverse('dnd5e:adventure:character:detail', kwargs={'adv_id': adventure.id, 'char_id': char.id}))
 
     context = {
-        'adventure': adventure, 'char': char, 'choice': choice, 'form': form
+        'adventure': adventure, 'char': char, 'choice': choice, 'form': form,
+        'template': getattr(selector, 'template', None)
     }
 
     return render(request, 'dnd5e/adventures/char/resolve_choices.html', context)

@@ -1,0 +1,3 @@
+<a href="" class="list-group-item list-group-item-action" data-value="{{ widget.value|stringformat:'s' }}" data-orig-value="{{ widget.value.instance.value }}" {% include "django/forms/widgets/attrs.html" %}>
+    <span class="ability-mod mod-badge bg-light border">{{ widget.value.instance.mod }}</span><span class="ability-val mod-badge bg-light border">{{ widget.value.instance.value }}</span><span>{{ widget.label }}</span>
+</a>
