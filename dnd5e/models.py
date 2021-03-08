@@ -1306,7 +1306,7 @@ class CharacterAdvancmentChoice(models.Model):
 
 class CharacterAbilitiesQueryset(models.QuerySet):
     def increase_value(self, value):
-        self.update(value=models.F('value') + value )
+        self.update(value=models.F('value') + value)
 
 
 class CharacterAbilities(models.Model):

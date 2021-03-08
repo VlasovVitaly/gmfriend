@@ -4,6 +4,11 @@ from .forms import SelectToolProficiency, SelectFeatureForm, SelectSubclassForm,
 dnd5e_app = apps.app_configs['dnd5e']
 
 
+class DummyValidForm:
+    def is_valid():
+        return True
+
+
 class PROF_TOOLS_001:
     form_class = SelectToolProficiency
     queryset = dnd5e_app.get_model('tool').objects.filter(category=15)  # Gamble
@@ -82,6 +87,9 @@ class CHAR_ADVANCE_001:
 
 
 class POST_FEAT_001:
+    def get_form(self, request, character):
+        return DummyValidForm()
+
     def apply(self, character):
         wisdom = character.abilities.get(ability__orig_name='Wisdom')
         wisdom.saving_trow_proficiency = True
