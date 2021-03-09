@@ -1202,7 +1202,9 @@ class Character(models.Model):
         CharacterAbilities.objects.bulk_create(abilities)
 
         # Init Skills
-        Skill.objects.bulk_create(CharacterSkill(character=self, skill=skill) for skill in Skill.objects.all())
+        CharacterSkill.objects.bulk_create(
+            CharacterSkill(character=self, skill=skill) for skill in Skill.objects.all()
+        )
 
         # Backgroung skill proficiency
         self.skills.filter(skill__in=self.background.skills_proficiency.all()).update(proficiency=True)
