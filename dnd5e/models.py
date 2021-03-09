@@ -1201,12 +1201,14 @@ class Character(models.Model):
             abilities.append(to_add)
         CharacterAbilities.objects.bulk_create(abilities)
 
-        # Skill proficiency
-        self.skills_proficiency.set(self.background.skills_proficiency.all())
+        # Init Skills
+        Skill.objects.bulk_create(CharacterSkill(character=self, skill=skill) for skill in Skill.objects.all())
 
-        # Languages
-        langs = self.race.languages.all()
-        self.languages.set(langs)
+        # Backgroung skill proficiency
+        self.skills.filter(skill__in=self.background.skills_proficiency.all()).update(proficiency=True)
+
+        # Init Languages
+        self.languages.set(self.race.languages.all())
 
         # Features
         features = self.race.features.order_by().union(self.background.features.order_by())
@@ -1340,7 +1342,7 @@ class CharacterAbilities(models.Model):
         return f'[{self.__class__.__name__}]: {self.id}'
 
 
-class CharacterSkills(models.Model):
+class CharacterSkill(models.Model):
     character = models.ForeignKey(
         Character, on_delete=models.CASCADE, related_name='skills', related_query_name='skill'
     )
