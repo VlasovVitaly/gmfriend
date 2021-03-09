@@ -1160,10 +1160,6 @@ class Character(models.Model):
     )
     dead = models.BooleanField(verbose_name='Мертв', default=False, editable=False)
 
-    skills_proficiency = models.ManyToManyField(
-        'Skill', related_name='char_proficiencies', related_query_name='char_proficiency',
-        verbose_name='Мастерство в навыках'
-    )
     languages = models.ManyToManyField('Language', related_name='+', verbose_name='Владение языками', editable=False)
     tools_proficiency = models.ManyToManyField(
         Tool, related_name='+', verbose_name='Владение инструментами', editable=False
@@ -1339,6 +1335,26 @@ class CharacterAbilities(models.Model):
 
     def __str__(self):
         return f'{self.ability}'
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+
+
+class CharacterSkills(models.Model):
+    character = models.ForeignKey(
+        Character, on_delete=models.CASCADE, related_name='skills', related_query_name='skill'
+    )
+    skill = models.ForeignKey('Skill', on_delete=models.PROTECT, related_name='+')
+    proficiency = models.BooleanField(default=False)
+    competence = models.BooleanField(default=False)
+
+    class Meta:
+        default_permissions = ()
+        verbose_name = 'Навык персонажа'
+        verbose_name_plural = 'Навыки персонажа'
+
+    def __str__(self):
+        return f'{self.skill}'
 
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'
