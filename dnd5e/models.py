@@ -1344,6 +1344,22 @@ class CharacterAbilities(models.Model):
         return f'[{self.__class__.__name__}]: {self.id}'
 
 
+class CharacterSkillQueryset(models.QuerySet):
+    def annotate_mod(self):
+        abilities_queryset = CharacterAbilities.objects.filter(
+            character_id=models.OuterRef('character_id'), ability_id=models.OuterRef('skill__ability_id')
+        )
+        mod_expression = models.functions.Floor((models.F('raw_value') - 10) / 2.0)
+        return self.annotate(
+            raw_value=models.Subquery(abilities_queryset.values('value')[:1], output_field=models.SmallIntegerField()),
+            mod=models.Case(
+                models.When(proficiency=True, then=mod_expression + models.F('character__proficiency')),
+                default=mod_expression,
+                output_field=models.SmallIntegerField()
+            ),
+        )
+
+
 class CharacterSkill(models.Model):
     character = models.ForeignKey(
         Character, on_delete=models.CASCADE, related_name='skills', related_query_name='skill'
@@ -1351,6 +1367,8 @@ class CharacterSkill(models.Model):
     skill = models.ForeignKey('Skill', on_delete=models.PROTECT, related_name='+')
     proficiency = models.BooleanField(default=False)
     competence = models.BooleanField(default=False)
+
+    objects = CharacterSkillQueryset.as_manager()
 
     class Meta:
         default_permissions = ()
