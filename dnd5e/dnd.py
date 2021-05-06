@@ -1,3 +1,6 @@
+from math import floor
+
+
 PROFICIENCY_BONUS = {
     1: 2, 2: 2, 3: 2, 4: 2,
     5: 3, 6: 3, 7: 3, 8: 3,
@@ -5,3 +8,7 @@ PROFICIENCY_BONUS = {
     13: 5, 14: 5, 15: 5, 16: 5,
     17: 6, 18: 6, 19: 6, 20: 6
 }
+
+
+def dnd_mod(num):
+    return floor((num - 10) / 2)

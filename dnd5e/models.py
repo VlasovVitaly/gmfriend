@@ -1,5 +1,4 @@
 import random
-from math import floor
 from collections import defaultdict
 
 from django.contrib.auth.models import User
@@ -104,10 +103,6 @@ CONDITIONS = (
     ('Petrified', 'Окаменение'),
     ('Frightened', 'Испруг'),
 )
-
-
-def dnd_mod(num):
-    return floor((num - 10) / 2)
 
 
 class Coins:
@@ -1320,7 +1315,7 @@ class CharacterAbilities(models.Model):
 
     @property
     def mod(self):
-        return dnd_mod(self.value)
+        return dnd.dnd_mod(self.value)
 
     @property
     def saving_trow_mod(self):
@@ -1700,7 +1695,7 @@ class AdventureMonster(models.Model):
 
     @property
     def initiative_roll(self):
-        return random.randint(1, 20) + dnd_mod(self.monster.dexterity)
+        return random.randint(1, 20) + dnd.dnd_mod(self.monster.dexterity)
 
     def __str__(self):
         if self.name:
