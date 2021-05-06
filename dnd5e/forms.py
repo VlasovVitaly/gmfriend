@@ -1,7 +1,7 @@
 from django import forms
 
 from .widgets import AbilityListBoxSelect
-from .models import Character, CharacterAbilities, CharacterBackground, Skill, Language, Tool, Feature, Subclass
+from .models import Character, CharacterAbilities, CharacterBackground, Language, Tool, Feature, Subclass, CharacterSkill
 
 
 class CharacterForm(forms.ModelForm):
@@ -59,7 +59,8 @@ class CharacterBackgroundForm(forms.ModelForm):
 
 
 class AddCharSkillProficiency(forms.Form):
-    skills = forms.ModelMultipleChoiceField(queryset=Skill.objects.none())
+    # skills = forms.ModelMultipleChoiceField(queryset=Skill.objects.none())
+    skills = forms.ModelMultipleChoiceField(queryset=CharacterSkill.objects.none())
 
     def __init__(self, *args, skills, klass_skills_limit, **kwargs):
         super().__init__(*args, **kwargs)

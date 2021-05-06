@@ -30,8 +30,8 @@ class Command(BaseCommand):
             self.stdout.write(f' {CHECK_SYM if prof else " "}  {str(ability):18} ->  {ability.saving_trow_mod:+2d}')
 
         self.stdout.write('\nНавыки:')
-        for skill in char.get_skills().order_by('name'):
-            self.stdout.write(f' {CHECK_SYM if skill.has_proficiency else " "}  {str(skill):18} ->  {skill.mod:+2d}')
+        for skill in char.skills.all().annotate_mod():
+            self.stdout.write(f' {CHECK_SYM if skill.proficiency else " "}  {str(skill):18} ->  {skill.mod:+2d}')
 
     def handle(self, *args, **options):
         char_id = options['char_id'].pop()

@@ -14,6 +14,9 @@ from markdownx.utils import markdownify
 from multiselectfield import MultiSelectField
 
 
+from dnd5e import dnd
+
+
 GENDER_CHOICES = (
     (1, 'Муж.'),
     (2, 'Жен.'),
@@ -778,7 +781,7 @@ class ClassLevelTableManager(models.Manager):
 
         for level in class_qs:
             row_data = {
-                'level': level.level, 'klass': str(subclass), 'proficiency': f'{level.proficiency_bonus:+}',
+                'level': level.level, 'klass': str(subclass), 'proficiency': f'{dnd.PROFICIENCY_BONUS[level.level]:+}',
                 'features': ', '.join(combined_level_features[level.level])
             }
             ret_data['rows'].append(row_data)
@@ -794,7 +797,6 @@ class ClassLevels(models.Model):
     class_object_id = models.PositiveIntegerField()
     klass = GenericForeignKey('class_content_type', 'class_object_id')
     level = models.PositiveSmallIntegerField(verbose_name='Уровень')
-    proficiency_bonus = models.PositiveSmallIntegerField(verbose_name='Бонус мастерства')
 
     tables = ClassLevelTableManager()
 
@@ -1230,16 +1232,6 @@ class Character(models.Model):
         for choice in self.background.choices.all():
             CharacterAdvancmentChoice.objects.create(character=self, choice=choice, reason=self.background)
 
-    def get_skills_proficiencies(self):
-        return self.skills_proficiency.annotate(
-            from_background=models.Exists(
-                self.background.skills_proficiency.only('id').filter(id=models.OuterRef('id'))
-            )
-        )
-
-    def get_skills(self):
-        return Skill.objects.for_character(self)
-
     def level_up(self):
         self._apply_class_advantages(self.level + 1)
 
@@ -1359,6 +1351,18 @@ class CharacterSkillQueryset(models.QuerySet):
             ),
         )
 
+    def annotate_from_background(self, background):
+        return self.annotate(
+            from_background=models.Exists(
+                background.skills_proficiency.only('id').filter(id=models.OuterRef('skill_id'))
+            )
+        )
+
+
+class CharacterSkillManager(models.Manager):
+    def get_queryset(self):
+        return CharacterSkillQueryset(self.model, using=self._db, hints=self._hints).select_related('skill')
+
 
 class CharacterSkill(models.Model):
     character = models.ForeignKey(
@@ -1368,7 +1372,7 @@ class CharacterSkill(models.Model):
     proficiency = models.BooleanField(default=False)
     competence = models.BooleanField(default=False)
 
-    objects = CharacterSkillQueryset.as_manager()
+    objects = CharacterSkillManager()
 
     class Meta:
         default_permissions = ()
@@ -1483,26 +1487,6 @@ class RacialSense(models.Model):
         verbose_name_plural = 'Расовые чувства'
 
 
-class SkillManager(models.Manager):
-    def for_character(self, char):
-        mod_expression = models.functions.Floor((models.F('raw_value') - 10) / 2.0)
-
-        return self.get_queryset().select_related('ability').annotate(
-            has_proficiency=models.Exists(char.skills_proficiency.only('id').filter(id=models.OuterRef('id'))),
-            raw_value=models.Subquery(
-                char.abilities.filter(ability_id=models.OuterRef('ability_id')).values('value')[:1],
-                output_field=models.SmallIntegerField()
-            ),
-            mod=models.Case(
-                models.When(has_proficiency=True, then=mod_expression + char.proficiency),
-                default=mod_expression,
-                output_field=models.SmallIntegerField()
-            ),
-            # val1=models.F('raw_value') - 10,
-            # val2=models.functions.Floor(models.F('val1') / 2.0)
-        )
-
-
 class Skill(models.Model):
     name = models.CharField(max_length=64, db_index=True, unique=True)
     ability = models.ForeignKey(
@@ -1511,8 +1495,6 @@ class Skill(models.Model):
     )
     orig_name = models.CharField(max_length=64, db_index=True, unique=True)
     description = models.TextField()
-
-    objects = SkillManager()
 
     class Meta:
         ordering = ['ability__name', 'name']

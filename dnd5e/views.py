@@ -8,7 +8,7 @@ from django.http import Http404
 from .filters import MonsterFilter, SpellFilter
 from .forms import AddCharSkillProficiency, CharacterBackgroundForm, CharacterForm, CharacterStatsFormset, AddCharLanguageFromBackground
 from .models import (
-    NPC, Adventure, AdventureMonster, Character, CharacterAbilities, Monster, Place, Skill, Spell, Stage, Zone, Language
+    NPC, Adventure, AdventureMonster, Character, CharacterAbilities, Monster, Place, Spell, Stage, Zone, Language
 )
 from .choices import ALL_CHOICES
 
@@ -158,21 +158,22 @@ def set_skills_proficiency(request, adv_id, char_id):
     char = get_object_or_404(Character, id=char_id)
     adventure = get_object_or_404(Adventure, id=adv_id)
 
-    background_skills_ids = char.background.skills_proficiency.values_list('id', flat=True)
+    char_skills = char.skills.all().annotate_from_background(char.background)
+
     form = AddCharSkillProficiency(
         request.POST or None,
-        skills=char.klass.skills_proficiency.exclude(id__in=background_skills_ids),
+        skills=char_skills.exclude(from_background=True),
         klass_skills_limit=char.klass.skill_proficiency_limit,
-        initial={'skills': char.skills_proficiency.exclude(id__in=background_skills_ids)},
+        initial={'skills': char_skills.exclude(from_background=True).filter(proficiency=True)}
     )
 
     if form.is_valid():
         with transaction.atomic():
-            to_set = set(form.cleaned_data['skills'].values_list('id', flat=True)) | set(background_skills_ids)
-            char.skills_proficiency.set(Skill.objects.filter(id__in=to_set))
+            char_skills.exclude(from_background=True).update(proficiency=False)
+            form.cleaned_data['skills'].update(proficiency=True)
 
     context = {
-        'char': char, 'adventure': adventure, 'form': form, 'current': char.get_skills_proficiencies()
+        'char': char, 'adventure': adventure, 'form': form, 'current': char_skills.filter(proficiency=True)
     }
 
     return render(request, 'dnd5e/adventures/char/set_skills.html', context)

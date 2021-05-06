@@ -37,10 +37,10 @@
                 <ul class="list-group">
                 {% for skill in current %}
                     <li class="list-group-item bg-light">
-                        <span>{{ skill }}</span>
                         {% if skill.from_background %}
                             <span class="badge badge-primary"> {{ char.background }}</span>
                         {% endif %}
+                        <span>{{ skill }}</span>
                     </li>
                 {% endfor %}
                 </ul>
