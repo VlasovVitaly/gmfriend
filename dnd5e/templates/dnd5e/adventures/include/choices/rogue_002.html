@@ -1,0 +1,26 @@
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">{{ choice.reason }}: {{ choice.choice.text }}</div>
+            <div class="card-body">
+                <form id="competence-selection-form" action="" method="POST">
+                    {% csrf_token %}
+                    <div id='competence-list-item' class="list-group-flush">
+                        {% for skill in form.skills %}
+                        <a href="" class="list-group-item list-group-item-action" data-value="{{ skill.data.value }}" data-field-type="skills">
+                            <span>{{ skill.data.label }}</span>
+                        </a>
+                        {% endfor %}
+                        {% for tool in form.tool %}
+                        <a href="" class="list-group-item list-group-item-action" data-value="{{ tool.data.value }}" data-field-type="tools">
+                            <span>{{ tool.data.label }}</span>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    <br>
+                    <button type="submit" class="btn btn-primary">Выбрать</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

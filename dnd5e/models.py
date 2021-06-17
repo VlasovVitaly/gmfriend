@@ -580,6 +580,7 @@ class Feature(models.Model):
     source_id = models.PositiveIntegerField(blank=True, null=True, default=None)
     source = GenericForeignKey('content_type', 'source_id')
     post_action = models.CharField(max_length=32, blank=True, null=True, default=None)
+    level_table = models.CharField(max_length=32, blank=True, null=True, default=None)
 
     class Meta:
         ordering = ['name']
@@ -647,7 +648,7 @@ class AdvancmentChoice(models.Model):
         return f'[{self.__class__.__name__}]: {self.id}'
 
     def __str__(self):
-        return self.name
+        return f'[{self.code}]: {self.name}'
 
 
 class Race(models.Model):
@@ -765,20 +766,28 @@ class ClassLevelTableManager(models.Manager):
         class_qs = self.get_queryset().filter(class_content_type=class_ct, class_object_id=subclass.parent.id)
         subclass_qs = self.get_queryset().filter(class_content_type=subclass_ct, class_object_id=subclass.id)
 
-        ret_data = {'rows': list(), 'features': list()}
+        ret_data = {'rows': list(), 'features': list(), 'extra_columns': list()}
 
         combined_level_features = defaultdict(list)
+        extra_headers_mapping = {}
         for level_feature in class_qs.order_by().union(subclass_qs.order_by()).order_by():
             for advance in level_feature.advantages.all():
                 combined_level_features[level_feature.level].append(str(advance.advance))
-                if with_features and advance.is_feature:
-                    ret_data['features'].append(advance.advance)
+                if advance.is_feature:
+                    if advance.advance.level_table:
+                        ret_data['extra_columns'].append(advance.advance.name)
+                        extra_headers_mapping[advance.advance.name] = getattr(dnd, advance.advance.level_table)
+                    if with_features:
+                        ret_data['features'].append(advance.advance)
 
         for level in class_qs:
             row_data = {
                 'level': level.level, 'klass': str(subclass), 'proficiency': f'{dnd.PROFICIENCY_BONUS[level.level]:+}',
                 'features': ', '.join(combined_level_features[level.level])
             }
+            for name, table in extra_headers_mapping.items():
+                row_data[name] = table[level.level]
+
             ret_data['rows'].append(row_data)
 
         return ret_data
@@ -1158,9 +1167,6 @@ class Character(models.Model):
     dead = models.BooleanField(verbose_name='Мертв', default=False, editable=False)
 
     languages = models.ManyToManyField('Language', related_name='+', verbose_name='Владение языками', editable=False)
-    tools_proficiency = models.ManyToManyField(
-        Tool, related_name='+', verbose_name='Владение инструментами', editable=False
-    )
 
     class Meta:
         ordering = ['name', 'level']
@@ -1221,9 +1227,11 @@ class Character(models.Model):
         # Tools proficiency
         tools = self.background.tools_proficiency.order_by()
         tools = tools.union(self.klass.tools_proficiency.order_by())
-        self.tools_proficiency.set(tools)
+        CharacterToolProficiency.objects.bulk_create(
+            [CharacterToolProficiency(character=self, tool=tool) for tool in tools]
+        )
 
-        # Generate choices
+        # Generate background choices
         for choice in self.background.choices.all():
             CharacterAdvancmentChoice.objects.create(character=self, choice=choice, reason=self.background)
 
@@ -1376,6 +1384,25 @@ class CharacterSkill(models.Model):
 
     def __str__(self):
         return f'{self.skill}'
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+
+
+class CharacterToolProficiency(models.Model):
+    character = models.ForeignKey(
+        Character, on_delete=models.CASCADE, related_name='tools_proficiency', related_query_name='tool'
+    )
+    tool = models.ForeignKey(Tool, on_delete=models.PROTECT, related_name='+')
+    competence = models.BooleanField(default=False)
+
+    class Meta:
+        default_permissions = ()
+        verbose_name = 'Инструменты персонажа'
+        verbose_name_plural = 'Инструменты персонажа'
+
+    def __str__(self):
+        return f'{self.tool}'
 
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'

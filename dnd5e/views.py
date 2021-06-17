@@ -192,8 +192,11 @@ def resolve_char_choices(request, adv_id, char_id):
 
     if form.is_valid():
         selector.apply_data(form.cleaned_data)
-        choice.selected = True
-        choice.save(update_fields=['selected'])
+        if choice.choice.oneshoot:
+            choice.delete()
+        else:
+            choice.selected = True
+            choice.save(update_fields=['selected'])
 
         return redirect(reverse('dnd5e:adventure:character:detail', kwargs={'adv_id': adventure.id, 'char_id': char.id}))
 

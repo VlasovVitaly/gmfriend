@@ -17,9 +17,12 @@ class Command(BaseCommand):
             raise CommandError('Can not find subclass with id ')
 
         subclass_levels_data = ClassLevels.tables.for_subclass(subclass, with_features)
+        headers = {'level': 'Ур.', 'klass': 'Класс', 'proficiency': 'БМ', 'features': 'Умения'}
+        for name in subclass_levels_data['extra_columns']:
+            headers[name] = name
+
         tabled_data = tabulate(
-            subclass_levels_data['rows'], tablefmt='simple',
-            headers={'level': 'Ур.', 'klass': 'Класс', 'proficiency': 'БМ', 'features': 'Умения'},
+            subclass_levels_data['rows'], tablefmt='simple', headers=headers
         )
 
         self.stdout.write(f'\n{tabled_data}\n\n')

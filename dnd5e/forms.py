@@ -1,7 +1,7 @@
 from django import forms
 
 from .widgets import AbilityListBoxSelect
-from .models import Character, CharacterAbilities, CharacterBackground, Language, Tool, Feature, Subclass, CharacterSkill
+from .models import Character, CharacterAbilities, CharacterBackground, CharacterToolProficiency, Language, Tool, Feature, Subclass, CharacterSkill
 
 
 class CharacterForm(forms.ModelForm):
@@ -146,3 +146,35 @@ class SelectAbilityAdvanceForm(forms.Form):
         super().__init__(*args, **kwargs)
 
         self.fields['abilities'].queryset = queryset
+
+
+class SelectCompetenceForm(forms.Form):
+    skills_limit = 2
+    skills = forms.ModelMultipleChoiceField(queryset=CharacterSkill.objects.none())
+    tool = forms.ModelChoiceField(
+        queryset=CharacterToolProficiency.objects.filter(tool__name='Воровские инструменты'), required=False, empty_label=None
+    )
+
+    def __init__(self, *args, queryset, **kwargs):
+        # TODO Filter by character
+        super().__init__(*args, **kwargs)
+
+        self.fields['skills'].queryset = queryset
+
+    def clean_skills(self):
+        skills = self.cleaned_data['skills']
+
+        if skills.count() > self.skills_limit:
+            raise forms.ValidationError(f'Можно выбрать только {self.skills_limit} навыка')
+
+        return skills
+
+    def clean(self):
+        skills_count = self.cleaned_data['skills'].count()
+        tool = self.cleaned_data['tool']
+
+        if tool and skills_count != 1:
+            raise forms.ValidationError('С воровскими инструментами можно выбрать только 1 навык')
+
+        if skills_count == 1 and not tool:
+            raise forms.ValidationError(f'Можно выбрать только {self.skills_limit} навыка')
