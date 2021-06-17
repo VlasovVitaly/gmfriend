@@ -1,4 +1,3 @@
-from dnd5e.models import Character
 from django.apps import apps
 from .forms import SelectToolProficiency, SelectFeatureForm, SelectSubclassForm, SelectAbilityAdvanceForm, SelectCompetenceForm
 

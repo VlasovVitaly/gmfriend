@@ -12,9 +12,7 @@ from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
 from multiselectfield import MultiSelectField
 
-
 from dnd5e import dnd
-
 
 GENDER_CHOICES = (
     (1, 'Муж.'),

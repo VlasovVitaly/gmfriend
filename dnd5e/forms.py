@@ -1,7 +1,10 @@
 from django import forms
 
+from .models import (
+    Character, CharacterAbilities, CharacterBackground, CharacterSkill,
+    CharacterToolProficiency, Feature, Language, Subclass, Tool
+)
 from .widgets import AbilityListBoxSelect
-from .models import Character, CharacterAbilities, CharacterBackground, CharacterToolProficiency, Language, Tool, Feature, Subclass, CharacterSkill
 
 
 class CharacterForm(forms.ModelForm):
