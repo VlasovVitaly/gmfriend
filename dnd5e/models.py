@@ -646,7 +646,7 @@ class AdvancmentChoice(models.Model):
         return f'[{self.__class__.__name__}]: {self.id}'
 
     def __str__(self):
-        return f'[{self.code}]: {self.name}'
+        return self.name
 
 
 class Race(models.Model):
@@ -1346,6 +1346,7 @@ class CharacterSkillQueryset(models.QuerySet):
         return self.annotate(
             raw_value=models.Subquery(abilities_queryset.values('value')[:1], output_field=models.SmallIntegerField()),
             mod=models.Case(
+                models.When(proficiency=True, competence=True, then=mod_expression + models.F('character__proficiency') * 2),
                 models.When(proficiency=True, then=mod_expression + models.F('character__proficiency')),
                 default=mod_expression,
                 output_field=models.SmallIntegerField()
