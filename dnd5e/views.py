@@ -11,7 +11,7 @@ from .forms import (
     CharacterBackgroundForm, CharacterForm, CharacterStatsFormset
 )
 from .models import (
-    NPC, Adventure, AdventureMonster, Character, CharacterAbilities, Language, Monster, Place, Spell, Stage, Zone
+    Class, ClassLevels, NPC, Adventure, AdventureMonster, Character, CharacterAbilities, Language, Monster, Place, Spell, Stage, Subclass, Zone
 )
 
 
@@ -272,31 +272,14 @@ def monsters_list(request):
 
 
 def level_tables(request):
-    bard_table = (
-        (1, '+2', 'Использование заклинаний, Вдохновение барда (d6)', 2, 4, (2, '', '', '', '', '', '', '', '')),
-        (2, '+2', 'Мастер на все руки, Песнь отдыха (d6)', 2, 5, (3, '', '', '', '', '', '', '', '')),
-        (3, '+2', 'Коллегия бардов, Компетентность', 2, 6, (4, 2, '', '', '', '', '', '', '')),
-        (4, '+2', 'Увеличение характеристик', 3, 7, (4, 3, '', '', '', '', '', '', '')),
-        (5, '+3', 'Вдохновение барда (d8), Источник вдохновения', 3, 8, (4, 3, 2, '', '', '', '', '', '')),
-        (6, '+3', 'Контрочарование, Умение коллегии бардов', 3, 9, (4, 3, 3, '', '', '', '', '', '')),
-        (7, '+3', '', 3, 10, (4, 3, 3, 1, '', '', '', '', '')),
-        (8, '+3', 'Увеличение характеристик', 3, 11, (4, 3, 3, 2, '', '', '', '', '')),
-        (9, '+4', 'Песнь отдыха (d8)', 3, 12, (4, 3, 3, 3, 1, '', '', '', '')),
-        (10, '+4', 'Вдохновение барда (d10), Компетентность, Тайны магии', 4, 14, (4, 3, 3, 3, 2, '', '', '', '')),
-        (11, '+4', '', 4, 15, (4, 3, 3, 3, 2, 1, '', '', '')),
-        (12, '+4', 'Увеличение характеристик', 4, 15, (4, 3, 3, 3, 2, 1, '', '', '')),
-        (13, '+5', 'Песнь отдыха (d10)', 4, 16, (4, 3, 3, 3, 2, 1, 1, '', '')),
-        (14, '+5', 'Тайны магии, Умение коллегии бардов', 4, 18, (4, 3, 3, 3, 2, 1, 1, '', '')),
-        (15, '+5', 'Вдохновение барда (d12)', 4, 19, (4, 3, 3, 3, 2, 1, 1, 1, '')),
-        (16, '+5', 'Увеличение характеристик', 4, 19, (4, 3, 3, 3, 2, 1, 1, 1, '')),
-        (17, '+6', 'Песнь отдыха (d12)', 4, 20, (4, 3, 3, 3, 2, 1, 1, 1, 1)),
-        (18, '+6', 'Тайны магии', 4, 22, (4, 3, 3, 3, 3, 1, 1, 1, 1)),
-        (19, '+6', 'Увеличение характеристик', 4, 22, (4, 3, 3, 3, 3, 2, 1, 1, 1)),
-        (20, '+6', 'Превосходное вдохновение', 4, 22, (4, 3, 3, 3, 3, 2, 2, 1, 1)),
-    )
-
-    context = {
-        'bard': bard_table,
-    }
-
+    context = {'klasses': Class.objects.prefetch_related('subclass_set').all()}
     return render(request, 'dnd5e/level_tables.html', context)
+
+
+def level_table_detail(request, subklass_id):
+    subklass = get_object_or_404(Subclass, id=subklass_id)
+
+    context = {'subklass': subklass}
+    context.update(**ClassLevels.tables.for_subclass(subklass))
+
+    return render(request, 'dnd5e/level_table.html', context)

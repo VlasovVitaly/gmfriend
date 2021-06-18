@@ -31,6 +31,7 @@ urlpatterns = [
     path('monsters/', views.monsters_list, name='monsters'),
     path('spells/', views.spells_list, name='spells'),
     path('levels/', views.level_tables, name='levels'),
+    path('levels/<int:subklass_id>', views.level_table_detail, name='level_table'),
     path('adventures/', include(adventure_patterns, namespace='adventure')),
     path('alice/', alice_api, name='alice_api'),
     path('', views.index, name='index'),

@@ -2,12 +2,21 @@
 
 {% block content %}
 <div class="row">
-    <nav>
-    </nav>
-    <div class="col-xs-12">
-        {% include "dnd5e/include/levels_table.html" with data=bard name="Бард" %}
+    {% for klass in klasses %}
+    <div class="col-12">
+        <div class="card mt-4">
+            <div class="card-body">
+                <h1>{{ klass.name }}</h1>
+                <div class="list-group">
+                    {% for subclass in klass.subclass_set.all %}
+                    <a href="{% url 'dnd5e:level_table' subclass.id %}" class="list-group-item list-group-item-action">
+                        <span>{{ subclass.name }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="col-xs-12">
-    </div>
+    {% endfor %}
 </div>
 {% endblock content %}

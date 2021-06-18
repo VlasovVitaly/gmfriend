@@ -12,7 +12,7 @@ class Command(BaseCommand):
 
     def print_table(self, subclass_id, with_features=False):
         try:
-            subclass = Subclass.objects.get(id=1)
+            subclass = Subclass.objects.get(id=subclass_id)
         except Subclass.DoesNotExist:
             raise CommandError('Can not find subclass with id ')
 

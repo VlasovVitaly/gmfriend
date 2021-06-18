@@ -1,0 +1,31 @@
+{% extends "dnd5e/base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="text-center">Таблица уровней для {{ subklass.name }}</h1>
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th>Ур.</th>
+                    <th>БМ</th>
+                    <th>Умения</th>
+                    {% for col in extra_columns %}<th>{{ col }}</th>{% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for level_row in rows %}
+                <tr>
+                    <td>{{ level_row.level }}</td>
+                    <td>{{ level_row.proficiency }}</td>
+                    <td>{{ level_row.features }}</td>
+                    {# TODO extra columns #}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div>{{ extra_columns|pprint }}</div>
+    <div>{{ rows|pprint }}</div>
+</div>
+{% endblock content %}
