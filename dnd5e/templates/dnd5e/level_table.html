@@ -1,16 +1,19 @@
 {% extends "dnd5e/base.html" %}
 
+{% load tables %}
+
 {% block content %}
 <div class="row">
-    <div class="col-12">
-        <h1 class="text-center">Таблица уровней для {{ subklass.name }}</h1>
-        <table class="table table-dark">
+    <div class="col-12 bg-light">
+        <h1 class="text-center">Таблица уровней для {{ subklass }}</h1>
+        <br>
+        <table class="table">
             <thead>
                 <tr>
                     <th>Ур.</th>
                     <th>БМ</th>
+                    {% for col in extra_columns %}<th>{{ col.0 }}</th>{% endfor %}
                     <th>Умения</th>
-                    {% for col in extra_columns %}<th>{{ col }}</th>{% endfor %}
                 </tr>
             </thead>
             <tbody>
@@ -18,14 +21,14 @@
                 <tr>
                     <td>{{ level_row.level }}</td>
                     <td>{{ level_row.proficiency }}</td>
-                    <td>{{ level_row.features }}</td>
-                    {# TODO extra columns #}
+                    {% for col in extra_columns %}<td>{% level_table_extra col.1 level_row.level %}</td>{% endfor %}
+                    <td>{% for advance in level_row.advantages %}<span>{{ advance }} </span>{% endfor %}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-    <div>{{ extra_columns|pprint }}</div>
-    <div>{{ rows|pprint }}</div>
+    {# <div>{{ extra_columns|pprint }}</div>#}
+    {#<div>{{ rows|pprint }}</div>#}
 </div>
 {% endblock content %}

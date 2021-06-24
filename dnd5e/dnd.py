@@ -15,5 +15,10 @@ ROGUE_SNEAK_ATTACK = {
 }
 
 
+ALL_TABLES = {
+    'ROGUE_SNEAK_ATTACK': ROGUE_SNEAK_ATTACK,
+}
+
+
 def dnd_mod(num):
     return floor((num - 10) / 2)

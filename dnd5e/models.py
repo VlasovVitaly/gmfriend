@@ -757,18 +757,45 @@ class Subclass(models.Model):
 
 
 class ClassLevelTableManager(models.Manager):
-    def for_subclass(self, subclass, with_features=False):
+    def _get_subclass_levels(self, subclass):
         subclass_ct = ContentType.objects.get_for_model(subclass.__class__)
         class_ct = ContentType.objects.get_for_model(subclass.parent.__class__)
 
         class_qs = self.get_queryset().filter(class_content_type=class_ct, class_object_id=subclass.parent.id)
         subclass_qs = self.get_queryset().filter(class_content_type=subclass_ct, class_object_id=subclass.id)
 
+        return class_qs.order_by().union(subclass_qs.order_by()).order_by('level')
+
+    def html_table(self, subclass):
+        class_levels = self._get_subclass_levels(subclass)
+        ret_data = {'rows': list(), 'extra_columns': list()}
+
+        for level_feature in class_levels:
+            level_data = {
+                'level': level_feature.level,
+                'proficiency': f'{dnd.PROFICIENCY_BONUS[level_feature.level]:+}',
+                'extra': list(),
+                'advantages': list(),
+            }
+
+            for advance in level_feature.advantages.all():
+                level_data['advantages'].append(advance.advance)
+                if advance.is_feature:
+                    if advance.advance.level_table:
+                        ret_data['extra_columns'].append((advance.advance.name, advance.advance.level_table))
+
+            ret_data['rows'].append(level_data)
+
+        return ret_data
+
+    def for_subclass(self, subclass, with_features=False):
+        class_levels = self._get_subclass_levels(subclass)
+
         ret_data = {'rows': list(), 'features': list(), 'extra_columns': list()}
 
         combined_level_features = defaultdict(list)
         extra_headers_mapping = {}
-        for level_feature in class_qs.order_by().union(subclass_qs.order_by()).order_by():
+        for level_feature in class_levels:
             for advance in level_feature.advantages.all():
                 combined_level_features[level_feature.level].append(str(advance.advance))
                 if advance.is_feature:
@@ -778,7 +805,7 @@ class ClassLevelTableManager(models.Manager):
                     if with_features:
                         ret_data['features'].append(advance.advance)
 
-        for level in class_qs:
+        for level in class_levels:
             row_data = {
                 'level': level.level, 'klass': str(subclass), 'proficiency': f'{dnd.PROFICIENCY_BONUS[level.level]:+}',
                 'features': ', '.join(combined_level_features[level.level])
@@ -829,6 +856,7 @@ class ClassLevelAdvance(models.Model):
 
     class Meta:
         default_permissions = ()
+        ordering = ['class_level__level']
         verbose_name = 'Преимущество уровня'
         verbose_name_plural = 'Преимущества уровней'
 
