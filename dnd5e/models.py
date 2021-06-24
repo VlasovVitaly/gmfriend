@@ -593,7 +593,7 @@ class Feature(models.Model):
                 char_feat.max_charges = models.F('max_charges') + 1
                 char_feat.save(update_fields=['max_charges'])
         else:
-            CharacterFeature.objects.create(character=character, feature=self)
+            _, _ = CharacterFeature.objects.get_or_create(character=character, feature=self)
 
         if self.post_action:
             from .choices import ALL_CHOICES
@@ -772,20 +772,20 @@ class ClassLevelTableManager(models.Manager):
         class_levels = self._get_subclass_levels(subclass)
         ret_data = {'rows': list(), 'extra_columns': list()}
 
+        combined_level_features = defaultdict(list)
         for level_feature in class_levels:
-            level_data = {
-                'level': level_feature.level,
-                'proficiency': f'{dnd.PROFICIENCY_BONUS[level_feature.level]:+}',
-                'extra': list(),
-                'advantages': list(),
-            }
-
             for advance in level_feature.advantages.all():
-                level_data['advantages'].append(advance.advance)
+                combined_level_features[level_feature.level].append(advance.advance)
                 if advance.is_feature:
                     if advance.advance.level_table:
                         ret_data['extra_columns'].append((advance.advance.name, advance.advance.level_table))
 
+        for level in range(1, 21):
+            level_data = {
+                'level': level,
+                'proficiency': f'{dnd.PROFICIENCY_BONUS[level]:+}',
+                'advantages': combined_level_features[level]
+            }
             ret_data['rows'].append(level_data)
 
         return ret_data

@@ -49,6 +49,7 @@ class CLASS_WAR_001:
 
 
 class CLASS_ROG_001:
+    """ Rogue archtype selection """
     queryset = dnd5e_app.get_model('subclass').objects.filter(parent__orig_name='Rogue')
     form_class = SelectSubclassForm
 
@@ -125,6 +126,14 @@ class POST_FEAT_002:
         )
 
 
+class POST_FEAT_003(POST_FEAT_001):
+    """ Убийца """
+    def apply(self, character):
+        char_tools = dnd5e_app.get_model('charactertoolproficiency')
+        for tool in dnd5e_app.get_model('tool').objects.filter(name__in=['Инструменты отравителя', 'Набор для грима']):
+            _, _ = char_tools.objects.get_or_create(character=character, tool=tool)
+
+
 ALL_CHOICES = {
     'CHAR_ADVANCE_001': CHAR_ADVANCE_001,
     'PROF_TOOLS_001': PROF_TOOLS_001,
@@ -135,4 +144,5 @@ ALL_CHOICES = {
     'CLASS_ROG_002': CLASS_ROG_002,
     'POST_FEAT_001': POST_FEAT_001,
     'POST_FEAT_002': POST_FEAT_002,
+    'POST_FEAT_003': POST_FEAT_003,
 }
