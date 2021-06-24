@@ -11,7 +11,8 @@ character_patterns = ([
     path('<int:char_id>/set-stats', views.set_character_stats, name='set_stats'),
     path('<int:char_id>/set-background', views.set_character_background, name='set_background'),
     path('<int:char_id>/set-skills', views.set_skills_proficiency, name='set_skills'),
-    path('<int:char_id>/set-languages', views.set_languages, name='set_languages')
+    path('<int:char_id>/set-languages', views.set_languages, name='set_languages'),
+    path('<int:char_id>/resolve-choices', views.resolve_char_choices, name='resolve_choices')
 ], app_name)
 
 adventure_patterns = ([
@@ -30,6 +31,7 @@ urlpatterns = [
     path('monsters/', views.monsters_list, name='monsters'),
     path('spells/', views.spells_list, name='spells'),
     path('levels/', views.level_tables, name='levels'),
+    path('levels/<int:subklass_id>', views.level_table_detail, name='level_table'),
     path('adventures/', include(adventure_patterns, namespace='adventure')),
     path('alice/', alice_api, name='alice_api'),
     path('', views.index, name='index'),

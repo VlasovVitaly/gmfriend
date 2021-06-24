@@ -1,5 +1,5 @@
 import random
-from math import floor
+from collections import defaultdict
 
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
@@ -11,6 +11,8 @@ from django.utils.safestring import mark_safe
 from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
 from multiselectfield import MultiSelectField
+
+from dnd5e import dnd
 
 GENDER_CHOICES = (
     (1, 'Муж.'),
@@ -92,11 +94,13 @@ DAMAGE_TYPES = (
 CONDITIONS = (
     ('Poison', 'Отравление'),
     ('Exhaust', 'Истощение'),
+    ('Deafened', 'Глухота'),
+    ('Blinded', 'Ослепление'),
+    ('Paralyzed', 'Паралич'),
+    ('Charmed', 'Очарование'),
+    ('Petrified', 'Окаменение'),
+    ('Frightened', 'Испруг'),
 )
-
-
-def dnd_mod(num):
-    return floor((num - 10) / 2)
 
 
 class Coins:
@@ -284,7 +288,22 @@ class Knowledge(models.Model):
 
 
 class Tool(models.Model):
+    CAT_REGULAR = 0
+    CAT_ARTISANS = 5
+    CAT_MUSICAL = 10
+    CAT_GAMBLE = 15
+    CAT_TRANSPORT = 20
+
+    CATEGORIES = (
+        (CAT_REGULAR, 'Без категории'),
+        (CAT_ARTISANS, 'Инструменты ремеслиников'),
+        (CAT_MUSICAL, 'Музыкальные инструменты'),
+        (CAT_GAMBLE, 'Игровой набор'),
+        (CAT_TRANSPORT, 'Транстпорт'),
+    )
+
     name = models.CharField(max_length=64)
+    category = models.PositiveSmallIntegerField(default=CAT_REGULAR, choices=CATEGORIES)
     cost = CostField(verbose_name='Стоимость')
     description = models.TextField(verbose_name='Описание', blank=True)
 
@@ -536,22 +555,51 @@ class Zone(models.Model):
 
 
 class Feature(models.Model):
+    RECHARGE_CONSTANT = 0
+    RECHARGE_SHORT_REST = 10
+    RECHARGE_LONG_REST = 20
+
+    RECHARGE_CHOICES = (
+        (RECHARGE_CONSTANT, 'Не требуется'),
+        (RECHARGE_SHORT_REST, 'Короткий отдых'),
+        (RECHARGE_LONG_REST, 'Длинный отдых'),
+    )
+
     name = models.CharField(max_length=64, db_index=True, unique=True)
     description = models.TextField()
+    group = models.CharField(max_length=12, verbose_name='Группа умений', blank=True)
+    stackable = models.BooleanField(default=False)
+    rechargeable = models.PositiveSmallIntegerField(choices=RECHARGE_CHOICES, default=RECHARGE_CONSTANT)
 
     content_type = models.ForeignKey(
         ContentType, on_delete=models.CASCADE, related_name='+', blank=True, null=True, default=None,
-        limit_choices_to={'app_label': 'dnd5e', 'model__in': ['class', 'race', 'subrace', 'background']}
+        limit_choices_to={'app_label': 'dnd5e', 'model__in': ['class', 'subclass', 'race', 'subrace', 'background']}
     )
     source_id = models.PositiveIntegerField(blank=True, null=True, default=None)
     source = GenericForeignKey('content_type', 'source_id')
-    source_condition = models.SmallIntegerField(verbose_name='Условие получения', blank=True, null=True, default=None)
+    post_action = models.CharField(max_length=32, blank=True, null=True, default=None)
+    level_table = models.CharField(max_length=32, blank=True, null=True, default=None)
 
     class Meta:
         ordering = ['name']
         default_permissions = ()
         verbose_name = 'Умение'
         verbose_name_plural = 'Умения'
+
+    def apply_for_character(self, character, **kwargs):
+        if self.stackable:
+            char_feat, created = character.features.get_or_create(feature=self, defaults={'max_charges': 1})
+            if not created:
+                char_feat.max_charges = models.F('max_charges') + 1
+                char_feat.save(update_fields=['max_charges'])
+        else:
+            CharacterFeature.objects.create(character=character, feature=self)
+
+        if self.post_action:
+            from .choices import ALL_CHOICES
+
+            action = ALL_CHOICES[self.post_action]()
+            action.apply(character)
 
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'
@@ -577,6 +625,28 @@ class Trap(models.Model):
 
     def __str__(self):
         return f'{self.name}'
+
+
+class AdvancmentChoice(models.Model):
+    name = models.CharField(max_length=64, blank=True, null=True, default=None)
+    code = models.CharField(max_length=24, verbose_name='Код')
+    text = models.TextField(verbose_name='Отображаемый текст')
+    oneshoot = models.BooleanField(default=False, verbose_name='Одноразовый выбор')
+
+    class Meta:
+        ordering = ['code']
+        default_permissions = ()
+        verbose_name = 'Выбор для персонажа'
+        verbose_name_plural = 'Выборы для персонажей'
+
+    def apply_for_character(self, character, reason):
+        CharacterAdvancmentChoice.objects.create(character=character, choice=self, reason=reason)
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+
+    def __str__(self):
+        return self.name
 
 
 class Race(models.Model):
@@ -647,6 +717,9 @@ class Class(models.Model):
     tools_proficiency = models.ManyToManyField(
         Tool, related_name='+', verbose_name='Владение инструментами', blank=True
     )
+    level_feats = GenericRelation(
+        'ClassLevels', object_id_field='class_object_id', content_type_field='class_content_type'
+    )
 
     class Meta:
         ordering = ['name']
@@ -659,6 +732,148 @@ class Class(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Subclass(models.Model):
+    parent = models.ForeignKey(Class, on_delete=models.CASCADE, verbose_name='Родительский класс')
+    name = models.CharField(max_length=64, verbose_name='Название')
+    book = models.ForeignKey(
+        RuleBook, on_delete=models.SET_NULL, verbose_name='Книга правил', null=True, default=None
+    )
+    level_feats = GenericRelation(
+        'ClassLevels', object_id_field='class_object_id', content_type_field='class_content_type'
+    )
+
+    class Meta:
+        default_permissions = ()
+        verbose_name = 'Архетип'
+        verbose_name_plural = 'Архетипы'
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.name}'
+
+    def __str__(self):
+        return f'{self.parent}: {self.name}'
+
+
+class ClassLevelTableManager(models.Manager):
+    def _get_subclass_levels(self, subclass):
+        subclass_ct = ContentType.objects.get_for_model(subclass.__class__)
+        class_ct = ContentType.objects.get_for_model(subclass.parent.__class__)
+
+        class_qs = self.get_queryset().filter(class_content_type=class_ct, class_object_id=subclass.parent.id).prefetch_related('advantages__advance')
+        subclass_qs = self.get_queryset().filter(class_content_type=subclass_ct, class_object_id=subclass.id).prefetch_related('advantages__advance')
+
+        ret = class_qs.order_by().union(subclass_qs.order_by()).order_by('level')
+
+        return ret
+
+    def html_table(self, subclass):
+        class_levels = self._get_subclass_levels(subclass)
+        ret_data = {'rows': list(), 'extra_columns': list()}
+
+        for level_feature in class_levels:
+            level_data = {
+                'level': level_feature.level,
+                'proficiency': f'{dnd.PROFICIENCY_BONUS[level_feature.level]:+}',
+                'extra': list(),
+                'advantages': list(),
+            }
+
+            for advance in level_feature.advantages.all():
+                level_data['advantages'].append(advance.advance)
+                if advance.is_feature:
+                    if advance.advance.level_table:
+                        ret_data['extra_columns'].append((advance.advance.name, advance.advance.level_table))
+
+            ret_data['rows'].append(level_data)
+
+        return ret_data
+
+    def for_subclass(self, subclass, with_features=False):
+        class_levels = self._get_subclass_levels(subclass)
+
+        ret_data = {'rows': list(), 'features': list(), 'extra_columns': list()}
+
+        combined_level_features = defaultdict(list)
+        extra_headers_mapping = {}
+        for level_feature in class_levels:
+            for advance in level_feature.advantages.all():
+                combined_level_features[level_feature.level].append(str(advance.advance))
+                if advance.is_feature:
+                    if advance.advance.level_table:
+                        ret_data['extra_columns'].append(advance.advance.name)
+                        extra_headers_mapping[advance.advance.name] = getattr(dnd, advance.advance.level_table)
+                    if with_features:
+                        ret_data['features'].append(advance.advance)
+
+        for level in class_levels:
+            row_data = {
+                'level': level.level, 'klass': str(subclass), 'proficiency': f'{dnd.PROFICIENCY_BONUS[level.level]:+}',
+                'features': ', '.join(combined_level_features[level.level])
+            }
+            for name, table in extra_headers_mapping.items():
+                row_data[name] = table[level.level]
+
+            ret_data['rows'].append(row_data)
+
+        return ret_data
+
+
+class ClassLevels(models.Model):
+    class_content_type = models.ForeignKey(
+        ContentType, on_delete=models.CASCADE,
+        limit_choices_to={'app_label': 'dnd5e', 'model__in': ['class', 'subclass']}
+    )
+    class_object_id = models.PositiveIntegerField()
+    klass = GenericForeignKey('class_content_type', 'class_object_id')
+    level = models.PositiveSmallIntegerField(verbose_name='Уровень')
+
+    tables = ClassLevelTableManager()
+
+    class Meta:
+        ordering = ['class_content_type', 'class_object_id', 'level']
+        default_permissions = ()
+        verbose_name = 'Таблица уровней'
+        verbose_name_plural = 'Таблицы уровней'
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+
+    def __str__(self):
+        return f'{self.klass} {self.level}'
+
+
+class ClassLevelAdvance(models.Model):
+    class_level = models.ForeignKey(
+        ClassLevels, on_delete=models.CASCADE, verbose_name='Уровень класса',
+        related_name='advantages', related_query_name='advantage'
+    )
+    advance_content_type = models.ForeignKey(
+        ContentType, on_delete=models.CASCADE,
+        limit_choices_to={'app_label': 'dnd5e', 'model__in': ['feature', 'advancmentchoice']}
+    )
+    advance_object_id = models.PositiveIntegerField()
+    advance = GenericForeignKey('advance_content_type', 'advance_object_id')
+
+    class Meta:
+        default_permissions = ()
+        ordering = ['class_level__level']
+        verbose_name = 'Преимущество уровня'
+        verbose_name_plural = 'Преимущества уровней'
+
+    @property
+    def is_feature(self):
+        return isinstance(self.advance, Feature)
+
+    def apply_for_character(self, character):
+        self.advance.apply_for_character(character, reason=self.class_level.klass)
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+
+    def __str__(self):
+        return f'{self.class_level} {self.advance}'
 
 
 class Background(models.Model):
@@ -674,6 +889,9 @@ class Background(models.Model):
 
     tools_proficiency = models.ManyToManyField(
         Tool, related_name='+', verbose_name='Владение инструментами', blank=True
+    )
+    choices = models.ManyToManyField(
+        AdvancmentChoice, related_name='+', verbose_name='Выборы для персонажа', blank=True
     )
 
     class Meta:
@@ -964,8 +1182,10 @@ class Character(models.Model):
         Subrace, on_delete=models.CASCADE, related_name='+', verbose_name='Разновидность расы', blank=True, null=True
     )
     klass = models.ForeignKey(
-        Class, on_delete=models.CASCADE, verbose_name='Класс',
-        related_name='+', related_query_name='+'
+        Class, on_delete=models.CASCADE, verbose_name='Класс', related_name='+'
+    )
+    subclass = models.ForeignKey(
+        Subclass, on_delete=models.CASCADE, verbose_name='Архетип', related_name='+', null=True, default=None
     )
     level = models.PositiveSmallIntegerField(default=1, verbose_name='Уровень')
     proficiency = models.PositiveSmallIntegerField(verbose_name='Мастерство', default=2)
@@ -974,21 +1194,31 @@ class Character(models.Model):
     )
     dead = models.BooleanField(verbose_name='Мертв', default=False, editable=False)
 
-    skills_proficiency = models.ManyToManyField(
-        'Skill', related_name='char_proficiencies', related_query_name='char_proficiency',
-        verbose_name='Мастерство в навыках'
-    )
     languages = models.ManyToManyField('Language', related_name='+', verbose_name='Владение языками', editable=False)
-    features = models.ManyToManyField(Feature, related_name='+', verbose_name='Умения', editable=False)
-    tools_proficiency = models.ManyToManyField(
-        Tool, related_name='+', verbose_name='Владение инструментами', editable=False
-    )
 
     class Meta:
         ordering = ['name', 'level']
         default_permissions = ()
         verbose_name = 'Персонаж'
         verbose_name_plural = 'Персонажи'
+
+    def _apply_class_advantages(self, level):
+        try:
+            klass_advantage = self.klass.level_feats.get(level=level)
+        except ClassLevels.DoesNotExist:
+            return
+
+        for advantage in klass_advantage.advantages.all():
+            advantage.apply_for_character(self)
+
+    def _apply_subclass_advantages(self, level):
+        try:
+            subclass_advantage = self.subclass.level_feats.get(level=level)
+        except ClassLevels.DoesNotExist:
+            return
+
+        for advantage in subclass_advantage.advantages.all():
+            advantage.apply_for_character(self)
 
     def init(self):
         class_saving_trows = self.klass.saving_trows.all()
@@ -1002,40 +1232,104 @@ class Character(models.Model):
             abilities.append(to_add)
         CharacterAbilities.objects.bulk_create(abilities)
 
-        # Skill proficiency
-        self.skills_proficiency.set(self.background.skills_proficiency.all())
+        # Init Skills
+        CharacterSkill.objects.bulk_create(
+            CharacterSkill(character=self, skill=skill) for skill in Skill.objects.all()
+        )
 
-        # Languages
-        langs = self.race.languages.all()
-        self.languages.set(langs)
+        # Backgroung skill proficiency
+        self.skills.filter(skill__in=self.background.skills_proficiency.all()).update(proficiency=True)
+
+        # Init Languages
+        self.languages.set(self.race.languages.all())
 
         # Features
-        feats = self.race.features.order_by().union(self.background.features.order_by())
-        feats = feats.union(self.subrace.features.order_by()) if self.subrace else feats
-        # TODO class features
+        features = self.race.features.order_by().union(self.background.features.order_by())
+        features = features.union(self.subrace.features.order_by()) if self.subrace else features
+        for feat in features:
+            CharacterFeature.objects.create(character=self, feature=feat)
 
-        self.features.set(feats)
+        for advantage in self.klass.level_feats.get(level=self.level).advantages.all():
+            advantage.apply_for_character(self)
 
         # Tools proficiency
         tools = self.background.tools_proficiency.order_by()
         tools = tools.union(self.klass.tools_proficiency.order_by())
-        self.tools_proficiency.set(tools)
-
-    def get_skills_proficiencies(self):
-        return self.skills_proficiency.annotate(
-            from_background=models.Exists(
-                self.background.skills_proficiency.only('id').filter(id=models.OuterRef('id'))
-            )
+        CharacterToolProficiency.objects.bulk_create(
+            [CharacterToolProficiency(character=self, tool=tool) for tool in tools]
         )
 
-    def get_skills(self):
-        return Skill.objects.for_character(self)
+        # Generate background choices
+        for choice in self.background.choices.all():
+            CharacterAdvancmentChoice.objects.create(character=self, choice=choice, reason=self.background)
+
+    def level_up(self):
+        self._apply_class_advantages(self.level + 1)
+
+        if self.subclass:
+            self._apply_subclass_advantages(self.level + 1)
+
+        self.level = models.F('level') + 1
+        self.save(update_fields=['level'])
+
+        self.refresh_from_db()
 
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'
 
     def __str__(self):
         return self.name
+
+
+class CharacterFeature(models.Model):
+    character = models.ForeignKey(
+        Character, on_delete=models.CASCADE, related_name='features', related_query_name='feature'
+    )
+    feature = models.ForeignKey(Feature, on_delete=models.CASCADE, related_name='+')
+    max_charges = models.PositiveSmallIntegerField(null=True, blank=True, default=None)
+    used = models.PositiveSmallIntegerField(blank=True, default=0)
+
+    class Meta:
+        ordering = ['character', 'feature__content_type', 'feature__source_id', 'feature__name']
+        default_permissions = ()
+        verbose_name = 'Особенность персонажа'
+        verbose_name_plural = 'Особенности персонажей'
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+
+    def __str__(self):
+        return f'{self.character}: {self.feature}'
+
+
+class CharacterAdvancmentChoice(models.Model):
+    character = models.ForeignKey(
+        Character, on_delete=models.CASCADE, related_name='choices', related_query_name='choice'
+    )
+    choice = models.ForeignKey(
+        AdvancmentChoice, on_delete=models.CASCADE, related_name='+'
+    )
+    reason_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    reason_object_id = models.PositiveIntegerField()
+    reason = GenericForeignKey('reason_content_type', 'reason_object_id')
+    selected = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['character', 'choice']
+        default_permissions = ()
+        verbose_name = 'Выбор персонажа'
+        verbose_name_plural = 'Выборы персонажа'
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+
+    def __str__(self):
+        return f'Выбор персонажа #{self.character_id}'
+
+
+class CharacterAbilitiesQueryset(models.QuerySet):
+    def increase_value(self, value):
+        self.update(value=models.F('value') + value)
 
 
 class CharacterAbilities(models.Model):
@@ -1048,6 +1342,8 @@ class CharacterAbilities(models.Model):
         verbose_name='Мастерство в спасброске', default=False, editable=False
     )
 
+    objects = CharacterAbilitiesQueryset.as_manager()
+
     class Meta:
         default_permissions = ()
         verbose_name = 'Характеристика персонажа'
@@ -1055,7 +1351,7 @@ class CharacterAbilities(models.Model):
 
     @property
     def mod(self):
-        return dnd_mod(self.value)
+        return dnd.dnd_mod(self.value)
 
     @property
     def saving_trow_mod(self):
@@ -1066,6 +1362,76 @@ class CharacterAbilities(models.Model):
 
     def __str__(self):
         return f'{self.ability}'
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+
+
+class CharacterSkillQueryset(models.QuerySet):
+    def annotate_mod(self):
+        abilities_queryset = CharacterAbilities.objects.filter(
+            character_id=models.OuterRef('character_id'), ability_id=models.OuterRef('skill__ability_id')
+        )
+        mod_expression = models.functions.Floor((models.F('raw_value') - 10) / 2.0)
+        return self.annotate(
+            raw_value=models.Subquery(abilities_queryset.values('value')[:1], output_field=models.SmallIntegerField()),
+            mod=models.Case(
+                models.When(proficiency=True, competence=True, then=mod_expression + models.F('character__proficiency') * 2),
+                models.When(proficiency=True, then=mod_expression + models.F('character__proficiency')),
+                default=mod_expression,
+                output_field=models.SmallIntegerField()
+            ),
+        )
+
+    def annotate_from_background(self, background):
+        return self.annotate(
+            from_background=models.Exists(
+                background.skills_proficiency.only('id').filter(id=models.OuterRef('skill_id'))
+            )
+        )
+
+
+class CharacterSkillManager(models.Manager):
+    def get_queryset(self):
+        return CharacterSkillQueryset(self.model, using=self._db, hints=self._hints).select_related('skill')
+
+
+class CharacterSkill(models.Model):
+    character = models.ForeignKey(
+        Character, on_delete=models.CASCADE, related_name='skills', related_query_name='skill'
+    )
+    skill = models.ForeignKey('Skill', on_delete=models.PROTECT, related_name='+')
+    proficiency = models.BooleanField(default=False)
+    competence = models.BooleanField(default=False)
+
+    objects = CharacterSkillManager()
+
+    class Meta:
+        default_permissions = ()
+        verbose_name = 'Навык персонажа'
+        verbose_name_plural = 'Навыки персонажа'
+
+    def __str__(self):
+        return f'{self.skill}'
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+
+
+class CharacterToolProficiency(models.Model):
+    character = models.ForeignKey(
+        Character, on_delete=models.CASCADE, related_name='tools_proficiency', related_query_name='tool'
+    )
+    tool = models.ForeignKey(Tool, on_delete=models.PROTECT, related_name='+')
+    competence = models.BooleanField(default=False)
+
+    class Meta:
+        default_permissions = ()
+        verbose_name = 'Инструменты персонажа'
+        verbose_name_plural = 'Инструменты персонажа'
+
+    def __str__(self):
+        return f'{self.tool}'
 
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'
@@ -1172,26 +1538,6 @@ class RacialSense(models.Model):
         verbose_name_plural = 'Расовые чувства'
 
 
-class SkillManager(models.Manager):
-    def for_character(self, char):
-        mod_expression = models.functions.Floor((models.F('raw_value') - 10) / 2.0)
-
-        return self.get_queryset().select_related('ability').annotate(
-            has_proficiency=models.Exists(char.skills_proficiency.only('id').filter(id=models.OuterRef('id'))),
-            raw_value=models.Subquery(
-                char.abilities.filter(ability_id=models.OuterRef('ability_id')).values('value')[:1],
-                output_field=models.SmallIntegerField()
-            ),
-            mod=models.Case(
-                models.When(has_proficiency=True, then=mod_expression + char.proficiency),
-                default=mod_expression,
-                output_field=models.SmallIntegerField()
-            ),
-            # val1=models.F('raw_value') - 10,
-            # val2=models.functions.Floor(models.F('val1') / 2.0)
-        )
-
-
 class Skill(models.Model):
     name = models.CharField(max_length=64, db_index=True, unique=True)
     ability = models.ForeignKey(
@@ -1200,8 +1546,6 @@ class Skill(models.Model):
     )
     orig_name = models.CharField(max_length=64, db_index=True, unique=True)
     description = models.TextField()
-
-    objects = SkillManager()
 
     class Meta:
         ordering = ['ability__name', 'name']
@@ -1238,7 +1582,6 @@ class MonsterTrait(models.Model):
         'Monster', on_delete=models.CASCADE, related_name='traits', related_query_name='trait'
     )
     name = models.CharField(max_length=64, db_index=True)
-    orig_name = models.CharField(max_length=64, db_index=True)
     description = models.TextField()
     order = models.PositiveSmallIntegerField(default=1)
 
@@ -1264,7 +1607,6 @@ class MonsterAction(models.Model):
         'Monster', on_delete=models.CASCADE, related_name='actions', related_query_name='action'
     )
     name = models.CharField(max_length=64, db_index=True)
-    orig_name = models.CharField(max_length=64, blank=True)
     order = models.PositiveSmallIntegerField(default=1)
     description = models.TextField()
 
@@ -1409,7 +1751,7 @@ class AdventureMonster(models.Model):
 
     @property
     def initiative_roll(self):
-        return random.randint(1, 20) + dnd_mod(self.monster.dexterity)
+        return random.randint(1, 20) + dnd.dnd_mod(self.monster.dexterity)
 
     def __str__(self):
         if self.name:

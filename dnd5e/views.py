@@ -1,13 +1,17 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
-from django.shortcuts import get_object_or_404, redirect, render
 from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect, render, reverse
 
+from .choices import ALL_CHOICES
 from .filters import MonsterFilter, SpellFilter
-from .forms import AddCharSkillProficiency, CharacterBackgroundForm, CharacterForm, CharacterStatsFormset, AddCharLanguageFromBackground
+from .forms import (
+    AddCharLanguageFromBackground, AddCharSkillProficiency,
+    CharacterBackgroundForm, CharacterForm, CharacterStatsFormset
+)
 from .models import (
-    NPC, Adventure, AdventureMonster, Character, CharacterAbilities, Monster, Place, Skill, Spell, Stage, Zone, Language
+    Class, ClassLevels, NPC, Adventure, AdventureMonster, Character, CharacterAbilities, Language, Monster, Place, Spell, Stage, Subclass, Zone
 )
 
 
@@ -44,8 +48,9 @@ def adventure_detail(request, adv_id):
 def character_detail(request, adv_id, char_id):
     char = get_object_or_404(Character, id=char_id)
     adventure = get_object_or_404(Adventure, id=adv_id)
+    choices = char.choices.filter(selected=False)
 
-    context = {'char': char, 'adventure': adventure}
+    context = {'char': char, 'adventure': adventure, 'choices': choices}
 
     return render(request, 'dnd5e/adventures/char/detail.html', context)
 
@@ -155,24 +160,54 @@ def set_skills_proficiency(request, adv_id, char_id):
     char = get_object_or_404(Character, id=char_id)
     adventure = get_object_or_404(Adventure, id=adv_id)
 
-    background_skills_ids = char.background.skills_proficiency.values_list('id', flat=True)
+    char_skills = char.skills.all().annotate_from_background(char.background)
+
     form = AddCharSkillProficiency(
         request.POST or None,
-        skills=char.klass.skills_proficiency.exclude(id__in=background_skills_ids),
+        skills=char_skills.exclude(from_background=True),
         klass_skills_limit=char.klass.skill_proficiency_limit,
-        initial={'skills': char.skills_proficiency.exclude(id__in=background_skills_ids)},
+        initial={'skills': char_skills.exclude(from_background=True).filter(proficiency=True)}
     )
 
     if form.is_valid():
         with transaction.atomic():
-            to_set = set(form.cleaned_data['skills'].values_list('id', flat=True)) | set(background_skills_ids)
-            char.skills_proficiency.set(Skill.objects.filter(id__in=to_set))
+            char_skills.exclude(from_background=True).update(proficiency=False)
+            form.cleaned_data['skills'].update(proficiency=True)
 
     context = {
-        'char': char, 'adventure': adventure, 'form': form, 'current': char.get_skills_proficiencies()
+        'char': char, 'adventure': adventure, 'form': form, 'current': char_skills.filter(proficiency=True)
     }
 
     return render(request, 'dnd5e/adventures/char/set_skills.html', context)
+
+
+@login_required
+@transaction.atomic()
+def resolve_char_choices(request, adv_id, char_id):
+    adventure = get_object_or_404(Adventure, id=adv_id)
+    char = get_object_or_404(Character, id=char_id, adventure=adventure)
+
+    choice = char.choices.filter(selected=False).first()
+
+    selector = ALL_CHOICES[choice.choice.code](char)
+    form = selector.get_form(request, char)
+
+    if form.is_valid():
+        selector.apply_data(form.cleaned_data)
+        if choice.choice.oneshoot:
+            choice.delete()
+        else:
+            choice.selected = True
+            choice.save(update_fields=['selected'])
+
+        return redirect(reverse('dnd5e:adventure:character:detail', kwargs={'adv_id': adventure.id, 'char_id': char.id}))
+
+    context = {
+        'adventure': adventure, 'char': char, 'choice': choice, 'form': form,
+        'template': getattr(selector, 'template', None)
+    }
+
+    return render(request, 'dnd5e/adventures/char/resolve_choices.html', context)
 
 
 @login_required
@@ -237,31 +272,14 @@ def monsters_list(request):
 
 
 def level_tables(request):
-    bard_table = (
-        (1, '+2', 'Использование заклинаний, Вдохновение барда (d6)', 2, 4, (2, '', '', '', '', '', '', '', '')),
-        (2, '+2', 'Мастер на все руки, Песнь отдыха (d6)', 2, 5, (3, '', '', '', '', '', '', '', '')),
-        (3, '+2', 'Коллегия бардов, Компетентность', 2, 6, (4, 2, '', '', '', '', '', '', '')),
-        (4, '+2', 'Увеличение характеристик', 3, 7, (4, 3, '', '', '', '', '', '', '')),
-        (5, '+3', 'Вдохновение барда (d8), Источник вдохновения', 3, 8, (4, 3, 2, '', '', '', '', '', '')),
-        (6, '+3', 'Контрочарование, Умение коллегии бардов', 3, 9, (4, 3, 3, '', '', '', '', '', '')),
-        (7, '+3', '', 3, 10, (4, 3, 3, 1, '', '', '', '', '')),
-        (8, '+3', 'Увеличение характеристик', 3, 11, (4, 3, 3, 2, '', '', '', '', '')),
-        (9, '+4', 'Песнь отдыха (d8)', 3, 12, (4, 3, 3, 3, 1, '', '', '', '')),
-        (10, '+4', 'Вдохновение барда (d10), Компетентность, Тайны магии', 4, 14, (4, 3, 3, 3, 2, '', '', '', '')),
-        (11, '+4', '', 4, 15, (4, 3, 3, 3, 2, 1, '', '', '')),
-        (12, '+4', 'Увеличение характеристик', 4, 15, (4, 3, 3, 3, 2, 1, '', '', '')),
-        (13, '+5', 'Песнь отдыха (d10)', 4, 16, (4, 3, 3, 3, 2, 1, 1, '', '')),
-        (14, '+5', 'Тайны магии, Умение коллегии бардов', 4, 18, (4, 3, 3, 3, 2, 1, 1, '', '')),
-        (15, '+5', 'Вдохновение барда (d12)', 4, 19, (4, 3, 3, 3, 2, 1, 1, 1, '')),
-        (16, '+5', 'Увеличение характеристик', 4, 19, (4, 3, 3, 3, 2, 1, 1, 1, '')),
-        (17, '+6', 'Песнь отдыха (d12)', 4, 20, (4, 3, 3, 3, 2, 1, 1, 1, 1)),
-        (18, '+6', 'Тайны магии', 4, 22, (4, 3, 3, 3, 3, 1, 1, 1, 1)),
-        (19, '+6', 'Увеличение характеристик', 4, 22, (4, 3, 3, 3, 3, 2, 1, 1, 1)),
-        (20, '+6', 'Превосходное вдохновение', 4, 22, (4, 3, 3, 3, 3, 2, 2, 1, 1)),
-    )
-
-    context = {
-        'bard': bard_table,
-    }
-
+    context = {'klasses': Class.objects.prefetch_related('subclass_set').all()}
     return render(request, 'dnd5e/level_tables.html', context)
+
+
+def level_table_detail(request, subklass_id):
+    subklass = get_object_or_404(Subclass.objects.select_related('parent'), id=subklass_id)
+
+    context = {'subklass': subklass}
+    context.update(**ClassLevels.tables.html_table(subklass))
+
+    return render(request, 'dnd5e/level_table.html', context)

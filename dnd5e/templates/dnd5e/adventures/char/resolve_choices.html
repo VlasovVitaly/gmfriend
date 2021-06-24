@@ -1,0 +1,102 @@
+{% extends "dnd5e/base.html" %}
+
+{% load static bootstrap4 %}
+
+{% block title %}Выбор для {{ char }}{% endblock title %}
+
+{% block styles %}
+    {{ block.super }}
+    {{ form.media.css }}
+    <link rel="stylesheet" href="{% static 'css/bootstrap-select.min.css' %}">
+{% endblock styles %}
+
+{% block javascript %}
+    {{ block.super }}
+    {{ form.media.js }}
+    <script src="{% static 'js/bootstrap-select.min.js' %}"></script>
+<script>
+    "use strict";
+
+    jQuery(function () {
+        const max_selection_limit = 2;
+        const root = jQuery('#competence-list-item');
+
+        function init_list_item (list_item) {
+            list_item.data('skills', new Set());
+            list_item.data('tools', new Set());
+        }
+
+        function form_on_sunmit(event) {
+            event.preventDefault();
+
+            let form_data = {
+                'skills': Array.from(event.data.data('skills')),
+                'tool': Array.from(event.data.data('tools')),
+                'csrfmiddlewaretoken': jQuery('[name=csrfmiddlewaretoken').val()
+            };
+
+            jQuery.post({
+                'url': window.location,
+                'data': form_data,
+                'error': function (a, b, c) {console.log(a,b,c)},
+                'traditional': true,
+                'success': function (data, textStatus, jqXHR) { document.write(data) }
+            })
+            
+        }
+        function list_item_click (event) {
+            event.preventDefault();
+
+            const item = jQuery(this);
+            const selected_items = item.siblings('.active').length;
+
+            // Check selection limit
+            if (selected_items >= max_selection_limit) { return }
+
+            const value = parseInt(item.data('value'), 10);
+            const data_set = event.data.data(item.data('field-type'));
+            const set_selection = !item.hasClass('active');
+
+            item.hasClass('active') ? data_set.delete(value) : data_set.add(value);
+            jQuery(this).toggleClass('active');
+        }
+
+        init_list_item(root);
+        jQuery('.list-group-item-action').click(root, list_item_click);
+        jQuery('#competence-selection-form').submit(root, form_on_sunmit);
+
+    });
+</script>
+{% endblock javascript %}
+
+{% block before-content %}
+    <nav class="m-4">
+        <ol class="breadcrumb bg-light">
+            <li class="breadcrumb-item"><a href="{% url 'dnd5e:adventure:detail' adventure.id %}">{{ adventure }}</a></li>
+            <li class="breadcrumb-item active">TODO Персонажи</li>
+            <li class="breadcrumb-item"><a href="{% url 'dnd5e:adventure:character:detail' adventure.id char.id %}">{{ char }}</a></li>
+            <li class="breadcrumb-item">Выбор для персонажа</li>
+        </ol>
+    </nav>
+{% endblock before-content %}
+
+{% block content %}
+    {% if template %}
+        {% include template %}
+    {% else %}
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">{{ choice.reason }}: {{ choice.choice.text }}</div>
+                <div class="card-body">
+                    <form method="POST" class="form-inline">
+                        {% csrf_token %}
+                        {% bootstrap_form form show_label=False %}
+                        {% bootstrap_button "Изменить" button_type="submit" button_class="btn-primary" %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endblock content %}

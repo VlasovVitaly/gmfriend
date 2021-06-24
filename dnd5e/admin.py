@@ -38,6 +38,10 @@ class CharacterAdmin(admin.ModelAdmin):
     inlines = (CharacterAbilityInline, )
 
 
+class ToolAdmin(admin.ModelAdmin):
+    list_display = ('name', 'category', 'cost')
+
+
 admin.site.register(models.Adventure)
 admin.site.register(models.Race)
 admin.site.register(models.Class)
@@ -75,4 +79,8 @@ admin.site.register(models.Feature)
 admin.site.register(models.Bond)
 admin.site.register(models.Flaw)
 admin.site.register(models.BackgroundPath)
-admin.site.register(models.Tool)
+admin.site.register(models.Tool, ToolAdmin)
+admin.site.register(models.AdvancmentChoice)
+admin.site.register(models.ClassLevels)
+admin.site.register(models.ClassLevelAdvance)
+admin.site.register(models.Subclass)

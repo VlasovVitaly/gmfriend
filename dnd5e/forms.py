@@ -1,6 +1,10 @@
 from django import forms
 
-from .models import Character, CharacterAbilities, CharacterBackground, Skill, Language
+from .models import (
+    Character, CharacterAbilities, CharacterBackground, CharacterSkill,
+    CharacterToolProficiency, Feature, Language, Subclass, Tool
+)
+from .widgets import AbilityListBoxSelect
 
 
 class CharacterForm(forms.ModelForm):
@@ -58,7 +62,8 @@ class CharacterBackgroundForm(forms.ModelForm):
 
 
 class AddCharSkillProficiency(forms.Form):
-    skills = forms.ModelMultipleChoiceField(queryset=Skill.objects.none())
+    # skills = forms.ModelMultipleChoiceField(queryset=Skill.objects.none())
+    skills = forms.ModelMultipleChoiceField(queryset=CharacterSkill.objects.none())
 
     def __init__(self, *args, skills, klass_skills_limit, **kwargs):
         super().__init__(*args, **kwargs)
@@ -95,3 +100,84 @@ class AddCharLanguageFromBackground(forms.Form):
             raise forms.ValidationError(f'Можно выбрать только {self.langs_limit} языка')
 
         return langs
+
+
+class SelectToolProficiency(forms.Form):
+    tools = forms.ModelMultipleChoiceField(queryset=Tool.objects.none())
+
+    def __init__(self, *args, queryset, limit, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.limit = limit
+
+        self.fields['tools'].queryset = queryset
+        self.fields['tools'].widget.attrs = {'class': 'selectpicker', 'data-max-options': limit}
+
+    def clean_tools(self):
+        tools = self.cleaned_data['tools']
+
+        if tools.count() > self.limit:
+            raise forms.ValidationError(f'Можно выбрать только {self.limit} инструмент(ов)')
+
+        return tools
+
+
+class SelectFeatureForm(forms.Form):
+    feature = forms.ModelChoiceField(queryset=Feature.objects.none())
+
+    def __init__(self, *args, queryset, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['feature'].queryset = queryset
+        self.fields['feature'].widget.attrs = {'class': 'selectpicker'}
+
+
+class SelectSubclassForm(forms.Form):
+    subclass = forms.ModelChoiceField(queryset=Subclass.objects.none())
+
+    def __init__(self, *args, queryset, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['subclass'].queryset = queryset
+        self.fields['subclass'].widget.attrs = {'class': 'selectpicker'}
+
+
+class SelectAbilityAdvanceForm(forms.Form):
+    abilities = forms.ModelMultipleChoiceField(queryset=CharacterAbilities.objects.none(), widget=AbilityListBoxSelect)
+
+    def __init__(self, *args, queryset, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['abilities'].queryset = queryset
+
+
+class SelectCompetenceForm(forms.Form):
+    skills_limit = 2
+    skills = forms.ModelMultipleChoiceField(queryset=CharacterSkill.objects.none())
+    tool = forms.ModelChoiceField(
+        queryset=CharacterToolProficiency.objects.filter(tool__name='Воровские инструменты'), required=False, empty_label=None
+    )
+
+    def __init__(self, *args, queryset, **kwargs):
+        # TODO Filter by character
+        super().__init__(*args, **kwargs)
+
+        self.fields['skills'].queryset = queryset
+
+    def clean_skills(self):
+        skills = self.cleaned_data['skills']
+
+        if skills.count() > self.skills_limit:
+            raise forms.ValidationError(f'Можно выбрать только {self.skills_limit} навыка')
+
+        return skills
+
+    def clean(self):
+        skills_count = self.cleaned_data['skills'].count()
+        tool = self.cleaned_data['tool']
+
+        if tool and skills_count != 1:
+            raise forms.ValidationError('С воровскими инструментами можно выбрать только 1 навык')
+
+        if skills_count == 1 and not tool:
+            raise forms.ValidationError(f'Можно выбрать только {self.skills_limit} навыка')
