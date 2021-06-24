@@ -761,10 +761,12 @@ class ClassLevelTableManager(models.Manager):
         subclass_ct = ContentType.objects.get_for_model(subclass.__class__)
         class_ct = ContentType.objects.get_for_model(subclass.parent.__class__)
 
-        class_qs = self.get_queryset().filter(class_content_type=class_ct, class_object_id=subclass.parent.id)
-        subclass_qs = self.get_queryset().filter(class_content_type=subclass_ct, class_object_id=subclass.id)
+        class_qs = self.get_queryset().filter(class_content_type=class_ct, class_object_id=subclass.parent.id).prefetch_related('advantages__advance')
+        subclass_qs = self.get_queryset().filter(class_content_type=subclass_ct, class_object_id=subclass.id).prefetch_related('advantages__advance')
 
-        return class_qs.order_by().union(subclass_qs.order_by()).order_by('level')
+        ret = class_qs.order_by().union(subclass_qs.order_by()).order_by('level')
+
+        return ret
 
     def html_table(self, subclass):
         class_levels = self._get_subclass_levels(subclass)

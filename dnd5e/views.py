@@ -277,7 +277,7 @@ def level_tables(request):
 
 
 def level_table_detail(request, subklass_id):
-    subklass = get_object_or_404(Subclass, id=subklass_id)
+    subklass = get_object_or_404(Subclass.objects.select_related('parent'), id=subklass_id)
 
     context = {'subklass': subklass}
     context.update(**ClassLevels.tables.html_table(subklass))

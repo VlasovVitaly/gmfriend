@@ -2,6 +2,29 @@
 
 {% load tables %}
 
+{% block javascript %}
+    {{ block.super }}
+    <script>
+        jQuery(function () {
+            const popovers = jQuery('.advancment');
+
+            popovers.click(function (event) { event.preventDefault() });
+            popovers.popover({ trigger: 'focus'});
+        });
+    </script>
+{% endblock javascript %}
+
+{% block styles %}
+    {{ block.super }}
+    <style>
+        .advancment {
+            border-bottom: 2px dotted darkgrey;
+        }
+    </style>
+{% endblock styles %}
+
+{% block title %}Таблица уровней для {{ subklass }}{% endblock title %}
+
 {% block content %}
 <div class="row">
     <div class="col-12 bg-light">
@@ -22,13 +45,16 @@
                     <td>{{ level_row.level }}</td>
                     <td>{{ level_row.proficiency }}</td>
                     {% for col in extra_columns %}<td>{% level_table_extra col.1 level_row.level %}</td>{% endfor %}
-                    <td>{% for advance in level_row.advantages %}<span>{{ advance }} </span>{% endfor %}</td>
+                    <td>
+                        {% for advance in level_row.advantages %}
+                            <a href="" class="advancment text-decoration-none text-reset" data-toggle="popover" data-placement="top" data-title="{{ advance }}" data-content="{% if advance.description %}{{ advance.description }}{% else %}{{ advance.text }}{% endif %}">{{ advance }}</a>
+                            {% if not forloop.last %}<span> </span>{% endif %}
+                        {% endfor %}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-    {# <div>{{ extra_columns|pprint }}</div>#}
-    {#<div>{{ rows|pprint }}</div>#}
 </div>
 {% endblock content %}
