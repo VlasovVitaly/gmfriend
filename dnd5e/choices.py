@@ -159,6 +159,20 @@ class POST_FEAT_004:
         )
 
 
+class POST_FEAT_005:
+    """ Скаут / Выживальщик """
+    def apply(self, character):
+        character.skills.filter(skill__name__in=('Природа', 'Выживание')).update(proficiency=True)
+        # NOTE mb need add extra_bonus to CharacterSkill
+
+
+class POST_FEAT_006:
+    """ Скаут / Превосходная мобильность """
+    def apply(self, character):
+        # TODO Add speeds to character model
+        pass
+
+
 ALL_CHOICES = {
     'CHAR_ADVANCE_001': CHAR_ADVANCE_001,
     'PROF_TOOLS_001': PROF_TOOLS_001,
@@ -172,4 +186,6 @@ ALL_CHOICES = {
     'POST_FEAT_002': POST_FEAT_002,
     'POST_FEAT_003': POST_FEAT_003,
     'POST_FEAT_004': POST_FEAT_004,
+    'POST_FEAT_005': POST_FEAT_005,
+    'POST_FEAT_006': POST_FEAT_006,
 }
