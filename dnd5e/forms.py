@@ -181,3 +181,21 @@ class SelectCompetenceForm(forms.Form):
 
         if skills_count == 1 and not tool:
             raise forms.ValidationError(f'Можно выбрать только {self.skills_limit} навыка')
+
+
+class MasterMindIntrigueSelect(forms.Form):
+    tool = forms.ModelChoiceField(queryset=Tool.objects.none())
+    languages = forms.ModelMultipleChoiceField(queryset=Language.objects.all())
+
+    def __init__(self, *args, character, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # self.character = character  # MB we don't need this
+
+        self.fields['tool'].queryset = Tool.objects.filter(category=Tool.CAT_GAMBLE).exclude(
+            id__in=character.tools_proficiency.values_list('tool_id')
+        )
+        self.fields['tool'].widget.attrs = {'class': 'selectpicker'}
+
+        self.fields['languages'].widget.attrs = {'class': 'selectpicker'}
+        self.fields['languages'].queryset = Language.objects.exclude(id__in=character.languages.values_list('id'))

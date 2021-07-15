@@ -1,12 +1,7 @@
 from django.apps import apps
-from .forms import SelectToolProficiency, SelectFeatureForm, SelectSubclassForm, SelectAbilityAdvanceForm, SelectCompetenceForm
+from .forms import SelectToolProficiency, SelectFeatureForm, SelectSubclassForm, SelectAbilityAdvanceForm, SelectCompetenceForm, MasterMindIntrigueSelect
 
 dnd5e_app = apps.app_configs['dnd5e']
-
-
-class DummyValidForm:
-    def is_valid():
-        return True
 
 
 class PROF_TOOLS_001:
@@ -83,6 +78,24 @@ class CLASS_ROG_002:
             data['tool'].save(update_fields=['competence'])
 
 
+class CLASS_ROG_003:
+    """ Выбор для интригана """
+    form_class = MasterMindIntrigueSelect
+
+    def __init__(self, character):
+        self.character = character
+
+    def get_form(self, request, character):
+        return self.form_class(request.POST or None, character=character)
+
+    def apply_data(self, data):
+        _ = dnd5e_app.get_model('charactertoolproficiency').objects.create(
+            character=self.character, tool=data['tool']
+        )
+        for lang in data['languages']:
+            self.character.languages.add(lang)
+
+
 class CHAR_ADVANCE_001:
     template = 'dnd5e/adventures/include/choices/advance_001.html'
     form_class = SelectAbilityAdvanceForm
@@ -105,9 +118,6 @@ class CHAR_ADVANCE_001:
 
 
 class POST_FEAT_001:
-    def get_form(self, request, character):
-        return DummyValidForm()
-
     def apply(self, character):
         wisdom = character.abilities.get(ability__orig_name='Wisdom')
         wisdom.saving_trow_proficiency = True
@@ -134,6 +144,21 @@ class POST_FEAT_003(POST_FEAT_001):
             _, _ = char_tools.objects.get_or_create(character=character, tool=tool)
 
 
+class POST_FEAT_004:
+    """ Комбинатор / Интриган """
+    def apply(self, character):
+        char_tools = dnd5e_app.get_model('charactertoolproficiency')
+        for tool in dnd5e_app.get_model('tool').objects.filter(name__in=['Набор для фальсификации', 'Набор для грима']):
+            _, _ = char_tools.objects.get_or_create(character=character, tool=tool)
+
+        char_choices = dnd5e_app.get_model('characteradvancmentchoice')
+        char_choices.objects.create(
+            character=character,
+            choice=dnd5e_app.get_model('advancmentchoice').objects.get(code='CLASS_ROG_003'),
+            reason=dnd5e_app.get_model('subclass').objects.get(name='Комбинатор')
+        )
+
+
 ALL_CHOICES = {
     'CHAR_ADVANCE_001': CHAR_ADVANCE_001,
     'PROF_TOOLS_001': PROF_TOOLS_001,
@@ -142,7 +167,9 @@ ALL_CHOICES = {
     'CLASS_WAR_001': CLASS_WAR_001,
     'CLASS_ROG_001': CLASS_ROG_001,
     'CLASS_ROG_002': CLASS_ROG_002,
+    'CLASS_ROG_003': CLASS_ROG_003,
     'POST_FEAT_001': POST_FEAT_001,
     'POST_FEAT_002': POST_FEAT_002,
     'POST_FEAT_003': POST_FEAT_003,
+    'POST_FEAT_004': POST_FEAT_004,
 }
