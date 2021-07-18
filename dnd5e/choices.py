@@ -1,5 +1,4 @@
 from django.apps import apps
-from django.db.models import query
 from .forms import SelectToolProficiency, SelectFeatureForm, SelectSubclassForm, SelectAbilityAdvanceForm, SelectCompetenceForm, MasterMindIntrigueSelect
 
 dnd5e_app = apps.app_configs['dnd5e']

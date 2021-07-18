@@ -48,7 +48,7 @@ def adventure_detail(request, adv_id):
 def character_detail(request, adv_id, char_id):
     char = get_object_or_404(Character, id=char_id)
     adventure = get_object_or_404(Adventure, id=adv_id)
-    choices = char.choices.filter(selected=False)
+    choices = char.choices.all()
 
     context = {'char': char, 'adventure': adventure, 'choices': choices}
 
@@ -187,7 +187,7 @@ def resolve_char_choices(request, adv_id, char_id):
     adventure = get_object_or_404(Adventure, id=adv_id)
     char = get_object_or_404(Character, id=char_id, adventure=adventure)
 
-    choice = char.choices.filter(selected=False).first()
+    choice = char.choices.first()
 
     selector = ALL_CHOICES[choice.choice.code](char)
     form = selector.get_form(request, char)
