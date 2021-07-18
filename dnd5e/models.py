@@ -631,7 +631,6 @@ class AdvancmentChoice(models.Model):
     name = models.CharField(max_length=64, blank=True, null=True, default=None)
     code = models.CharField(max_length=24, verbose_name='Код')
     text = models.TextField(verbose_name='Отображаемый текст')
-    oneshoot = models.BooleanField(default=False, verbose_name='Одноразовый выбор')
 
     class Meta:
         ordering = ['name']
@@ -1317,7 +1316,6 @@ class CharacterAdvancmentChoice(models.Model):
     reason_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     reason_object_id = models.PositiveIntegerField()
     reason = GenericForeignKey('reason_content_type', 'reason_object_id')
-    selected = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['character', 'choice']
