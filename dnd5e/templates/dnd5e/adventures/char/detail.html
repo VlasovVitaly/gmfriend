@@ -22,7 +22,12 @@
             {% if char.background.known_languages %}
                 <a href="{% url 'dnd5e:adventure:character:set_languages' adventure.id char.id %}" class="btn btn-primary">Выбрать владение языками</a>
             {% endif %}
-            <a href="{% url 'dnd5e:adventure:character:resolve_choices' adventure.id char.id %}" class="btn btn-primary">Сделать выбор <span class="badge badge-light">{{ choices.count }}</span></a>
+            <button class="btn btn-primary dropdown-toggle{% if not choices.count %} disabled{% endif %}" data-toggle="dropdown" type="button">Сделать выбор <span class="badge badge-light">{{ choices.count }}</span></button>
+            <div class="dropdown-menu">
+                {% for choice in choices %}
+                    <a href="{% url 'dnd5e:adventure:character:resolve_choice' adventure.id char.id choice.id %}" class="dropdown-item">{{ choice.choice }}</a>
+                {% endfor %}
+            </div>
         </div>
     </div>
 </div>

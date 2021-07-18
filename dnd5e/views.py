@@ -11,7 +11,8 @@ from .forms import (
     CharacterBackgroundForm, CharacterForm, CharacterStatsFormset
 )
 from .models import (
-    Class, ClassLevels, NPC, Adventure, AdventureMonster, Character, CharacterAbilities, Language, Monster, Place, Spell, Stage, Subclass, Zone
+    NPC, Adventure, AdventureMonster, Character, CharacterAbilities, CharacterAdvancmentChoice,
+    Class, ClassLevels, Language, Monster, Place, Spell, Stage, Subclass, Zone
 )
 
 
@@ -48,7 +49,7 @@ def adventure_detail(request, adv_id):
 def character_detail(request, adv_id, char_id):
     char = get_object_or_404(Character, id=char_id)
     adventure = get_object_or_404(Adventure, id=adv_id)
-    choices = char.choices.all()
+    choices = char.choices.select_related('choice')
 
     context = {'char': char, 'adventure': adventure, 'choices': choices}
 
@@ -183,11 +184,10 @@ def set_skills_proficiency(request, adv_id, char_id):
 
 @login_required
 @transaction.atomic()
-def resolve_char_choices(request, adv_id, char_id):
+def resolve_char_choice(request, adv_id, char_id, choice_id):
     adventure = get_object_or_404(Adventure, id=adv_id)
     char = get_object_or_404(Character, id=char_id, adventure=adventure)
-
-    choice = char.choices.first()
+    choice = get_object_or_404(CharacterAdvancmentChoice.objects.select_related('choice'), id=choice_id)
 
     selector = ALL_CHOICES[choice.choice.code](char)
     form = selector.get_form(request, char)
