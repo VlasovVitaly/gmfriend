@@ -1,4 +1,5 @@
 from django.apps import apps
+from django.db.models import query
 from .forms import SelectToolProficiency, SelectFeatureForm, SelectSubclassForm, SelectAbilityAdvanceForm, SelectCompetenceForm, MasterMindIntrigueSelect
 
 dnd5e_app = apps.app_configs['dnd5e']
@@ -29,8 +30,26 @@ class PROF_TOOLS_003(PROF_TOOLS_001):
 
 
 class CLASS_WAR_001:
+    """ Боевой стиль воина """
     form_class = SelectFeatureForm
     queryset = dnd5e_app.get_model('feature').objects.filter(group='fight_style')
+
+    def __init__(self, character):
+        self.character = character
+
+    def get_form(self, request, character):
+        exclude_feats = self.character.features.filter(feature__group='fight_style').values_list('feature_id')  # Already know
+        return self.form_class(data=request.POST or None, queryset=self.queryset.exclude(id__in=exclude_feats))
+
+    def apply_data(self, data):
+        CharacterFeature = dnd5e_app.get_model('characterfeature')
+        CharacterFeature.objects.create(character=self.character, feature=data['feature'])
+
+
+class CLASS_WAR_002:
+    """ Воинский архетип """
+    queryset = dnd5e_app.get_model('subclass').objects.filter(parent__orig_name='Fighter')
+    form_class = SelectSubclassForm
 
     def __init__(self, character):
         self.character = character
@@ -39,8 +58,7 @@ class CLASS_WAR_001:
         return self.form_class(data=request.POST or None, queryset=self.queryset)
 
     def apply_data(self, data):
-        CharacterFeature = dnd5e_app.get_model('characterfeature')
-        CharacterFeature.objects.create(character=self.character, feature=data['feature'])
+        self.character.apply_subclass(data['subclass'], 3)  # Fighter select arhtype on level 3
 
 
 class CLASS_ROG_001:
@@ -55,10 +73,7 @@ class CLASS_ROG_001:
         return self.form_class(data=request.POST or None, queryset=self.queryset)
 
     def apply_data(self, data):
-        self.character.subclass = data['subclass']
-        self.character.save(update_fields=['subclass'])
-
-        self.character._apply_subclass_advantages(3)  # Rogue select arhtype on level 3
+        self.character.apply_subclass(data['subclass'], 3)  # Rogue select arhtype on level 3
 
 
 class CLASS_ROG_002:
@@ -179,6 +194,7 @@ ALL_CHOICES = {
     'PROF_TOOLS_002': PROF_TOOLS_002,
     'PROF_TOOLS_003': PROF_TOOLS_003,
     'CLASS_WAR_001': CLASS_WAR_001,
+    'CLASS_WAR_002': CLASS_WAR_002,
     'CLASS_ROG_001': CLASS_ROG_001,
     'CLASS_ROG_002': CLASS_ROG_002,
     'CLASS_ROG_003': CLASS_ROG_003,

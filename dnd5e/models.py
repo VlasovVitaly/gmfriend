@@ -634,7 +634,7 @@ class AdvancmentChoice(models.Model):
     oneshoot = models.BooleanField(default=False, verbose_name='Одноразовый выбор')
 
     class Meta:
-        ordering = ['code']
+        ordering = ['name']
         default_permissions = ()
         verbose_name = 'Выбор для персонажа'
         verbose_name_plural = 'Выборы для персонажей'
@@ -1273,6 +1273,11 @@ class Character(models.Model):
         self.save(update_fields=['level'])
 
         self.refresh_from_db()
+
+    def apply_subclass(self, subclass, level):
+        self.subclass = subclass
+        self.save(update_fields=['subclass'])
+        self._apply_subclass_advantages(level)
 
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'
