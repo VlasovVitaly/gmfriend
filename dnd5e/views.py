@@ -50,6 +50,7 @@ def character_detail(request, adv_id, char_id):
     choices = char.choices.select_related('choice')
 
     context = {'char': char, 'adventure': adventure, 'choices': choices}
+    context.update(choices.aggregate_blocking_choices())
 
     return render(request, 'dnd5e/adventures/char/detail.html', context)
 

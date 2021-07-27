@@ -1319,6 +1319,14 @@ class CharacterFeature(models.Model):
         return f'{self.character}: {self.feature}'
 
 
+class CharacterAdvancmentChoiceQueryset(models.QuerySet):
+    def aggregate_blocking_choices(self):
+        return self.aggregate(
+            blocking_choices=models.Count('id', filter=models.Q(choice__important=True)),
+            total_choices=models.Count('id'),
+        )
+
+
 class CharacterAdvancmentChoice(models.Model):
     character = models.ForeignKey(
         Character, on_delete=models.CASCADE, related_name='choices', related_query_name='choice'
@@ -1330,8 +1338,10 @@ class CharacterAdvancmentChoice(models.Model):
     reason_object_id = models.PositiveIntegerField()
     reason = GenericForeignKey('reason_content_type', 'reason_object_id')
 
+    objects = CharacterAdvancmentChoiceQueryset.as_manager()
+
     class Meta:
-        ordering = ['character', 'choice']
+        ordering = ['character', '-choice__important', 'choice__name']
         default_permissions = ()
         verbose_name = 'Выбор персонажа'
         verbose_name_plural = 'Выборы персонажа'
