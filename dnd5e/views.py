@@ -125,63 +125,32 @@ def set_character_background(request, adv_id, char_id):
     return render(request, 'dnd5e/adventures/char/set_background.html', context)
 
 
-@login_required
-def set_languages(request, adv_id, char_id):
-    adventure = get_object_or_404(Adventure, id=adv_id)
-    char = get_object_or_404(Character, id=char_id, adventure=adventure)
-
-    max_languages = char.background.known_languages
-    if not max_languages:
-        raise Http404()
-
-    possible_langs = Language.objects.exclude(id__in=char.race.languages.values('id'))
-    form = AddCharLanguageFromBackground(
-        data=request.POST or None, languages=possible_langs, limit=max_languages,
-        initial={'langs': char.languages.exclude(id__in=char.race.languages.values('id'))}
-    )
-
-    if form.is_valid():
-        with transaction.atomic():
-            char.languages.set(
-                char.race.languages.order_by().union(form.cleaned_data['langs'].order_by()), clear=True
-            )
-
-    context = {
-        'char': char, 'adventure': adventure,
-        'current': char.languages.all(),
-        'max_languages': max_languages,
-        'form': form,
-    }
-
-    return render(request, 'dnd5e/adventures/char/set_languages.html', context)
-
-
-@login_required
-def set_skills_proficiency(request, adv_id, char_id):
-    char = get_object_or_404(Character, id=char_id)
-    adventure = get_object_or_404(Adventure, id=adv_id)
-
-    char_skills = char.skills.all().annotate_from_background(char.background)
-
-    form = AddCharSkillProficiency(
-        request.POST or None,
-        skills=char_skills.exclude(from_background=True),
-        limit=char.klass.skill_proficiency_limit,
-        initial={'skills': char_skills.exclude(from_background=True).filter(proficiency=True)}
-    )
-
-    if form.is_valid():
-        with transaction.atomic():
-            char_skills.exclude(from_background=True).update(proficiency=False)
-            form.cleaned_data['skills'].update(proficiency=True)
-
-    context = {
-        'char': char, 'adventure': adventure, 'form': form, 'current': char_skills.filter(proficiency=True)
-    }
-
-    return render(request, 'dnd5e/adventures/char/set_skills.html', context)
-
-
+# @login_required
+# def set_skills_proficiency(request, adv_id, char_id):
+#     char = get_object_or_404(Character, id=char_id)
+#     adventure = get_object_or_404(Adventure, id=adv_id)
+# 
+#     char_skills = char.skills.all().annotate_from_background(char.background)
+# 
+#     form = AddCharSkillProficiency(
+#         request.POST or None,
+#         skills=char_skills.exclude(from_background=True),
+#         limit=char.klass.skill_proficiency_limit,
+#         initial={'skills': char_skills.exclude(from_background=True).filter(proficiency=True)}
+#     )
+# 
+#     if form.is_valid():
+#         with transaction.atomic():
+#             char_skills.exclude(from_background=True).update(proficiency=False)
+#             form.cleaned_data['skills'].update(proficiency=True)
+# 
+#     context = {
+#         'char': char, 'adventure': adventure, 'form': form, 'current': char_skills.filter(proficiency=True)
+#     }
+# 
+#     return render(request, 'dnd5e/adventures/char/set_skills.html', context)
+# 
+# 
 @login_required
 @transaction.atomic()
 def resolve_char_choice(request, adv_id, char_id, choice_id):

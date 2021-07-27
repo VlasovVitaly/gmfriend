@@ -1239,10 +1239,16 @@ class Character(models.Model):
         # Backgroung skill proficiency
         self.skills.filter(skill__in=self.background.skills_proficiency.all()).update(proficiency=True)
 
-        # Init Languages
+        # Init Race Languages
         self.languages.set(self.race.languages.all())
 
-        # Features
+        # Add background languages choice if need
+        if self.background.known_languages:
+            CharacterAdvancmentChoice.objects.create(
+                character=self, choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_003'), reason=self.background
+            )
+
+        # Race|Subrace and Background Features
         features = self.race.features.order_by().union(self.background.features.order_by())
         features = features.union(self.subrace.features.order_by()) if self.subrace else features
         for feat in features:
@@ -1392,12 +1398,12 @@ class CharacterSkillQueryset(models.QuerySet):
             ),
         )
 
-    def annotate_from_background(self, background):
-        return self.annotate(
-            from_background=models.Exists(
-                background.skills_proficiency.only('id').filter(id=models.OuterRef('skill_id'))
-            )
-        )
+    # def annotate_from_background(self, background):
+    #     return self.annotate(
+    #         from_background=models.Exists(
+    #             background.skills_proficiency.only('id').filter(id=models.OuterRef('skill_id'))
+    #         )
+    #     )
 
 
 class CharacterSkillManager(models.Manager):
