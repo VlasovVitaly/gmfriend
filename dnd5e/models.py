@@ -631,6 +631,7 @@ class AdvancmentChoice(models.Model):
     name = models.CharField(max_length=64, blank=True, null=True, default=None)
     code = models.CharField(max_length=24, verbose_name='Код')
     text = models.TextField(verbose_name='Отображаемый текст')
+    important = models.BooleanField(verbose_name='В первую очередь', default=False)
 
     class Meta:
         ordering = ['name']
