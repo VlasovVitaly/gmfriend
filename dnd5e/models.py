@@ -1248,7 +1248,8 @@ class Character(models.Model):
         for feat in features:
             CharacterFeature.objects.create(character=self, feature=feat)
 
-        for advantage in self.klass.level_feats.get(level=self.level).advantages.all():
+        # for advantage in self.klass.level_feats.get(level=self.level).advantages.all():
+        for advantage in self.klass.level_feats.get(level=1).advantages.all():
             advantage.apply_for_character(self)
 
         # Tools proficiency
@@ -1261,6 +1262,11 @@ class Character(models.Model):
         # Generate background choices
         for choice in self.background.choices.all():
             CharacterAdvancmentChoice.objects.create(character=self, choice=choice, reason=self.background)
+
+        # Skills proficiency choice
+        CharacterAdvancmentChoice.objects.create(
+            character=self, choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_002'), reason=self.klass
+        )
 
     def level_up(self):
         self._apply_class_advantages(self.level + 1)

@@ -62,22 +62,21 @@ class CharacterBackgroundForm(forms.ModelForm):
 
 
 class AddCharSkillProficiency(forms.Form):
-    # skills = forms.ModelMultipleChoiceField(queryset=Skill.objects.none())
     skills = forms.ModelMultipleChoiceField(queryset=CharacterSkill.objects.none())
 
-    def __init__(self, *args, skills, klass_skills_limit, **kwargs):
+    def __init__(self, *args, skills, limit, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.skills_limit = klass_skills_limit
+        self.limit = limit
 
         self.fields['skills'].queryset = skills
-        self.fields['skills'].widget.attrs = {'class': 'selectpicker', 'data-max-options': self.skills_limit}
+        self.fields['skills'].widget.attrs = {'class': 'selectpicker', 'data-max-options': self.limit}
 
     def clean_skills(self):
         skills = self.cleaned_data['skills']
 
-        if skills.count() > self.skills_limit:
-            raise forms.ValidationError(f'Можно выбрать только {self.skills_limit} навыка')
+        if skills.count() != self.limit:
+            raise forms.ValidationError(f'Можно выбрать только {self.limit} навыка')
 
         return skills
 

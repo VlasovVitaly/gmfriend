@@ -1,5 +1,10 @@
+from dnd5e.models import Skill
 from django.apps import apps
-from .forms import SelectToolProficiency, SelectFeatureForm, SelectSubclassForm, SelectAbilityAdvanceForm, SelectCompetenceForm, MasterMindIntrigueSelect
+
+from .forms import (
+    AddCharSkillProficiency, MasterMindIntrigueSelect, SelectAbilityAdvanceForm, SelectCompetenceForm,
+    SelectFeatureForm, SelectSubclassForm, SelectToolProficiency
+)
 
 dnd5e_app = apps.app_configs['dnd5e']
 
@@ -131,6 +136,23 @@ class CHAR_ADVANCE_001:
             abilities.increase_value(2)
 
 
+class CHAR_ADVANCE_002:
+    ''' Выбор мастерства классовых навыков '''
+    form_class = AddCharSkillProficiency
+
+    def __init__(self, character):
+        self.character = character
+
+    def get_form(self, request, character):
+        return self.form_class(
+            data=request.POST or None, files=None, limit=2,
+            skills=character.skills.exclude(proficiency=True)
+        )
+
+    def apply_data(self, data):
+        data['skills'].update(proficiency=True)
+
+
 class POST_FEAT_001:
     def apply(self, character):
         wisdom = character.abilities.get(ability__orig_name='Wisdom')
@@ -189,6 +211,7 @@ class POST_FEAT_006:
 
 ALL_CHOICES = {
     'CHAR_ADVANCE_001': CHAR_ADVANCE_001,
+    'CHAR_ADVANCE_002': CHAR_ADVANCE_002,
     'PROF_TOOLS_001': PROF_TOOLS_001,
     'PROF_TOOLS_002': PROF_TOOLS_002,
     'PROF_TOOLS_003': PROF_TOOLS_003,

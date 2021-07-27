@@ -166,7 +166,7 @@ def set_skills_proficiency(request, adv_id, char_id):
     form = AddCharSkillProficiency(
         request.POST or None,
         skills=char_skills.exclude(from_background=True),
-        klass_skills_limit=char.klass.skill_proficiency_limit,
+        limit=char.klass.skill_proficiency_limit,
         initial={'skills': char_skills.exclude(from_background=True).filter(proficiency=True)}
     )
 
