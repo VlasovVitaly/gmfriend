@@ -631,7 +631,7 @@ class AdvancmentChoice(models.Model):
     name = models.CharField(max_length=64, blank=True, null=True, default=None)
     code = models.CharField(max_length=24, verbose_name='Код')
     text = models.TextField(verbose_name='Отображаемый текст')
-    oneshoot = models.BooleanField(default=False, verbose_name='Одноразовый выбор')
+    important = models.BooleanField(verbose_name='В первую очередь', default=False)
 
     class Meta:
         ordering = ['name']
@@ -1240,16 +1240,17 @@ class Character(models.Model):
         # Backgroung skill proficiency
         self.skills.filter(skill__in=self.background.skills_proficiency.all()).update(proficiency=True)
 
-        # Init Languages
+        # Init Race Languages
         self.languages.set(self.race.languages.all())
 
-        # Features
+        # Race|Subrace and Background Features
         features = self.race.features.order_by().union(self.background.features.order_by())
         features = features.union(self.subrace.features.order_by()) if self.subrace else features
         for feat in features:
             CharacterFeature.objects.create(character=self, feature=feat)
 
-        for advantage in self.klass.level_feats.get(level=self.level).advantages.all():
+        # for advantage in self.klass.level_feats.get(level=self.level).advantages.all():
+        for advantage in self.klass.level_feats.get(level=1).advantages.all():
             advantage.apply_for_character(self)
 
         # Tools proficiency
@@ -1259,9 +1260,36 @@ class Character(models.Model):
             [CharacterToolProficiency(character=self, tool=tool) for tool in tools]
         )
 
-        # Generate background choices
+        # Character choices
+        char_choices = []
+
+        # Background choices
         for choice in self.background.choices.all():
-            CharacterAdvancmentChoice.objects.create(character=self, choice=choice, reason=self.background)
+            char_choices.append(CharacterAdvancmentChoice(character=self, choice=choice, reason=self.background))
+
+        # Add background languages if need
+        if self.background.known_languages:
+            char_choices.append(
+                CharacterAdvancmentChoice(
+                    character=self, choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_003'), reason=self.background
+                )
+            )
+
+        # Skills proficiency choice
+        char_choices.append(
+            CharacterAdvancmentChoice(
+                character=self, choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_002'), reason=self.klass
+            )
+        )
+
+        # Background story
+        char_choices.append(
+            CharacterAdvancmentChoice(
+                character=self, choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_004'), reason=self.klass
+            )
+        )
+
+        CharacterAdvancmentChoice.objects.bulk_create(char_choices)
 
     def level_up(self):
         self._apply_class_advantages(self.level + 1)
@@ -1307,6 +1335,14 @@ class CharacterFeature(models.Model):
         return f'{self.character}: {self.feature}'
 
 
+class CharacterAdvancmentChoiceQueryset(models.QuerySet):
+    def aggregate_blocking_choices(self):
+        return self.aggregate(
+            blocking_choices=models.Count('id', filter=models.Q(choice__important=True)),
+            total_choices=models.Count('id'),
+        )
+
+
 class CharacterAdvancmentChoice(models.Model):
     character = models.ForeignKey(
         Character, on_delete=models.CASCADE, related_name='choices', related_query_name='choice'
@@ -1317,10 +1353,11 @@ class CharacterAdvancmentChoice(models.Model):
     reason_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     reason_object_id = models.PositiveIntegerField()
     reason = GenericForeignKey('reason_content_type', 'reason_object_id')
-    selected = models.BooleanField(default=False)
+
+    objects = CharacterAdvancmentChoiceQueryset.as_manager()
 
     class Meta:
-        ordering = ['character', 'choice']
+        ordering = ['character', '-choice__important', 'choice__name']
         default_permissions = ()
         verbose_name = 'Выбор персонажа'
         verbose_name_plural = 'Выборы персонажа'
@@ -1388,12 +1425,12 @@ class CharacterSkillQueryset(models.QuerySet):
             ),
         )
 
-    def annotate_from_background(self, background):
-        return self.annotate(
-            from_background=models.Exists(
-                background.skills_proficiency.only('id').filter(id=models.OuterRef('skill_id'))
-            )
-        )
+    # def annotate_from_background(self, background):
+    #     return self.annotate(
+    #         from_background=models.Exists(
+    #             background.skills_proficiency.only('id').filter(id=models.OuterRef('skill_id'))
+    #         )
+    #     )
 
 
 class CharacterSkillManager(models.Manager):

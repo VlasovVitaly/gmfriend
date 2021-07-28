@@ -1,5 +1,7 @@
 {% extends "dnd5e/base.html" %}
 
+{% load bootstrap4 %}
+
 {% block title %}{{ char }}{% endblock title %}
 
 {% block before-content %}
@@ -15,14 +17,16 @@
 {% block content %}
 <div class="row">
     <div class="col">
+        {% bootstrap_messages %}
         <div class="btn-group">
             <a href="{% url 'dnd5e:adventure:character:set_stats' adventure.id char.id %}" class="btn btn-primary">Ред. характеристики</a>
-            <a href="{% url 'dnd5e:adventure:character:set_background' adventure.id char.id %}" class="btn btn-primary">Ред. предысторию</a>
-            <a href="{% url 'dnd5e:adventure:character:set_skills' adventure.id char.id %}" class="btn btn-primary">Выбрать навыки</a>
-            {% if char.background.known_languages %}
-                <a href="{% url 'dnd5e:adventure:character:set_languages' adventure.id char.id %}" class="btn btn-primary">Выбрать владение языками</a>
-            {% endif %}
-            <a href="{% url 'dnd5e:adventure:character:resolve_choices' adventure.id char.id %}" class="btn btn-primary">Сделать выбор <span class="badge badge-light">{{ choices.count }}</span></a>
+            {# <a href="{% url 'dnd5e:adventure:character:set_skills' adventure.id char.id %}" class="btn btn-primary">Выбрать навыки</a> #}
+            <button class="btn btn-primary dropdown-toggle{% if not total_choices %} disabled{% endif %}" data-toggle="dropdown" type="button">Сделать выбор <span class="badge badge-light">{{ total_choices }}</span></button>
+            <div class="dropdown-menu">
+                {% for choice in choices %}
+                    <a href="{% url 'dnd5e:adventure:character:resolve_choice' adventure.id char.id choice.id %}" class="dropdown-item{% if blocking_choices and not choice.choice.important %} disabled{% endif %}">{{ choice.choice }}</a>
+                {% endfor %}
+            </div>
         </div>
     </div>
 </div>

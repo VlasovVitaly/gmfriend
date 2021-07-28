@@ -9,10 +9,9 @@ character_patterns = ([
     path('create', views.create_character, name='create'),
     path('<int:char_id>', views.character_detail, name='detail'),
     path('<int:char_id>/set-stats', views.set_character_stats, name='set_stats'),
-    path('<int:char_id>/set-background', views.set_character_background, name='set_background'),
-    path('<int:char_id>/set-skills', views.set_skills_proficiency, name='set_skills'),
-    path('<int:char_id>/set-languages', views.set_languages, name='set_languages'),
-    path('<int:char_id>/resolve-choices', views.resolve_char_choices, name='resolve_choices')
+    # path('<int:char_id>/set-skills', views.set_skills_proficiency, name='set_skills'),
+    # path('<int:char_id>/resolve-choices', views.resolve_char_choices, name='resolve_choices'),
+    path('<int:char_id>/resolve-choice/<int:choice_id>', views.resolve_char_choice, name='resolve_choice'),
 ], app_name)
 
 adventure_patterns = ([

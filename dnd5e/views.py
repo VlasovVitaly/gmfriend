@@ -1,17 +1,15 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
+from django.contrib import messages
 from django.db import transaction
-from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 
 from .choices import ALL_CHOICES
 from .filters import MonsterFilter, SpellFilter
-from .forms import (
-    AddCharLanguageFromBackground, AddCharSkillProficiency,
-    CharacterBackgroundForm, CharacterForm, CharacterStatsFormset
-)
+from .forms import (CharacterForm, CharacterStatsFormset)
 from .models import (
-    Class, ClassLevels, NPC, Adventure, AdventureMonster, Character, CharacterAbilities, Language, Monster, Place, Spell, Stage, Subclass, Zone
+    NPC, Adventure, AdventureMonster, Character, CharacterAbilities, CharacterAdvancmentChoice,
+    Class, ClassLevels, Monster, Place, Spell, Stage, Subclass, Zone
 )
 
 
@@ -48,9 +46,10 @@ def adventure_detail(request, adv_id):
 def character_detail(request, adv_id, char_id):
     char = get_object_or_404(Character, id=char_id)
     adventure = get_object_or_404(Adventure, id=adv_id)
-    choices = char.choices.filter(selected=False)
+    choices = char.choices.select_related('choice')
 
     context = {'char': char, 'adventure': adventure, 'choices': choices}
+    context.update(choices.aggregate_blocking_choices())
 
     return render(request, 'dnd5e/adventures/char/detail.html', context)
 
@@ -97,108 +96,50 @@ def set_character_stats(request, adv_id, char_id):
     return render(request, 'dnd5e/adventures/char/set_stats.html', context)
 
 
-@login_required
-def set_character_background(request, adv_id, char_id):
-    char = get_object_or_404(Character, id=char_id)
-    adventure = get_object_or_404(Adventure, id=adv_id)
-
-    form = CharacterBackgroundForm(request.POST or None, background=char.background)
-
-    if hasattr(char, 'background_detail'):
-        form = CharacterBackgroundForm(
-            request.POST or None, background=char.background, instance=char.background_detail
-        )
-    else:
-        form = CharacterBackgroundForm(request.POST or None, background=char.background)
-
-    if form.is_valid():
-        background = form.save(commit=False)
-
-        if background.character_id is None:
-            background.character = char
-
-        background.save()
-
-    context = {'char': char, 'adventure': adventure, 'form': form}
-
-    return render(request, 'dnd5e/adventures/char/set_background.html', context)
-
-
-@login_required
-def set_languages(request, adv_id, char_id):
-    adventure = get_object_or_404(Adventure, id=adv_id)
-    char = get_object_or_404(Character, id=char_id, adventure=adventure)
-
-    max_languages = char.background.known_languages
-    if not max_languages:
-        raise Http404()
-
-    possible_langs = Language.objects.exclude(id__in=char.race.languages.values('id'))
-    form = AddCharLanguageFromBackground(
-        data=request.POST or None, languages=possible_langs, limit=max_languages,
-        initial={'langs': char.languages.exclude(id__in=char.race.languages.values('id'))}
-    )
-
-    if form.is_valid():
-        with transaction.atomic():
-            char.languages.set(
-                char.race.languages.order_by().union(form.cleaned_data['langs'].order_by()), clear=True
-            )
-
-    context = {
-        'char': char, 'adventure': adventure,
-        'current': char.languages.all(),
-        'max_languages': max_languages,
-        'form': form,
-    }
-
-    return render(request, 'dnd5e/adventures/char/set_languages.html', context)
-
-
-@login_required
-def set_skills_proficiency(request, adv_id, char_id):
-    char = get_object_or_404(Character, id=char_id)
-    adventure = get_object_or_404(Adventure, id=adv_id)
-
-    char_skills = char.skills.all().annotate_from_background(char.background)
-
-    form = AddCharSkillProficiency(
-        request.POST or None,
-        skills=char_skills.exclude(from_background=True),
-        klass_skills_limit=char.klass.skill_proficiency_limit,
-        initial={'skills': char_skills.exclude(from_background=True).filter(proficiency=True)}
-    )
-
-    if form.is_valid():
-        with transaction.atomic():
-            char_skills.exclude(from_background=True).update(proficiency=False)
-            form.cleaned_data['skills'].update(proficiency=True)
-
-    context = {
-        'char': char, 'adventure': adventure, 'form': form, 'current': char_skills.filter(proficiency=True)
-    }
-
-    return render(request, 'dnd5e/adventures/char/set_skills.html', context)
-
-
+# @login_required
+# def set_skills_proficiency(request, adv_id, char_id):
+#     char = get_object_or_404(Character, id=char_id)
+#     adventure = get_object_or_404(Adventure, id=adv_id)
+# 
+#     char_skills = char.skills.all().annotate_from_background(char.background)
+# 
+#     form = AddCharSkillProficiency(
+#         request.POST or None,
+#         skills=char_skills.exclude(from_background=True),
+#         limit=char.klass.skill_proficiency_limit,
+#         initial={'skills': char_skills.exclude(from_background=True).filter(proficiency=True)}
+#     )
+# 
+#     if form.is_valid():
+#         with transaction.atomic():
+#             char_skills.exclude(from_background=True).update(proficiency=False)
+#             form.cleaned_data['skills'].update(proficiency=True)
+# 
+#     context = {
+#         'char': char, 'adventure': adventure, 'form': form, 'current': char_skills.filter(proficiency=True)
+#     }
+# 
+#     return render(request, 'dnd5e/adventures/char/set_skills.html', context)
+# 
+# 
 @login_required
 @transaction.atomic()
-def resolve_char_choices(request, adv_id, char_id):
+def resolve_char_choice(request, adv_id, char_id, choice_id):
     adventure = get_object_or_404(Adventure, id=adv_id)
     char = get_object_or_404(Character, id=char_id, adventure=adventure)
+    choice = get_object_or_404(CharacterAdvancmentChoice.objects.select_related('choice'), id=choice_id)
 
-    choice = char.choices.filter(selected=False).first()
+    if not choice.choice.important and char.choices.filter(choice__important=True).exists():
+        # Can't make choice if more important choice exists for this char
+        messages.info(request, 'Для этого персонажа нужно сделать более важный выбор')
+        return redirect(reverse('dnd5e:adventure:character:detail', kwargs={'adv_id': adventure.id, 'char_id': char.id}))
 
     selector = ALL_CHOICES[choice.choice.code](char)
     form = selector.get_form(request, char)
 
     if form.is_valid():
         selector.apply_data(form.cleaned_data)
-        if choice.choice.oneshoot:
-            choice.delete()
-        else:
-            choice.selected = True
-            choice.save(update_fields=['selected'])
+        choice.delete()
 
         return redirect(reverse('dnd5e:adventure:character:detail', kwargs={'adv_id': adventure.id, 'char_id': char.id}))
 

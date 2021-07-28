@@ -62,22 +62,21 @@ class CharacterBackgroundForm(forms.ModelForm):
 
 
 class AddCharSkillProficiency(forms.Form):
-    # skills = forms.ModelMultipleChoiceField(queryset=Skill.objects.none())
     skills = forms.ModelMultipleChoiceField(queryset=CharacterSkill.objects.none())
 
-    def __init__(self, *args, skills, klass_skills_limit, **kwargs):
+    def __init__(self, *args, skills, limit, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.skills_limit = klass_skills_limit
+        self.limit = limit
 
         self.fields['skills'].queryset = skills
-        self.fields['skills'].widget.attrs = {'class': 'selectpicker', 'data-max-options': self.skills_limit}
+        self.fields['skills'].widget.attrs = {'class': 'selectpicker', 'data-max-options': self.limit}
 
     def clean_skills(self):
         skills = self.cleaned_data['skills']
 
-        if skills.count() > self.skills_limit:
-            raise forms.ValidationError(f'Можно выбрать только {self.skills_limit} навыка')
+        if skills.count() != self.limit:
+            raise forms.ValidationError(f'Можно выбрать только {self.limit} навыка')
 
         return skills
 
@@ -85,18 +84,18 @@ class AddCharSkillProficiency(forms.Form):
 class AddCharLanguageFromBackground(forms.Form):
     langs = forms.ModelMultipleChoiceField(queryset=Language.objects.none())
 
-    def __init__(self, *args, languages, limit, **kwargs):
+    def __init__(self, *args, queryset, limit, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.langs_limit = limit
 
-        self.fields['langs'].queryset = languages
+        self.fields['langs'].queryset = queryset
         self.fields['langs'].widget.attrs = {'class': 'selectpicker', 'data-max-options': limit}
 
     def clean_langs(self):
         langs = self.cleaned_data['langs']
 
-        if langs.count() > self.langs_limit:
+        if langs.count() != self.langs_limit:
             raise forms.ValidationError(f'Можно выбрать только {self.langs_limit} языка')
 
         return langs
