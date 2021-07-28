@@ -1425,13 +1425,6 @@ class CharacterSkillQueryset(models.QuerySet):
             ),
         )
 
-    # def annotate_from_background(self, background):
-    #     return self.annotate(
-    #         from_background=models.Exists(
-    #             background.skills_proficiency.only('id').filter(id=models.OuterRef('skill_id'))
-    #         )
-    #     )
-
 
 class CharacterSkillManager(models.Manager):
     def get_queryset(self):

@@ -96,32 +96,6 @@ def set_character_stats(request, adv_id, char_id):
     return render(request, 'dnd5e/adventures/char/set_stats.html', context)
 
 
-# @login_required
-# def set_skills_proficiency(request, adv_id, char_id):
-#     char = get_object_or_404(Character, id=char_id)
-#     adventure = get_object_or_404(Adventure, id=adv_id)
-# 
-#     char_skills = char.skills.all().annotate_from_background(char.background)
-# 
-#     form = AddCharSkillProficiency(
-#         request.POST or None,
-#         skills=char_skills.exclude(from_background=True),
-#         limit=char.klass.skill_proficiency_limit,
-#         initial={'skills': char_skills.exclude(from_background=True).filter(proficiency=True)}
-#     )
-# 
-#     if form.is_valid():
-#         with transaction.atomic():
-#             char_skills.exclude(from_background=True).update(proficiency=False)
-#             form.cleaned_data['skills'].update(proficiency=True)
-# 
-#     context = {
-#         'char': char, 'adventure': adventure, 'form': form, 'current': char_skills.filter(proficiency=True)
-#     }
-# 
-#     return render(request, 'dnd5e/adventures/char/set_skills.html', context)
-# 
-# 
 @login_required
 @transaction.atomic()
 def resolve_char_choice(request, adv_id, char_id, choice_id):
