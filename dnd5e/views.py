@@ -1,12 +1,12 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
-from django.contrib import messages
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 
 from .choices import ALL_CHOICES
 from .filters import MonsterFilter, SpellFilter
-from .forms import (CharacterForm, CharacterStatsFormset)
+from .forms import CharacterForm, CharacterStatsFormset
 from .models import (
     NPC, Adventure, AdventureMonster, Character, CharacterAbilities, CharacterAdvancmentChoice,
     Class, ClassLevels, Monster, Place, Spell, Stage, Subclass, Zone

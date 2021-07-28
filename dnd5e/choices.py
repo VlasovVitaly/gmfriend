@@ -1,8 +1,8 @@
 from django.apps import apps
 
 from .forms import (
-    AddCharSkillProficiency, MasterMindIntrigueSelect, SelectAbilityAdvanceForm, SelectCompetenceForm,
-    SelectFeatureForm, SelectSubclassForm, SelectToolProficiency, AddCharLanguageFromBackground, CharacterBackgroundForm
+    AddCharLanguageFromBackground, AddCharSkillProficiency, CharacterBackgroundForm, MasterMindIntrigueSelect,
+    SelectAbilityAdvanceForm, SelectCompetenceForm, SelectFeatureForm, SelectSubclassForm, SelectToolProficiency
 )
 
 dnd5e_app = apps.app_configs['dnd5e']
