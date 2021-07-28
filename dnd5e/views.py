@@ -6,9 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render, reverse
 
 from .choices import ALL_CHOICES
 from .filters import MonsterFilter, SpellFilter
-from .forms import (
-    CharacterBackgroundForm, CharacterForm, CharacterStatsFormset
-)
+from .forms import (CharacterForm, CharacterStatsFormset)
 from .models import (
     NPC, Adventure, AdventureMonster, Character, CharacterAbilities, CharacterAdvancmentChoice,
     Class, ClassLevels, Monster, Place, Spell, Stage, Subclass, Zone
@@ -96,33 +94,6 @@ def set_character_stats(request, adv_id, char_id):
     context = {'char': char, 'adventure': adventure, 'formset': charstats_formset}
 
     return render(request, 'dnd5e/adventures/char/set_stats.html', context)
-
-
-@login_required
-def set_character_background(request, adv_id, char_id):
-    char = get_object_or_404(Character, id=char_id)
-    adventure = get_object_or_404(Adventure, id=adv_id)
-
-    form = CharacterBackgroundForm(request.POST or None, background=char.background)
-
-    if hasattr(char, 'background_detail'):
-        form = CharacterBackgroundForm(
-            request.POST or None, background=char.background, instance=char.background_detail
-        )
-    else:
-        form = CharacterBackgroundForm(request.POST or None, background=char.background)
-
-    if form.is_valid():
-        background = form.save(commit=False)
-
-        if background.character_id is None:
-            background.character = char
-
-        background.save()
-
-    context = {'char': char, 'adventure': adventure, 'form': form}
-
-    return render(request, 'dnd5e/adventures/char/set_background.html', context)
 
 
 # @login_required

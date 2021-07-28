@@ -2,7 +2,7 @@ from django.apps import apps
 
 from .forms import (
     AddCharSkillProficiency, MasterMindIntrigueSelect, SelectAbilityAdvanceForm, SelectCompetenceForm,
-    SelectFeatureForm, SelectSubclassForm, SelectToolProficiency, AddCharLanguageFromBackground
+    SelectFeatureForm, SelectSubclassForm, SelectToolProficiency, AddCharLanguageFromBackground, CharacterBackgroundForm
 )
 
 dnd5e_app = apps.app_configs['dnd5e']
@@ -172,6 +172,24 @@ class CHAR_ADVANCE_003:
             self.character.languages.add(lang)
 
 
+class CHAR_ADVANCE_004:
+    ''' Выбор деталей предыистории '''
+    form_class = CharacterBackgroundForm
+    template = 'dnd5e/adventures/include/choices/advance_004.html'
+
+    def __init__(self, character):
+        self.character = character
+
+    def get_form(self, request, character):
+        return self.form_class(
+            data=request.POST or None, files=None,
+            background=character.background
+        )
+
+    def apply_data(self, data):
+        print(data)
+
+
 class POST_FEAT_001:
     def apply(self, character):
         wisdom = character.abilities.get(ability__orig_name='Wisdom')
@@ -232,6 +250,7 @@ ALL_CHOICES = {
     'CHAR_ADVANCE_001': CHAR_ADVANCE_001,
     'CHAR_ADVANCE_002': CHAR_ADVANCE_002,
     'CHAR_ADVANCE_003': CHAR_ADVANCE_003,
+    'CHAR_ADVANCE_004': CHAR_ADVANCE_004,
     'PROF_TOOLS_001': PROF_TOOLS_001,
     'PROF_TOOLS_002': PROF_TOOLS_002,
     'PROF_TOOLS_003': PROF_TOOLS_003,

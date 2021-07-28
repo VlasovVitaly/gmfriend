@@ -20,7 +20,6 @@
         {% bootstrap_messages %}
         <div class="btn-group">
             <a href="{% url 'dnd5e:adventure:character:set_stats' adventure.id char.id %}" class="btn btn-primary">Ред. характеристики</a>
-            <a href="{% url 'dnd5e:adventure:character:set_background' adventure.id char.id %}" class="btn btn-primary">Ред. предысторию</a>
             {# <a href="{% url 'dnd5e:adventure:character:set_skills' adventure.id char.id %}" class="btn btn-primary">Выбрать навыки</a> #}
             <button class="btn btn-primary dropdown-toggle{% if not total_choices %} disabled{% endif %}" data-toggle="dropdown" type="button">Сделать выбор <span class="badge badge-light">{{ total_choices }}</span></button>
             <div class="dropdown-menu">

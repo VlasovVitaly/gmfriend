@@ -1243,12 +1243,6 @@ class Character(models.Model):
         # Init Race Languages
         self.languages.set(self.race.languages.all())
 
-        # Add background languages choice if need
-        if self.background.known_languages:
-            CharacterAdvancmentChoice.objects.create(
-                character=self, choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_003'), reason=self.background
-            )
-
         # Race|Subrace and Background Features
         features = self.race.features.order_by().union(self.background.features.order_by())
         features = features.union(self.subrace.features.order_by()) if self.subrace else features
@@ -1266,14 +1260,36 @@ class Character(models.Model):
             [CharacterToolProficiency(character=self, tool=tool) for tool in tools]
         )
 
-        # Generate background choices
+        # Character choices
+        char_choices = []
+
+        # Background choices
         for choice in self.background.choices.all():
-            CharacterAdvancmentChoice.objects.create(character=self, choice=choice, reason=self.background)
+            char_choices.append(CharacterAdvancmentChoice(character=self, choice=choice, reason=self.background))
+
+        # Add background languages if need
+        if self.background.known_languages:
+            char_choices.append(
+                CharacterAdvancmentChoice(
+                    character=self, choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_003'), reason=self.background
+                )
+            )
 
         # Skills proficiency choice
-        CharacterAdvancmentChoice.objects.create(
-            character=self, choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_002'), reason=self.klass
+        char_choices.append(
+            CharacterAdvancmentChoice(
+                character=self, choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_002'), reason=self.klass
+            )
         )
+
+        # Background story
+        char_choices.append(
+            CharacterAdvancmentChoice(
+                character=self, choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_004'), reason=self.klass
+            )
+        )
+
+        CharacterAdvancmentChoice.objects.bulk_create(char_choices)
 
     def level_up(self):
         self._apply_class_advantages(self.level + 1)
