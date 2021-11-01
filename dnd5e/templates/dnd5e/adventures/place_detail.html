@@ -70,12 +70,12 @@
             <div class="pl-2 py-3 collapse" id="zone-treasures-{{ zone.id }}">
                 <ul class="list-unstyled">
                 {% for treasure in zone.treasures.all %}<li>{{ treasure }}</li>{% endfor %}
-                </ul
+                </ul>
             </div>
         {% endif %}
         {% if zone.traps.all %}<button class="btn btn-light">Ловушки</button>{% endif %}
         </div>
-        <div>{{ zone.get_description }}</div>
+        <div class="markdown-description">{{ zone.get_description }}</div>
     {% endfor %}
     </div>
 </div>

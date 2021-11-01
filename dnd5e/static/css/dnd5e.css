@@ -5,3 +5,10 @@
     justify-content: flex-start;
     align-items: flex-start;
 }
+
+.markdown-description > blockquote {
+    color: #666;
+    margin: 0 0 0 0.5em;
+    padding-left: 1em;
+    border-left: .4em #d7c6b0 solid;
+}
