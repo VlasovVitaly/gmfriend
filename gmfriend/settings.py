@@ -99,6 +99,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 # Markdown settings
 MARKDOWNX_SERVER_CALL_LATENCY = 2000
+MARKDOWNX_MARKDOWN_EXTENSIONS = [
+    'markdown.extensions.extra',
+]
 
 ENABLE_DEBUG_TOOLBAR = False
 
