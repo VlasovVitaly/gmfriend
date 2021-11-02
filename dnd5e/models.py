@@ -14,6 +14,8 @@ from multiselectfield import MultiSelectField
 
 from dnd5e import dnd
 
+from .model_fields import DiceField
+
 GENDER_CHOICES = (
     (1, 'Муж.'),
     (2, 'Жен.'),
@@ -720,6 +722,7 @@ class Class(models.Model):
     level_feats = GenericRelation(
         'ClassLevels', object_id_field='class_object_id', content_type_field='class_content_type'
     )
+    hit_dice = DiceField()
 
     class Meta:
         ordering = ['name']
@@ -1483,6 +1486,26 @@ class CharacterBackground(models.Model):
     ideal = models.ForeignKey(Ideal, on_delete=models.CASCADE, verbose_name='Идеал')
     bond = models.ForeignKey(Bond, on_delete=models.CASCADE, verbose_name='Привязанность')
     flaw = models.ForeignKey(Flaw, on_delete=models.CASCADE, verbose_name='Слабость')
+
+    class Meta:
+        default_permissions = ()
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+
+
+class CharacterDice(models.Model):
+    DTYPE_CHOICES = (
+        ('hit', 'Кость здоровья'),
+        ('superiority', 'Кость превосходства'),
+    )
+
+    character = models.OneToOneField(
+        Character, on_delete=models.CASCADE, related_name='dices', related_query_name='dice'
+    )
+    dtype = models.CharField(max_length=32, choices=DTYPE_CHOICES, default='hit')
+    dice = DiceField()
+    count = models.PositiveSmallIntegerField(default=1)
 
     class Meta:
         default_permissions = ()
