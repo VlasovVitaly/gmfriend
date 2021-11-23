@@ -24,7 +24,7 @@ class Dice:
         if self.mod:
             self.mod = int('{}{}'.format(groups['sign'], groups['mod']))
             self.sign = groups['sign']
-            self.value = f'{self.count}d{self.dice} {self.sign} {abs(self.mod)}' 
+            self.value = f'{self.count}d{self.dice} {self.sign} {abs(self.mod)}'
         else:
             self.value = f'{self.count}d{self.dice}'
 

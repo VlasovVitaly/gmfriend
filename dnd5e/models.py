@@ -1294,6 +1294,9 @@ class Character(models.Model):
 
         CharacterAdvancmentChoice.objects.bulk_create(char_choices)
 
+        # Create dices
+        CharacterDice.objects.create(character=self, dice=self.klass.hit_dice)
+
     def level_up(self):
         self._apply_class_advantages(self.level + 1)
 
@@ -1500,12 +1503,13 @@ class CharacterDice(models.Model):
         ('superiority', 'Кость превосходства'),
     )
 
-    character = models.OneToOneField(
+    character = models.ForeignKey(
         Character, on_delete=models.CASCADE, related_name='dices', related_query_name='dice'
     )
     dtype = models.CharField(max_length=32, choices=DTYPE_CHOICES, default='hit')
     dice = DiceField()
     count = models.PositiveSmallIntegerField(default=1)
+    maximum = models.PositiveSmallIntegerField(default=1)
 
     class Meta:
         default_permissions = ()
