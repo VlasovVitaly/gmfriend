@@ -1523,6 +1523,9 @@ class CharacterDice(models.Model):
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'
 
+    def __str__(self):
+        return f'[{self.count}/{self.maximum} {self.dice}]'
+
 
 class Language(models.Model):
     name = models.CharField(max_length=64, db_index=True, unique=True)

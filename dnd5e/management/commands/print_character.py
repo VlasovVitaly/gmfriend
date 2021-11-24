@@ -22,8 +22,15 @@ class Command(BaseCommand):
 
         self.stdout.write('Кости здоровья: ', ending='')
         for char_dice in char.dices.filter(dtype='hit'):
-            self.stdout.write(f'[{char_dice.count}/{char_dice.maximum} {char_dice.dice}]', ending=' ')
+            self.stdout.write(str(char_dice), ending=' ')
         self.stdout.write()
+
+        superiority_dices = char.dices.filter(dtype='superiority')
+        if superiority_dices.exists():
+            self.stdout.write('Кости превосходства: ', ending=' ')
+            for char_dice in superiority_dices:
+                self.stdout.write(str(char_dice), ending=' ')
+            self.stdout.write()
 
         self.stdout.write('\nХарактеристики:')
         for ability in char.abilities.all():
