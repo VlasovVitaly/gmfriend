@@ -1612,7 +1612,6 @@ class Skill(models.Model):
         verbose_name='Характеристика'
     )
     orig_name = models.CharField(max_length=64, db_index=True, unique=True)
-    description = models.TextField()
 
     class Meta:
         ordering = ['ability__name', 'name']
