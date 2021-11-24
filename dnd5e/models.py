@@ -688,7 +688,10 @@ class Subrace(models.Model):
     name = models.CharField(max_length=32, verbose_name='Название')
     aka = models.CharField(max_length=32, verbose_name='Альт. название', blank=True, null=True, default=None)
     features = GenericRelation(Feature, object_id_field='source_id')
-    stat_bonus = models.CharField(max_length=128, blank=True, null=True, default=None)
+    source = models.ForeignKey(
+        RuleBook, verbose_name='Источник', on_delete=models.CASCADE,
+        related_name='subraces', related_query_name='subrace', null=True, blank=True
+    )
 
     class Meta:
         ordering = ['race', 'name']
@@ -701,10 +704,10 @@ class Subrace(models.Model):
         return f'[{self.__class__.__name__}]: {self.name}'
 
     def __str__(self):
-        ret = f'{self.name} {self.race.name}'
         if self.aka:
-            return ret + f' ({self.aka})'
-        return ret
+            return f'{self.name} ({self.aka}'
+
+        return self.name
 
 
 class Class(models.Model):
