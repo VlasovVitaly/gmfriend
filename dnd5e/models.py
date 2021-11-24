@@ -659,7 +659,10 @@ class Race(models.Model):
     )
     size = models.CharField(max_length=1, choices=SIZE_CHOICES, verbose_name='Размер')
     features = GenericRelation(Feature, object_id_field='source_id')
-    stat_bonus = models.CharField(max_length=128, blank=True, null=True, default=None)
+    source = models.ForeignKey(
+        RuleBook, verbose_name='Источник', on_delete=models.CASCADE,
+        related_name='races', related_query_name='race', null=True, blank=True
+    )
 
     class Meta:
         ordering = ['name']
@@ -1520,7 +1523,6 @@ class CharacterDice(models.Model):
 
 class Language(models.Model):
     name = models.CharField(max_length=64, db_index=True, unique=True)
-    orig_name = models.CharField(max_length=64, db_index=True, unique=True)
 
     class Meta:
         ordering = ['name']
