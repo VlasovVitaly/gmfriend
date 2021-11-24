@@ -1,0 +1,66 @@
+[
+{
+  "model": "dnd5e.rulebook",
+  "pk": 1,
+  "fields": {
+    "name": "Player's Handbook",
+    "code": "PHB"
+  }
+},
+{
+  "model": "dnd5e.rulebook",
+  "pk": 2,
+  "fields": {
+    "name": "Monster Manual",
+    "code": "MM"
+  }
+},
+{
+  "model": "dnd5e.rulebook",
+  "pk": 3,
+  "fields": {
+    "name": "Dungeon Masters Guide",
+    "code": "DMG"
+  }
+},
+{
+  "model": "dnd5e.rulebook",
+  "pk": 4,
+  "fields": {
+    "name": "Volo's Guide to Monsters",
+    "code": "VGtM"
+  }
+},
+{
+  "model": "dnd5e.rulebook",
+  "pk": 5,
+  "fields": {
+    "name": "Xanathar's Guide to Everything",
+    "code": "XGtE"
+  }
+},
+{
+  "model": "dnd5e.rulebook",
+  "pk": 6,
+  "fields": {
+    "name": "Mordenkainen's Tome of Foes",
+    "code": "MToF"
+  }
+},
+{
+  "model": "dnd5e.rulebook",
+  "pk": 7,
+  "fields": {
+    "name": "Tasha's Cauldron of Everything",
+    "code": "TCoE"
+  }
+},
+{
+  "model": "dnd5e.rulebook",
+  "pk": 8,
+  "fields": {
+    "name": "Fizban's Treasury of Dragons",
+    "code": "FToD"
+  }
+}
+]

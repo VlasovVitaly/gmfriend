@@ -1,0 +1,212 @@
+[
+{
+  "model": "dnd5e.ability",
+  "pk": 1,
+  "fields": {
+    "name": "Сила",
+    "orig_name": "Strength"
+  }
+},
+{
+  "model": "dnd5e.ability",
+  "pk": 2,
+  "fields": {
+    "name": "Ловкость",
+    "orig_name": "Dexterity"
+  }
+},
+{
+  "model": "dnd5e.ability",
+  "pk": 3,
+  "fields": {
+    "name": "Телосложение",
+    "orig_name": "Constitution"
+  }
+},
+{
+  "model": "dnd5e.ability",
+  "pk": 4,
+  "fields": {
+    "name": "Интеллект",
+    "orig_name": "Intelligence"
+  }
+},
+{
+  "model": "dnd5e.ability",
+  "pk": 5,
+  "fields": {
+    "name": "Мудрость",
+    "orig_name": "Wisdom"
+  }
+},
+{
+  "model": "dnd5e.ability",
+  "pk": 6,
+  "fields": {
+    "name": "Харизма",
+    "orig_name": "Charisma"
+  }
+},
+{
+  "model": "dnd5e.skill",
+  "pk": 1,
+  "fields": {
+    "name": "Атлетика",
+    "ability": 1,
+    "orig_name": "Athletics"
+  }
+},
+{
+  "model": "dnd5e.skill",
+  "pk": 2,
+  "fields": {
+    "name": "Акробатика",
+    "ability": 2,
+    "orig_name": "Acrobatics"
+  }
+},
+{
+  "model": "dnd5e.skill",
+  "pk": 3,
+  "fields": {
+    "name": "Ловкость рук",
+    "ability": 2,
+    "orig_name": "Sleight of Hand"
+  }
+},
+{
+  "model": "dnd5e.skill",
+  "pk": 4,
+  "fields": {
+    "name": "Скрытность",
+    "ability": 2,
+    "orig_name": "Stealth"
+  }
+},
+{
+  "model": "dnd5e.skill",
+  "pk": 5,
+  "fields": {
+    "name": "Магия",
+    "ability": 4,
+    "orig_name": "Arcana"
+  }
+},
+{
+  "model": "dnd5e.skill",
+  "pk": 6,
+  "fields": {
+    "name": "История",
+    "ability": 4,
+    "orig_name": "History"
+  }
+},
+{
+  "model": "dnd5e.skill",
+  "pk": 7,
+  "fields": {
+    "name": "Анализ",
+    "ability": 4,
+    "orig_name": "Investigation"
+  }
+},
+{
+  "model": "dnd5e.skill",
+  "pk": 8,
+  "fields": {
+    "name": "Природа",
+    "ability": 4,
+    "orig_name": "Nature"
+  }
+},
+{
+  "model": "dnd5e.skill",
+  "pk": 9,
+  "fields": {
+    "name": "Религия",
+    "ability": 4,
+    "orig_name": "Religion"
+  }
+},
+{
+  "model": "dnd5e.skill",
+  "pk": 10,
+  "fields": {
+    "name": "Уход за животными",
+    "ability": 5,
+    "orig_name": "Animal Handling"
+  }
+},
+{
+  "model": "dnd5e.skill",
+  "pk": 11,
+  "fields": {
+    "name": "Проницательность",
+    "ability": 5,
+    "orig_name": "Insight"
+  }
+},
+{
+  "model": "dnd5e.skill",
+  "pk": 12,
+  "fields": {
+    "name": "Медицина",
+    "ability": 5,
+    "orig_name": "Medicine"
+  }
+},
+{
+  "model": "dnd5e.skill",
+  "pk": 13,
+  "fields": {
+    "name": "Внимательность",
+    "ability": 5,
+    "orig_name": "Perception"
+  }
+},
+{
+  "model": "dnd5e.skill",
+  "pk": 14,
+  "fields": {
+    "name": "Выживание",
+    "ability": 5,
+    "orig_name": "Survival"
+  }
+},
+{
+  "model": "dnd5e.skill",
+  "pk": 15,
+  "fields": {
+    "name": "Обман",
+    "ability": 6,
+    "orig_name": "Deception"
+  }
+},
+{
+  "model": "dnd5e.skill",
+  "pk": 16,
+  "fields": {
+    "name": "Запугивание",
+    "ability": 6,
+    "orig_name": "Intimidation"
+  }
+},
+{
+  "model": "dnd5e.skill",
+  "pk": 17,
+  "fields": {
+    "name": "Выступление",
+    "ability": 6,
+    "orig_name": "Performance"
+  }
+},
+{
+  "model": "dnd5e.skill",
+  "pk": 18,
+  "fields": {
+    "name": "Убеждение",
+    "ability": 6,
+    "orig_name": "Persuasion"
+  }
+}
+]
