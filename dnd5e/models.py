@@ -1524,7 +1524,7 @@ class CharacterDice(models.Model):
         return f'[{self.__class__.__name__}]: {self.id}'
 
     def __str__(self):
-        return f'[{self.count}/{self.maximum} {self.dice}]'
+        return f'{self.count}/{self.maximum} \u00d7 {self.dice}'
 
 
 class Language(models.Model):
