@@ -4,7 +4,6 @@ from collections import defaultdict
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.safestring import mark_safe
 
@@ -14,7 +13,7 @@ from multiselectfield import MultiSelectField
 
 from dnd5e import dnd
 
-from .model_fields import DiceField
+from .model_fields import DiceField, CostField
 
 GENDER_CHOICES = (
     (1, 'Муж.'),
@@ -103,82 +102,6 @@ CONDITIONS = (
     ('Petrified', 'Окаменение'),
     ('Frightened', 'Испруг'),
 )
-
-
-class Coins:
-    def __init__(self, copper=0, silver=0, elecrum=0, gold=0, platinum=0):
-        self.copper = copper
-        self.silver = silver
-        self.elecrum = elecrum
-        self.gold = gold
-        self.platinum = platinum
-
-    @classmethod
-    def parse_coins(cls, coins_string):
-        coins = map(int, coins_string.split(','))
-
-        try:
-            return cls(*coins)
-        except (ValueError, TypeError):
-            raise ValidationError('Invalid coins value')
-
-    def __bool__(self):
-        return any([self.copper, self.silver, self.elecrum, self.gold, self.platinum])
-
-    def __len__(self):
-        return 1
-
-    def __str__(self):
-        ret = []
-
-        if self.copper:
-            ret.append(f'{self.copper} ММ')
-        if self.silver:
-            ret.append(f'{self.silver} СМ')
-        if self.elecrum:
-            ret.append(f'{self.elecrum} ЭМ')
-        if self.gold:
-            ret.append(f'{self.gold} ЗМ')
-        if self.platinum:
-            ret.append(f'{self.platinum} ПМ')
-
-        return ', '.join(ret) if ret else '0'
-
-
-class CostField(models.CharField):
-    def __init__(self, *args, **kwargs):
-        kwargs['max_length'] = 25
-        super().__init__(*args, **kwargs)
-
-    def deconstruct(self):
-        name, path, args, kwargs = super().deconstruct()
-        del kwargs['max_length']
-
-        return name, path, args, kwargs
-
-    def from_db_value(self, value, expression, connection):
-        if value is None:
-            return value
-
-        return Coins.parse_coins(value)
-
-    def to_python(self, value):
-        if isinstance(value, Coins) or value is None:
-            return value
-
-        return Coins.parse_coins(value)
-
-    def get_prep_value(self, value):
-        if value is None:
-            return
-
-        if isinstance(value, str):
-            return value
-
-        return ','.join(map(str, [value.copper, value.silver, value.elecrum, value.gold, value.platinum]))
-
-    def value_to_string(self, obj):
-        return self.get_prep_value(self.value_from_object(obj))
 
 
 class RuleBook(models.Model):
