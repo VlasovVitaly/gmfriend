@@ -533,6 +533,23 @@ class Feature(models.Model):
         return f'{self.name}'
 
 
+class Maneuver(models.Model):
+    name = models.CharField(max_length=32, verbose_name='Название')
+    description = models.TextField(verbose_name='Описание')
+
+    class Meta:
+        default_permissions = ()
+        verbose_name = 'Приём'
+        verbose_name_plural = 'Приёмы'
+        ordering = ['name']
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+
+    def __str__(self):
+        return self.name
+
+
 class Trap(models.Model):
     name = models.CharField(max_length=32, verbose_name='Название')
     description = models.TextField(blank=True, verbose_name='Описание')
@@ -1125,8 +1142,8 @@ class Character(models.Model):
         Background, on_delete=models.CASCADE, related_name='+', verbose_name='Предыстория'
     )
     dead = models.BooleanField(verbose_name='Мертв', default=False, editable=False)
-
     languages = models.ManyToManyField('Language', related_name='+', verbose_name='Владение языками', editable=False)
+    known_maneuvers = models.ManyToManyField(Maneuver, related_name='+', verbose_name='Известные приёмы', editable=False)
 
     class Meta:
         ordering = ['name', 'level']
