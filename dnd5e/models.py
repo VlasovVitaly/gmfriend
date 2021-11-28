@@ -14,6 +14,8 @@ from multiselectfield import MultiSelectField
 
 from dnd5e import dnd
 
+from .model_fields import DiceField
+
 GENDER_CHOICES = (
     (1, 'Муж.'),
     (2, 'Жен.'),
@@ -657,7 +659,10 @@ class Race(models.Model):
     )
     size = models.CharField(max_length=1, choices=SIZE_CHOICES, verbose_name='Размер')
     features = GenericRelation(Feature, object_id_field='source_id')
-    stat_bonus = models.CharField(max_length=128, blank=True, null=True, default=None)
+    source = models.ForeignKey(
+        RuleBook, verbose_name='Источник', on_delete=models.CASCADE,
+        related_name='races', related_query_name='race', null=True, blank=True
+    )
 
     class Meta:
         ordering = ['name']
@@ -683,7 +688,10 @@ class Subrace(models.Model):
     name = models.CharField(max_length=32, verbose_name='Название')
     aka = models.CharField(max_length=32, verbose_name='Альт. название', blank=True, null=True, default=None)
     features = GenericRelation(Feature, object_id_field='source_id')
-    stat_bonus = models.CharField(max_length=128, blank=True, null=True, default=None)
+    source = models.ForeignKey(
+        RuleBook, verbose_name='Источник', on_delete=models.CASCADE,
+        related_name='subraces', related_query_name='subrace', null=True, blank=True
+    )
 
     class Meta:
         ordering = ['race', 'name']
@@ -693,13 +701,13 @@ class Subrace(models.Model):
         unique_together = ('race', 'name')
 
     def __repr__(self):
-        return f'[{self.__class__.__name__}]: {self.name}'
+        return f'[{self.__class__.__name__}]: {self.name})'
 
     def __str__(self):
-        ret = f'{self.name} {self.race.name}'
         if self.aka:
-            return ret + f' ({self.aka})'
-        return ret
+            return f'{self.name} ({self.aka}'
+
+        return self.name
 
 
 class Class(models.Model):
@@ -720,6 +728,7 @@ class Class(models.Model):
     level_feats = GenericRelation(
         'ClassLevels', object_id_field='class_object_id', content_type_field='class_content_type'
     )
+    hit_dice = DiceField()
 
     class Meta:
         ordering = ['name']
@@ -1291,6 +1300,9 @@ class Character(models.Model):
 
         CharacterAdvancmentChoice.objects.bulk_create(char_choices)
 
+        # Create dices
+        CharacterDice.objects.create(character=self, dice=self.klass.hit_dice)
+
     def level_up(self):
         self._apply_class_advantages(self.level + 1)
 
@@ -1491,9 +1503,32 @@ class CharacterBackground(models.Model):
         return f'[{self.__class__.__name__}]: {self.id}'
 
 
+class CharacterDice(models.Model):
+    DTYPE_CHOICES = (
+        ('hit', 'Кость здоровья'),
+        ('superiority', 'Кость превосходства'),
+    )
+
+    character = models.ForeignKey(
+        Character, on_delete=models.CASCADE, related_name='dices', related_query_name='dice'
+    )
+    dtype = models.CharField(max_length=32, choices=DTYPE_CHOICES, default='hit')
+    dice = DiceField()
+    count = models.PositiveSmallIntegerField(default=1)
+    maximum = models.PositiveSmallIntegerField(default=1)
+
+    class Meta:
+        default_permissions = ()
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+
+    def __str__(self):
+        return f'{self.count}/{self.maximum} \u00d7 {self.dice}'
+
+
 class Language(models.Model):
     name = models.CharField(max_length=64, db_index=True, unique=True)
-    orig_name = models.CharField(max_length=64, db_index=True, unique=True)
 
     class Meta:
         ordering = ['name']
@@ -1580,7 +1615,6 @@ class Skill(models.Model):
         verbose_name='Характеристика'
     )
     orig_name = models.CharField(max_length=64, db_index=True, unique=True)
-    description = models.TextField()
 
     class Meta:
         ordering = ['ability__name', 'name']

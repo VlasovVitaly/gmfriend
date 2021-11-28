@@ -1,0 +1,207 @@
+[
+{
+  "model": "dnd5e.race",
+  "pk": 1,
+  "fields": {
+    "name": "Гном",
+    "speed": 25,
+    "size": "s",
+    "source": 1,
+    "languages": [
+      2,
+      1
+    ]
+  }
+},
+{
+  "model": "dnd5e.race",
+  "pk": 2,
+  "fields": {
+    "name": "Дварф",
+    "speed": 25,
+    "size": "m",
+    "source": 1,
+    "languages": [
+      3,
+      1
+    ]
+  }
+},
+{
+  "model": "dnd5e.race",
+  "pk": 3,
+  "fields": {
+    "name": "Драконорождённый",
+    "speed": 30,
+    "size": "m",
+    "source": 1,
+    "languages": [
+      11,
+      1
+    ]
+  }
+},
+{
+  "model": "dnd5e.race",
+  "pk": 4,
+  "fields": {
+    "name": "Полуорк",
+    "speed": 30,
+    "size": "m",
+    "source": 1,
+    "languages": [
+      1,
+      8
+    ]
+  }
+},
+{
+  "model": "dnd5e.race",
+  "pk": 5,
+  "fields": {
+    "name": "Полурослик",
+    "speed": 25,
+    "size": "s",
+    "source": 1,
+    "languages": [
+      1,
+      7
+    ]
+  }
+},
+{
+  "model": "dnd5e.race",
+  "pk": 6,
+  "fields": {
+    "name": "Полуэльф",
+    "speed": 30,
+    "size": "m",
+    "source": 1,
+    "languages": [
+      1,
+      4
+    ]
+  }
+},
+{
+  "model": "dnd5e.race",
+  "pk": 7,
+  "fields": {
+    "name": "Тифлинг",
+    "speed": 30,
+    "size": "m",
+    "source": 1,
+    "languages": [
+      12,
+      1
+    ]
+  }
+},
+{
+  "model": "dnd5e.race",
+  "pk": 8,
+  "fields": {
+    "name": "Человек",
+    "speed": 30,
+    "size": "m",
+    "source": 1,
+    "languages": [
+      1
+    ]
+  }
+},
+{
+  "model": "dnd5e.race",
+  "pk": 9,
+  "fields": {
+    "name": "Эльф",
+    "speed": 30,
+    "size": "m",
+    "source": 1,
+    "languages": [
+      1,
+      4
+    ]
+  }
+},
+{
+  "model": "dnd5e.subrace",
+  "pk": 1,
+  "fields": {
+    "race": 1,
+    "name": "Лесной гном",
+    "aka": null,
+    "source": 1
+  }
+},
+{
+  "model": "dnd5e.subrace",
+  "pk": 2,
+  "fields": {
+    "race": 1,
+    "name": "Скальный гном",
+    "aka": null,
+    "source": 1
+  }
+},
+{
+  "model": "dnd5e.subrace",
+  "pk": 3,
+  "fields": {
+    "race": 2,
+    "name": "Горный дварф",
+    "aka": null,
+    "source": 1
+  }
+},
+{
+  "model": "dnd5e.subrace",
+  "pk": 4,
+  "fields": {
+    "race": 2,
+    "name": "Холмовой дварф",
+    "aka": null,
+    "source": 1
+  }
+},
+{
+  "model": "dnd5e.subrace",
+  "pk": 5,
+  "fields": {
+    "race": 5,
+    "name": "Коренастый полурослик",
+    "aka": null,
+    "source": 1
+  }
+},
+{
+  "model": "dnd5e.subrace",
+  "pk": 6,
+  "fields": {
+    "race": 5,
+    "name": "Легконогий полурослик",
+    "aka": null,
+    "source": 1
+  }
+},
+{
+  "model": "dnd5e.subrace",
+  "pk": 7,
+  "fields": {
+    "race": 9,
+    "name": "Высший эльф",
+    "aka": null,
+    "source": 1
+  }
+},
+{
+  "model": "dnd5e.subrace",
+  "pk": 8,
+  "fields": {
+    "race": 9,
+    "name": "Тёмный эльф",
+    "aka": "Дроу",
+    "source": 1
+  }
+}
+]

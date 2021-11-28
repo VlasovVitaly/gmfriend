@@ -1,0 +1,114 @@
+[
+{
+  "model": "dnd5e.language",
+  "pk": 1,
+  "fields": {
+    "name": "Общий"
+  }
+},
+{
+  "model": "dnd5e.language",
+  "pk": 2,
+  "fields": {
+    "name": "Гномий"
+  }
+},
+{
+  "model": "dnd5e.language",
+  "pk": 3,
+  "fields": {
+    "name": "Дварфский"
+  }
+},
+{
+  "model": "dnd5e.language",
+  "pk": 4,
+  "fields": {
+    "name": "Эльфийский"
+  }
+},
+{
+  "model": "dnd5e.language",
+  "pk": 5,
+  "fields": {
+    "name": "Великаний"
+  }
+},
+{
+  "model": "dnd5e.language",
+  "pk": 6,
+  "fields": {
+    "name": "Гоблинский"
+  }
+},
+{
+  "model": "dnd5e.language",
+  "pk": 7,
+  "fields": {
+    "name": "Полуросликов"
+  }
+},
+{
+  "model": "dnd5e.language",
+  "pk": 8,
+  "fields": {
+    "name": "Орочий"
+  }
+},
+{
+  "model": "dnd5e.language",
+  "pk": 9,
+  "fields": {
+    "name": "Бездны"
+  }
+},
+{
+  "model": "dnd5e.language",
+  "pk": 10,
+  "fields": {
+    "name": "Глубинная Речь"
+  }
+},
+{
+  "model": "dnd5e.language",
+  "pk": 11,
+  "fields": {
+    "name": "Драконий"
+  }
+},
+{
+  "model": "dnd5e.language",
+  "pk": 12,
+  "fields": {
+    "name": "Инфернальный"
+  }
+},
+{
+  "model": "dnd5e.language",
+  "pk": 13,
+  "fields": {
+    "name": "Небесный"
+  }
+},
+{
+  "model": "dnd5e.language",
+  "pk": 14,
+  "fields": {
+    "name": "Первичный"
+  }
+},
+{
+  "model": "dnd5e.language",
+  "pk": 15,
+  "fields": {
+    "name": "Подземный"
+  }
+},
+{
+  "model": "dnd5e.language",
+  "pk": 16,
+  "fields": {
+    "name": "Сильван"
+  }
+}
+]

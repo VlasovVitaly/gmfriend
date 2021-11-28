@@ -1,0 +1,392 @@
+[
+{
+  "model": "dnd5e.tool",
+  "pk": 1,
+  "fields": {
+    "name": "Воровские инструменты",
+    "category": 0,
+    "cost": "0,0,0,25,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 2,
+  "fields": {
+    "name": "Драконьи шахматы",
+    "category": 15,
+    "cost": "0,0,0,1,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 3,
+  "fields": {
+    "name": "Карты",
+    "category": 15,
+    "cost": "0,5,0,0,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 4,
+  "fields": {
+    "name": "Кости",
+    "category": 15,
+    "cost": "0,1,0,0,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 5,
+  "fields": {
+    "name": "Ставка трех драконов",
+    "category": 15,
+    "cost": "0,0,0,1,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 6,
+  "fields": {
+    "name": "Инструменты навигатора",
+    "category": 0,
+    "cost": "0,0,0,25,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 7,
+  "fields": {
+    "name": "Инструменты отравителя",
+    "category": 0,
+    "cost": "0,0,0,50,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 8,
+  "fields": {
+    "name": "Набор для грима",
+    "category": 0,
+    "cost": "0,0,0,25,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 9,
+  "fields": {
+    "name": "Барабан",
+    "category": 10,
+    "cost": "0,0,0,6,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 10,
+  "fields": {
+    "name": "Виола",
+    "category": 10,
+    "cost": "0,0,0,30,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 11,
+  "fields": {
+    "name": "Волынка",
+    "category": 10,
+    "cost": "0,0,0,30,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 12,
+  "fields": {
+    "name": "Лира",
+    "category": 10,
+    "cost": "0,0,0,30,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 13,
+  "fields": {
+    "name": "Лютня",
+    "category": 10,
+    "cost": "0,0,0,35,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 14,
+  "fields": {
+    "name": "Рожок",
+    "category": 10,
+    "cost": "0,0,0,3,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 15,
+  "fields": {
+    "name": "Свирель",
+    "category": 10,
+    "cost": "0,0,0,12,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 16,
+  "fields": {
+    "name": "Флейта",
+    "category": 10,
+    "cost": "0,0,0,2,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 17,
+  "fields": {
+    "name": "Цимбалы",
+    "category": 10,
+    "cost": "0,0,0,25,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 18,
+  "fields": {
+    "name": "Шалмей",
+    "category": 10,
+    "cost": "0,0,0,2,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 19,
+  "fields": {
+    "name": "Инструменты алхимика",
+    "category": 5,
+    "cost": "0,0,0,50,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 20,
+  "fields": {
+    "name": "Инструменты гончара",
+    "category": 5,
+    "cost": "0,0,0,10,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 21,
+  "fields": {
+    "name": "Инструменты жестянщика",
+    "category": 5,
+    "cost": "0,0,0,50,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 22,
+  "fields": {
+    "name": "Инструменты каллиграфа",
+    "category": 5,
+    "cost": "0,0,0,10,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 23,
+  "fields": {
+    "name": "Инструменты каменщика",
+    "category": 5,
+    "cost": "0,0,0,10,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 24,
+  "fields": {
+    "name": "Инструменты картографа",
+    "category": 5,
+    "cost": "0,0,0,15,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 25,
+  "fields": {
+    "name": "Инструменты кожевника",
+    "category": 5,
+    "cost": "0,0,0,5,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 26,
+  "fields": {
+    "name": "Инструменты кузнеца",
+    "category": 5,
+    "cost": "0,0,0,20,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 27,
+  "fields": {
+    "name": "Инструменты пивовара",
+    "category": 5,
+    "cost": "0,0,0,20,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 28,
+  "fields": {
+    "name": "Инструменты плотника",
+    "category": 5,
+    "cost": "0,0,0,8,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 29,
+  "fields": {
+    "name": "Инструменты повара",
+    "category": 5,
+    "cost": "0,0,0,1,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 30,
+  "fields": {
+    "name": "Инструменты резчика по дереву",
+    "category": 5,
+    "cost": "0,0,0,1,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 31,
+  "fields": {
+    "name": "Инструменты сапожника",
+    "category": 5,
+    "cost": "0,0,0,5,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 32,
+  "fields": {
+    "name": "Инструменты стеклодува",
+    "category": 5,
+    "cost": "0,0,0,30,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 33,
+  "fields": {
+    "name": "Инструменты ткача",
+    "category": 5,
+    "cost": "0,0,0,1,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 34,
+  "fields": {
+    "name": "Инструменты художника",
+    "category": 5,
+    "cost": "0,0,0,10,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 35,
+  "fields": {
+    "name": "Инструменты ювелира",
+    "category": 5,
+    "cost": "0,0,0,25,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 36,
+  "fields": {
+    "name": "Набор травника",
+    "category": 0,
+    "cost": "0,0,0,5,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 37,
+  "fields": {
+    "name": "Набор для фальсификации",
+    "category": 0,
+    "cost": "0,0,0,15,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 38,
+  "fields": {
+    "name": "Наземный  транспорт",
+    "category": 20,
+    "cost": "0,0,0,0,0",
+    "description": ""
+  }
+},
+{
+  "model": "dnd5e.tool",
+  "pk": 39,
+  "fields": {
+    "name": "Водный транспорт",
+    "category": 20,
+    "cost": "0,0,0,0,0",
+    "description": ""
+  }
+}
+]

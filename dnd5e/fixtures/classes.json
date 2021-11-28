@@ -1,0 +1,282 @@
+[
+{
+  "model": "dnd5e.class",
+  "pk": 1,
+  "fields": {
+    "name": "Бард",
+    "orig_name": "Bard",
+    "skill_proficiency_limit": 3,
+    "hit_dice": "1d8",
+    "skills_proficiency": [
+      7,
+      6,
+      5,
+      8,
+      9,
+      2,
+      3,
+      4,
+      13,
+      14,
+      12,
+      11,
+      10,
+      1,
+      17,
+      16,
+      15,
+      18
+    ],
+    "saving_trows": [
+      2,
+      6
+    ],
+    "tools_proficiency": []
+  }
+},
+{
+  "model": "dnd5e.class",
+  "pk": 2,
+  "fields": {
+    "name": "Варвар",
+    "orig_name": "Barbarian",
+    "skill_proficiency_limit": 2,
+    "hit_dice": "1d12",
+    "skills_proficiency": [
+      8,
+      13,
+      14,
+      10,
+      1,
+      16
+    ],
+    "saving_trows": [
+      1,
+      3
+    ],
+    "tools_proficiency": []
+  }
+},
+{
+  "model": "dnd5e.class",
+  "pk": 3,
+  "fields": {
+    "name": "Воин",
+    "orig_name": "Fighter",
+    "skill_proficiency_limit": 2,
+    "hit_dice": "1d10",
+    "skills_proficiency": [
+      6,
+      2,
+      13,
+      14,
+      11,
+      10,
+      1,
+      16
+    ],
+    "saving_trows": [
+      1,
+      3
+    ],
+    "tools_proficiency": []
+  }
+},
+{
+  "model": "dnd5e.class",
+  "pk": 4,
+  "fields": {
+    "name": "Волшебник",
+    "orig_name": "Wizard",
+    "skill_proficiency_limit": 2,
+    "hit_dice": "1d6",
+    "skills_proficiency": [
+      7,
+      6,
+      5,
+      9,
+      12,
+      11
+    ],
+    "saving_trows": [
+      4,
+      5
+    ],
+    "tools_proficiency": []
+  }
+},
+{
+  "model": "dnd5e.class",
+  "pk": 5,
+  "fields": {
+    "name": "Друид",
+    "orig_name": "Druid",
+    "skill_proficiency_limit": 2,
+    "hit_dice": "1d8",
+    "skills_proficiency": [
+      5,
+      8,
+      9,
+      13,
+      14,
+      12,
+      11,
+      10
+    ],
+    "saving_trows": [
+      4,
+      5
+    ],
+    "tools_proficiency": [
+      36
+    ]
+  }
+},
+{
+  "model": "dnd5e.class",
+  "pk": 6,
+  "fields": {
+    "name": "Жрец",
+    "orig_name": "Cleric",
+    "skill_proficiency_limit": 2,
+    "hit_dice": "1d8",
+    "skills_proficiency": [
+      6,
+      9,
+      12,
+      11,
+      18
+    ],
+    "saving_trows": [
+      5,
+      6
+    ],
+    "tools_proficiency": []
+  }
+},
+{
+  "model": "dnd5e.class",
+  "pk": 7,
+  "fields": {
+    "name": "Колдун",
+    "orig_name": "Warlock",
+    "skill_proficiency_limit": 2,
+    "hit_dice": "1d8",
+    "skills_proficiency": [
+      7,
+      6,
+      5,
+      8,
+      9,
+      16,
+      15
+    ],
+    "saving_trows": [
+      5,
+      6
+    ],
+    "tools_proficiency": []
+  }
+},
+{
+  "model": "dnd5e.class",
+  "pk": 8,
+  "fields": {
+    "name": "Монах",
+    "orig_name": "Monk",
+    "skill_proficiency_limit": 2,
+    "hit_dice": "1d8",
+    "skills_proficiency": [
+      6,
+      9,
+      2,
+      4,
+      11,
+      1
+    ],
+    "saving_trows": [
+      2,
+      1
+    ],
+    "tools_proficiency": []
+  }
+},
+{
+  "model": "dnd5e.class",
+  "pk": 9,
+  "fields": {
+    "name": "Паладин",
+    "orig_name": "Paladin",
+    "skill_proficiency_limit": 2,
+    "hit_dice": "1d10",
+    "skills_proficiency": [
+      9,
+      12,
+      11,
+      1,
+      16,
+      18
+    ],
+    "saving_trows": [
+      5,
+      6
+    ],
+    "tools_proficiency": []
+  }
+},
+{
+  "model": "dnd5e.class",
+  "pk": 10,
+  "fields": {
+    "name": "Плут",
+    "orig_name": "Rogue",
+    "skill_proficiency_limit": 4,
+    "hit_dice": "1d8",
+    "skills_proficiency": [
+      7,
+      2,
+      3,
+      4,
+      13,
+      11,
+      1,
+      17,
+      16,
+      15,
+      18
+    ],
+    "saving_trows": [
+      4,
+      2
+    ],
+    "tools_proficiency": [
+      1
+    ]
+  }
+},
+{
+  "model": "dnd5e.class",
+  "pk": 11,
+  "fields": {
+    "name": "Следопыт",
+    "orig_name": "Ranger",
+    "skill_proficiency_limit": 3,
+    "hit_dice": "1d10",
+    "skills_proficiency": [
+      7,
+      8,
+      4,
+      13,
+      14,
+      11,
+      10,
+      1
+    ],
+    "saving_trows": [
+      2,
+      1
+    ],
+    "tools_proficiency": []
+  }
+}
+]

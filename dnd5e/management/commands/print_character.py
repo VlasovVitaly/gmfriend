@@ -20,6 +20,18 @@ class Command(BaseCommand):
         self.stdout.write(f'Владение языками: {", ".join(lang.name for lang in char.languages.all())}')
         self.stdout.write(f'Владение инструментами: {", ".join(str(tool) for tool in char.tools_proficiency.all())}')
 
+        self.stdout.write('Кости здоровья: ', ending='')
+        for char_dice in char.dices.filter(dtype='hit'):
+            self.stdout.write(str(char_dice), ending=' ')
+        self.stdout.write()
+
+        superiority_dices = char.dices.filter(dtype='superiority')
+        if superiority_dices.exists():
+            self.stdout.write('Кости превосходства: ', ending=' ')
+            for char_dice in superiority_dices:
+                self.stdout.write(str(char_dice), ending=' ')
+            self.stdout.write()
+
         self.stdout.write('\nХарактеристики:')
         for ability in char.abilities.all():
             self.stdout.write(f'    {str(ability):18} ->  {ability.mod:+2d} [{ability.value:2d}]')

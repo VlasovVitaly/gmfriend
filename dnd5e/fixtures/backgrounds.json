@@ -1,0 +1,3302 @@
+[
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 1,
+  "fields": {
+    "background": 1,
+    "number": 1,
+    "text": "Я идеализирую конкретного героя своей веры и постоянно ссылаюсь на его поступки и свершения."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 2,
+  "fields": {
+    "background": 1,
+    "number": 2,
+    "text": "Я могу найти общую позицию даже у самых яростных врагов, сопереживая им, и всегда стремясь к примирению."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 3,
+  "fields": {
+    "background": 1,
+    "number": 3,
+    "text": "Я вижу знамения в каждом событии и поступке. Боги пытаются говорить с нами, нужно лишь прислушаться."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 4,
+  "fields": {
+    "background": 1,
+    "number": 4,
+    "text": "Ничто не может поколебать мой оптимизм."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 5,
+  "fields": {
+    "background": 1,
+    "number": 5,
+    "text": "При любой оказии я цитирую (или перевираю) священные тексты и притчи."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 6,
+  "fields": {
+    "background": 1,
+    "number": 6,
+    "text": "Я терпим (или нетерпим) к другим верованиям, и уважаю (или порицаю) поклонение другим богам."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 7,
+  "fields": {
+    "background": 1,
+    "number": 7,
+    "text": "Я люблю хорошую еду, выпивку и высокое общество представителей своего храма. Жизнь вдали от этого меня раздражает."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 8,
+  "fields": {
+    "background": 1,
+    "number": 8,
+    "text": "Я пробыл в храме слишком долго, и мне недостаёт опыта взаимодействия с людьми за его пределами."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 9,
+  "fields": {
+    "background": 2,
+    "number": 1,
+    "text": "Я легко начинаю и разрываю романтические отношения, и постоянно нахожусь в поиске новой пассии."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 10,
+  "fields": {
+    "background": 2,
+    "number": 2,
+    "text": "У меня припасены шуточки на все случаи жизни, особенно на те, где юмор вообще неуместен."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 11,
+  "fields": {
+    "background": 2,
+    "number": 3,
+    "text": "Лесть — мой излюбленный способ добиться желаемого."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 12,
+  "fields": {
+    "background": 2,
+    "number": 4,
+    "text": "Я прирождённый игрок, и не могу удержаться от риска, если на кону стоит что-то стоящее."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 13,
+  "fields": {
+    "background": 2,
+    "number": 5,
+    "text": "Я постоянно вру, зачастую даже без малейшей на то причины."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 14,
+  "fields": {
+    "background": 2,
+    "number": 6,
+    "text": "Сарказм и оскорбления — мои излюбленные приёмы."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 15,
+  "fields": {
+    "background": 2,
+    "number": 7,
+    "text": "Я ношу с собой различные святые символы, и взываю к тем божествам, что лучше подходят для каждого конкретного случая."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 16,
+  "fields": {
+    "background": 2,
+    "number": 8,
+    "text": "Я тащу в карман всё, что плохо лежит и имеет хоть какую-то ценность."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 17,
+  "fields": {
+    "background": 3,
+    "number": 1,
+    "text": "У меня всегда есть план на случай, если всё пойдёт не так как задумано."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 18,
+  "fields": {
+    "background": 3,
+    "number": 2,
+    "text": "Я всегда хладнокровен, несмотря ни на что. Я никогда не повышаю голоса и не позволяю эмоциям управлять мной."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 19,
+  "fields": {
+    "background": 3,
+    "number": 3,
+    "text": "На новом месте я первым делом подмечаю, где находятся различные ценности — или места, где они могут быть спрятаны."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 20,
+  "fields": {
+    "background": 3,
+    "number": 4,
+    "text": "Я предпочту обзавестись еще один другом, нежели еще одним врагом."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 21,
+  "fields": {
+    "background": 3,
+    "number": 5,
+    "text": "У меня проблемы с доверием. Те, кто выглядят самыми порядочными, зачастую скрывают множество грязных секретов."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 22,
+  "fields": {
+    "background": 3,
+    "number": 6,
+    "text": "Мне наплевать на риск. Никогда не говорите мне о возможных последствиях."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 23,
+  "fields": {
+    "background": 3,
+    "number": 7,
+    "text": "Наилучший способ заставить меня сделать что-то — сказать мне этого не делать."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 24,
+  "fields": {
+    "background": 3,
+    "number": 8,
+    "text": "Я срываюсь даже от малейшего оскорбления."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 25,
+  "fields": {
+    "background": 4,
+    "number": 1,
+    "text": "Для любой ситуации я найду подходящий рассказ."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 26,
+  "fields": {
+    "background": 4,
+    "number": 2,
+    "text": "Куда бы я ни пришёл, я начинаю собирать местные слухи и распространять сплетни."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 27,
+  "fields": {
+    "background": 4,
+    "number": 3,
+    "text": "Я безнадёжный романтик, всегда ищущий «кого-то особого»."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 28,
+  "fields": {
+    "background": 4,
+    "number": 4,
+    "text": "Никто не сердится на меня или возле меня подолгу, так как я могу разрядить любую напряжённую обстановку."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 29,
+  "fields": {
+    "background": 4,
+    "number": 5,
+    "text": "Мне нравятся оскорбления, даже если они направлены на меня."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 30,
+  "fields": {
+    "background": 4,
+    "number": 6,
+    "text": "Мне обидно, если я не нахожусь в центре внимания."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 31,
+  "fields": {
+    "background": 4,
+    "number": 7,
+    "text": "Превыше всего я ценю совершенство."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 32,
+  "fields": {
+    "background": 4,
+    "number": 8,
+    "text": "Моё настроение и намерения меняются так же быстро как ноты в музыке."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 33,
+  "fields": {
+    "background": 5,
+    "number": 1,
+    "text": "Я сужу других по поступкам, а не словам."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 34,
+  "fields": {
+    "background": 5,
+    "number": 2,
+    "text": "Если кто-то в беде, я всегда готов прийти на помощь."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 35,
+  "fields": {
+    "background": 5,
+    "number": 3,
+    "text": "Задумав что-то, я прямолинейно иду к цели, невзирая на помехи."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 36,
+  "fields": {
+    "background": 5,
+    "number": 4,
+    "text": "У меня обострённое чувство справедливости, и в споре я всегда ищу самого честного решения."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 37,
+  "fields": {
+    "background": 5,
+    "number": 5,
+    "text": "Я уверен в своих способностях, и стараюсь внушить такую же уверенность в других."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 38,
+  "fields": {
+    "background": 5,
+    "number": 6,
+    "text": "Пусть думают другие. Я предпочитаю действовать."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 39,
+  "fields": {
+    "background": 5,
+    "number": 7,
+    "text": "Я неправильно произношу длинные слова, когда пытаюсь выглядеть умнее."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 40,
+  "fields": {
+    "background": 5,
+    "number": 8,
+    "text": "Я быстро устаю. Когда уже я найду свою судьбу?"
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 41,
+  "fields": {
+    "background": 6,
+    "number": 1,
+    "text": "Я считаю, что всё, что делается, должно делаться правильно. Ничего не могу с этим поделать — я перфекционист."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 42,
+  "fields": {
+    "background": 6,
+    "number": 2,
+    "text": "Я сноб, свысока смотрящий на тех, кто не может оценить изящное искусство."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 43,
+  "fields": {
+    "background": 6,
+    "number": 3,
+    "text": "Мне всегда нужно знать, как всё вокруг устроено, и как нужно обращаться с другими."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 44,
+  "fields": {
+    "background": 6,
+    "number": 4,
+    "text": "У меня много остроумных афоризмов и есть пословицы на любой случай."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 45,
+  "fields": {
+    "background": 6,
+    "number": 5,
+    "text": "Я груб с теми, у кого нет моей тяги к честному и справедливому труду."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 46,
+  "fields": {
+    "background": 6,
+    "number": 6,
+    "text": "О своей профессии я могу говорить часами."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 47,
+  "fields": {
+    "background": 6,
+    "number": 7,
+    "text": "Я не могу легко расставаться с деньгами, и могу сколь угодно долго торговаться."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 48,
+  "fields": {
+    "background": 6,
+    "number": 8,
+    "text": "Благодаря работе я прославился, и хочу, чтобы все это ценили. Меня всегда потрясает, когда другие говорят, что не слышали обо мне."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 49,
+  "fields": {
+    "background": 7,
+    "number": 1,
+    "text": "Я так много прожил в изоляции, что редко говорю, предпочитая жесты и редкое мычание."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 50,
+  "fields": {
+    "background": 7,
+    "number": 2,
+    "text": "Я абсолютно безмятежен, даже в самых ужасных ситуациях."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 51,
+  "fields": {
+    "background": 7,
+    "number": 3,
+    "text": "У лидера моей общины были высказывания для любой ситуации, и я стремлюсь поделиться этой мудростью."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 52,
+  "fields": {
+    "background": 7,
+    "number": 4,
+    "text": "Я ужасно сопереживаю всем, кто страдает."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 53,
+  "fields": {
+    "background": 7,
+    "number": 5,
+    "text": "Я ужасно сопереживаю всем, кто страдает. 5 \tМне чужд этикет и общественные ожидания."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 54,
+  "fields": {
+    "background": 7,
+    "number": 6,
+    "text": "Я связываю всё, что происходит со мной, с грандиозным замыслом космического масштаба."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 55,
+  "fields": {
+    "background": 7,
+    "number": 7,
+    "text": "Я часто погружаюсь в свои мысли, отвлекаясь от окружения."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 56,
+  "fields": {
+    "background": 7,
+    "number": 8,
+    "text": "Я работаю над великой философской теорией и люблю тех, кто разделяет мои идеи."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 57,
+  "fields": {
+    "background": 8,
+    "number": 1,
+    "text": "Я применяю так много лести, что все, с кем я разговариваю, чувствуют себя самыми чудесными и важными персонами в мире."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 58,
+  "fields": {
+    "background": 8,
+    "number": 2,
+    "text": "Обыватели любят меня за доброту и великодушие."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 59,
+  "fields": {
+    "background": 8,
+    "number": 3,
+    "text": "Один лишь взгляд на мои регалии заставляет перестать сомневаться в том, что я выше немытого отребья."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 60,
+  "fields": {
+    "background": 8,
+    "number": 4,
+    "text": "Я много трачу на то, чтобы выглядеть потрясающе, и по последнему слову моды."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 61,
+  "fields": {
+    "background": 8,
+    "number": 5,
+    "text": "Мне не нравится марать руки, и я не хочу умереть в каком-нибудь неподобающем месте."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 62,
+  "fields": {
+    "background": 8,
+    "number": 6,
+    "text": "Несмотря на благородное рождение, я не ставлю себя выше народа. У всех нас течёт одинаковая кровь."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 63,
+  "fields": {
+    "background": 8,
+    "number": 7,
+    "text": "Потеряв мою милость, обратно её не вернёшь."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 64,
+  "fields": {
+    "background": 8,
+    "number": 8,
+    "text": "Оскорбишь меня, и я сотру тебя в порошок, уничтожу твоё имя, и сожгу твои поля."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 65,
+  "fields": {
+    "background": 9,
+    "number": 1,
+    "text": "Мной руководит жажда приключений, которая и увела меня из дома."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 66,
+  "fields": {
+    "background": 9,
+    "number": 2,
+    "text": "Я слежу за друзьями, как если бы они были слепыми котятами."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 67,
+  "fields": {
+    "background": 9,
+    "number": 3,
+    "text": "Однажды я пробежал 40 километров без остановки, чтобы предупредить свой клан о приближающейся орде орков. Если понадобится, я повторю это."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 68,
+  "fields": {
+    "background": 9,
+    "number": 4,
+    "text": "Для любой ситуации у меня есть уроки, извлечённые из наблюдений за природой."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 69,
+  "fields": {
+    "background": 9,
+    "number": 5,
+    "text": "Я не понимаю богатых и воспитанных. Деньги и хорошие манеры не спасут тебя от голодного волка."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 70,
+  "fields": {
+    "background": 9,
+    "number": 6,
+    "text": "Я всё время что-то беру в руки, рассеянно кручу и иногда ломаю."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 71,
+  "fields": {
+    "background": 9,
+    "number": 7,
+    "text": "Я гораздо комфортнее чувствую себя среди зверей, чем среди людей."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 72,
+  "fields": {
+    "background": 9,
+    "number": 8,
+    "text": "Меня действительно вырастили волки."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 73,
+  "fields": {
+    "background": 10,
+    "number": 1,
+    "text": "Я использую многосложные слова, создающие впечатление образованности."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 74,
+  "fields": {
+    "background": 10,
+    "number": 2,
+    "text": "Я прочитал все книги в величайших библиотеках мира — или, по крайней мере, говорю так."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 75,
+  "fields": {
+    "background": 10,
+    "number": 3,
+    "text": "Я привык помогать тем, кто не так умён как я, и терпеливо всем всё объясняю."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 76,
+  "fields": {
+    "background": 10,
+    "number": 4,
+    "text": "Больше всего на свете я люблю тайны."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 77,
+  "fields": {
+    "background": 10,
+    "number": 5,
+    "text": "Прежде чем принять решение, я выслушаю аргументы обеих спорящих сторон."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 78,
+  "fields": {
+    "background": 10,
+    "number": 6,
+    "text": "Я ... говорю ... медленно ... когда разговариваю ... с идиотами, ... то есть ... практически ... всегда."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 79,
+  "fields": {
+    "background": 10,
+    "number": 7,
+    "text": "В социальном взаимодействии я ужасно неуклюж."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 80,
+  "fields": {
+    "background": 10,
+    "number": 8,
+    "text": "Я убеждён, что остальные постоянно хотят украсть мои тайны."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 81,
+  "fields": {
+    "background": 11,
+    "number": 1,
+    "text": "Друзья знают, что всегда могут на меня положиться."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 82,
+  "fields": {
+    "background": 11,
+    "number": 2,
+    "text": "Я усердно тружусь, чтобы потом можно было хорошо отдохнуть."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 83,
+  "fields": {
+    "background": 11,
+    "number": 3,
+    "text": "Мне нравится заходить в новые порты и находить друзей за кружечкой эля."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 84,
+  "fields": {
+    "background": 11,
+    "number": 4,
+    "text": "Я готов приврать, чтобы получился хороший рассказ."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 85,
+  "fields": {
+    "background": 11,
+    "number": 5,
+    "text": "Для меня драка в таверне — отличный способ познакомиться с новым городом."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 86,
+  "fields": {
+    "background": 11,
+    "number": 6,
+    "text": "Я никогда не откажусь от пари."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 87,
+  "fields": {
+    "background": 11,
+    "number": 7,
+    "text": "Я ругаюсь как банда орков."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 88,
+  "fields": {
+    "background": 11,
+    "number": 8,
+    "text": "Мне нравится, когда работа выполнена, особенно если её можно поручить другому."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 89,
+  "fields": {
+    "background": 12,
+    "number": 1,
+    "text": "Я всегда вежлив и почтителен."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 90,
+  "fields": {
+    "background": 12,
+    "number": 2,
+    "text": "Меня терзают воспоминания о войне. Не могу забыть то насилие, что мне довелось увидеть."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 91,
+  "fields": {
+    "background": 12,
+    "number": 3,
+    "text": "Я потерял много друзей, и теперь с трудом завожу новых."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 92,
+  "fields": {
+    "background": 12,
+    "number": 4,
+    "text": "У меня много воодушевляющих и предостерегающих рассказов из военного прошлого, подходящих практически к любой боевой ситуации."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 93,
+  "fields": {
+    "background": 12,
+    "number": 5,
+    "text": "Я могу смотреть прямо на адскую гончую, не отводя глаз."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 94,
+  "fields": {
+    "background": 12,
+    "number": 6,
+    "text": "Мне нравится быть сильным и крушить вещи."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 95,
+  "fields": {
+    "background": 12,
+    "number": 7,
+    "text": "У меня грубое чувство юмора."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 96,
+  "fields": {
+    "background": 12,
+    "number": 8,
+    "text": "Я решаю проблемы прямолинейно. Простое решение — лучший путь к успеху."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 97,
+  "fields": {
+    "background": 13,
+    "number": 1,
+    "text": "В моих карманах полно побрякушек и объедков."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 98,
+  "fields": {
+    "background": 13,
+    "number": 2,
+    "text": "Я задаю очень много вопросов."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 99,
+  "fields": {
+    "background": 13,
+    "number": 3,
+    "text": "Я часто забиваюсь в узкие закутки, где никто не сможет добраться до меня."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 100,
+  "fields": {
+    "background": 13,
+    "number": 4,
+    "text": "Я всегда сплю, прижавшись спиной к стене или дереву, сжимая узелок со всеми своими пожитками в руках."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 101,
+  "fields": {
+    "background": 13,
+    "number": 5,
+    "text": "Я не воспитан, и ем как свинья."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 102,
+  "fields": {
+    "background": 13,
+    "number": 6,
+    "text": "Я убеждён, что все, кто проявляют доброту ко мне, на самом деле скрывают злые намерения."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 103,
+  "fields": {
+    "background": 13,
+    "number": 7,
+    "text": "Я не люблю мыться."
+  }
+},
+{
+  "model": "dnd5e.personalitytrait",
+  "pk": 104,
+  "fields": {
+    "background": 13,
+    "number": 8,
+    "text": "Я прямо говорю о том, на что прочие предпочитают лишь намекнуть, или промолчать."
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 1,
+  "fields": {
+    "background": 1,
+    "number": 1,
+    "text": "Традиции. Мы должны сохранить и защитить древние традиции богослужения и совершения священных таинств. (Законный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 2,
+  "fields": {
+    "background": 1,
+    "number": 2,
+    "text": "Милосердие. Несмотря на затраченные усилия, я всегда пытаюсь помочь тем, кто в нужде. (Добрый)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 3,
+  "fields": {
+    "background": 1,
+    "number": 3,
+    "text": "Перемены. Мы должны помогать привносить в мир перемены, которых наши божества постоянно жаждут. (Хаотичный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 4,
+  "fields": {
+    "background": 1,
+    "number": 4,
+    "text": "Власть. Я надеюсь однажды подняться на самую вершину своей религиозной иерархии. (Законный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 5,
+  "fields": {
+    "background": 1,
+    "number": 5,
+    "text": "Вера. Я верю, что моё божество направляет меня. И что усердная работа всегда будет вознаграждена. (Законный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 6,
+  "fields": {
+    "background": 1,
+    "number": 6,
+    "text": "Стремление. Я ищу шанс доказать, что я достоин благословления своего божества, совершая деяния в соответствии с его учениями. (Любой)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 7,
+  "fields": {
+    "background": 2,
+    "number": 1,
+    "text": "Независимость. У меня свободолюбивая натура — никто не смеет указывать мне, что делать. (Хаотичный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 8,
+  "fields": {
+    "background": 2,
+    "number": 2,
+    "text": "Честность. Я никогда не выберу своей жертвой людей, которые находятся в бедственном положении. (Законный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 9,
+  "fields": {
+    "background": 2,
+    "number": 3,
+    "text": "Милосердие. Я распределяю добытые деньги между людьми, которые в них действительно нуждаются. (Добрый)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 10,
+  "fields": {
+    "background": 2,
+    "number": 4,
+    "text": "Креативность. Я никогда не иду проторённой дорожкой. (Хаотичный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 11,
+  "fields": {
+    "background": 2,
+    "number": 5,
+    "text": "Дружба. Материальные блага приходят и уходят, а друзья остаются. (Добрый)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 12,
+  "fields": {
+    "background": 2,
+    "number": 6,
+    "text": "Стремление. Я собираюсь стать кем-то значимым в этой жизни. (Любой)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 13,
+  "fields": {
+    "background": 3,
+    "number": 1,
+    "text": "Честь. Я не краду у своих «коллег». (Законный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 14,
+  "fields": {
+    "background": 3,
+    "number": 2,
+    "text": "Свобода. Любые оковы должны быть сломлены, как и те, кто их выковал. (Хаотичный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 15,
+  "fields": {
+    "background": 3,
+    "number": 3,
+    "text": "Милосердие. Я краду у богачей, чтобы помочь людям в беде. (Добрый)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 16,
+  "fields": {
+    "background": 3,
+    "number": 4,
+    "text": "Жадность. Я сделаю всё что угодно, лишь бы разбогатеть. (Злой)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 17,
+  "fields": {
+    "background": 3,
+    "number": 5,
+    "text": "Друзья. Я верен не каким-то там идеалам, но своим друзьям. А все остальные могут катиться к чертям. (Нейтральный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 18,
+  "fields": {
+    "background": 3,
+    "number": 6,
+    "text": "Искупление. В каждом есть что-то хорошее. (Добрый)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 19,
+  "fields": {
+    "background": 4,
+    "number": 1,
+    "text": "Красота. Выступая, я делаю мир лучше. (Добрый)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 20,
+  "fields": {
+    "background": 4,
+    "number": 2,
+    "text": "Традиции. Рассказы, легенды и песни прошлого не должны забываться, так как они учат нас тому, кто мы такие. (Законный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 21,
+  "fields": {
+    "background": 4,
+    "number": 3,
+    "text": "Творчество. Миру нужны новые идеи и смелые действия. (Хаотичный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 22,
+  "fields": {
+    "background": 4,
+    "number": 4,
+    "text": "Жадность. Я занимаюсь всем этим ради денег и славы. (Злой)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 23,
+  "fields": {
+    "background": 4,
+    "number": 5,
+    "text": "Народ. Мне нравится видеть улыбки на лицах во время выступления. В этом-то всё дело. (Нейтральный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 24,
+  "fields": {
+    "background": 4,
+    "number": 6,
+    "text": "Честность. Искусство должно отражать душу; оно должно идти изнутри и показывать, чем мы являемся. (Любой)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 25,
+  "fields": {
+    "background": 5,
+    "number": 1,
+    "text": "Уважение. Нужно относиться друг к другу с достоинством и уважением. (Добрый)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 26,
+  "fields": {
+    "background": 5,
+    "number": 2,
+    "text": "Справедливость. Закон не должен делать ни для кого исключений, и никто не может стать выше закона. (Законный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 27,
+  "fields": {
+    "background": 5,
+    "number": 3,
+    "text": "Свобода. Тираны не должны угнетать народ. (Хаотичный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 28,
+  "fields": {
+    "background": 5,
+    "number": 4,
+    "text": "Мощь. Если я стану сильным, я смогу брать то, что захочу — и я это заслуживаю. (Злой)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 29,
+  "fields": {
+    "background": 5,
+    "number": 5,
+    "text": "Искренность. Нет ничего хорошего в том, что ты притворяешься тем, кем не являешься. (Нейтральный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 30,
+  "fields": {
+    "background": 5,
+    "number": 6,
+    "text": "Судьба. Никто и ничто не собьёт меня с пути к высшему призванию. (Любое)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 31,
+  "fields": {
+    "background": 6,
+    "number": 1,
+    "text": "Сообщество. Все цивилизованные народы обязаны укреплять сообщество и обеспечивать безопасность цивилизации. (Законный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 32,
+  "fields": {
+    "background": 6,
+    "number": 2,
+    "text": "Великодушие. Талант был вручён мне, чтобы я использовал его на благо всего мира. (Добрый)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 33,
+  "fields": {
+    "background": 6,
+    "number": 3,
+    "text": "Свобода. Все должны быть свободны, чтобы жить так, как хочется им. (Хаотичный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 34,
+  "fields": {
+    "background": 6,
+    "number": 4,
+    "text": "Жадность. Я просто занимаюсь этим из-за денег. (Злой)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 35,
+  "fields": {
+    "background": 6,
+    "number": 5,
+    "text": "Народ. Я предан своему народу, а не идеям. (Нейтральный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 36,
+  "fields": {
+    "background": 6,
+    "number": 6,
+    "text": "Стремление. Я усердно работаю над тем, чтобы стать в своём деле лучшим."
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 37,
+  "fields": {
+    "background": 7,
+    "number": 1,
+    "text": "Всеобщее благо. Мои дары предназначены для всех, я не должен использовать их в одиночку. (Добрый)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 38,
+  "fields": {
+    "background": 7,
+    "number": 2,
+    "text": "Логика. Эмоции не должны затмевать наше видение того, что истинно и справедливо, а также наше логическое мышление. (Законный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 39,
+  "fields": {
+    "background": 7,
+    "number": 3,
+    "text": "Свободомыслие. Изыскания и любопытство — столпы прогресса. (Хаотичный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 40,
+  "fields": {
+    "background": 7,
+    "number": 4,
+    "text": "Сила. Уединение и созерцание — путь к мистической и магической силе. (Злой)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 41,
+  "fields": {
+    "background": 7,
+    "number": 5,
+    "text": "Сам живи и другим не мешай. Вмешиваясь в дела других, причиняешь одни лишь проблемы. (Нейтральный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 42,
+  "fields": {
+    "background": 7,
+    "number": 6,
+    "text": "Самопознание. Познаешь себя — познаешь всё вокруг. (Любое)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 43,
+  "fields": {
+    "background": 8,
+    "number": 1,
+    "text": "Уважение. Уважение — мой долг. Кем бы ты ни был, к другим нужно относиться с уважением, невзирая на их происхождение. (Добрый)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 44,
+  "fields": {
+    "background": 8,
+    "number": 2,
+    "text": "Ответственность. Я должен уважать тех, кто выше меня, а те, кто ниже меня, должны уважать меня. (Законный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 45,
+  "fields": {
+    "background": 8,
+    "number": 3,
+    "text": "Независимость. Я должен доказать, что справлюсь и без заботы своей семьи. (Хаотичный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 46,
+  "fields": {
+    "background": 8,
+    "number": 4,
+    "text": "Власть. Если соберу много власти, никто не посмеет указывать мне, что делать. (Злой)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 47,
+  "fields": {
+    "background": 8,
+    "number": 5,
+    "text": "Семья. Настоящая кровь гуще. (Любое)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 48,
+  "fields": {
+    "background": 8,
+    "number": 6,
+    "text": "Семья. Настоящая кровь гуще. (Любое) 6 \tБлагородный долг. Я должен защищать тех, кто ниже меня, и заботиться о них. (Добрый)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 49,
+  "fields": {
+    "background": 9,
+    "number": 1,
+    "text": "Перемены. Жизнь как времена года, постоянно меняется, и мы должны меняться вместе с ней. (Хаотичный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 50,
+  "fields": {
+    "background": 9,
+    "number": 2,
+    "text": "Процветание. Каждый должен поступать так, чтобы всё племя было счастливо. (Добрый)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 51,
+  "fields": {
+    "background": 9,
+    "number": 3,
+    "text": "Честь. Если я обесчещу себя, я обесчещу весь свой клан. (Законный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 52,
+  "fields": {
+    "background": 9,
+    "number": 4,
+    "text": "Мощь. Самый сильный имеет право приказывать. (Злой)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 53,
+  "fields": {
+    "background": 9,
+    "number": 5,
+    "text": "Природа. Мир природы гораздо важнее построек цивилизации. (Нейтральный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 54,
+  "fields": {
+    "background": 9,
+    "number": 6,
+    "text": "Слава. Я должен завоёвывать славу в сражениях, для себя и своего клана. (Любой)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 55,
+  "fields": {
+    "background": 10,
+    "number": 1,
+    "text": "Знание. Путь к силе и самосовершенствованию лежит в знаниях. (Нейтральный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 56,
+  "fields": {
+    "background": 10,
+    "number": 2,
+    "text": "Красота. Красота ведёт нас к тому, что истинно. (Добрый)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 57,
+  "fields": {
+    "background": 10,
+    "number": 3,
+    "text": "Логика. Эмоции не должны подавлять логическое мышление. (Законный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 58,
+  "fields": {
+    "background": 10,
+    "number": 4,
+    "text": "Свобода. Ничто не должно сдерживать бесконечные варианты всех возможных исходов. (Хаотичный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 59,
+  "fields": {
+    "background": 10,
+    "number": 5,
+    "text": "Власть. Знания — путь к власти и контролю. (Злой)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 60,
+  "fields": {
+    "background": 10,
+    "number": 6,
+    "text": "Самосовершенствование. Цель жизни в познании — самосовершенствование. (Любое)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 61,
+  "fields": {
+    "background": 11,
+    "number": 1,
+    "text": "Уважение. Корабль держится целым благодаря взаимному уважению капитана и экипажа. (Добрый)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 62,
+  "fields": {
+    "background": 11,
+    "number": 2,
+    "text": "Справедливость. Все мы делаем одно дело, и награду должны делить поровну. (Законный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 63,
+  "fields": {
+    "background": 11,
+    "number": 3,
+    "text": "Свобода. Море это свобода — свобода идти куда угодно и делать что угодно. (Хаотичный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 64,
+  "fields": {
+    "background": 11,
+    "number": 4,
+    "text": "Власть. Я хищник, а другие корабли в море — моя добыча. (Злой)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 65,
+  "fields": {
+    "background": 11,
+    "number": 5,
+    "text": "Команда. Я предан экипажу, а не идеалам. (Нейтральный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 66,
+  "fields": {
+    "background": 11,
+    "number": 6,
+    "text": "Команда. Я предан экипажу, а не идеалам. (Нейтральный) 6 \tСтремление. Когда-нибудь у меня будет свой корабль, и я проложу курс куда захочу. (Любой)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 67,
+  "fields": {
+    "background": 12,
+    "number": 1,
+    "text": "Высшее благо. Наш жребий — отдать свои жизни ради других. (Добрый)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 68,
+  "fields": {
+    "background": 12,
+    "number": 2,
+    "text": "Ответственность. Я делаю что должен, и подчиняюсь вышестоящим. (Законный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 69,
+  "fields": {
+    "background": 12,
+    "number": 3,
+    "text": "Независимость. Если слепо следовать приказам, попадаешь под пяту тирании. (Хаотичный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 70,
+  "fields": {
+    "background": 12,
+    "number": 4,
+    "text": "Мощь. В жизни и войне побеждает сильнейший. (Злой)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 71,
+  "fields": {
+    "background": 12,
+    "number": 5,
+    "text": "Живи и не мешай другим. Идеалы не стоят того, чтобы ради них убивать или воевать. (Нейтральный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 72,
+  "fields": {
+    "background": 12,
+    "number": 6,
+    "text": "Нация. Мой город, нация и народ — вот что самое главное. (Любой)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 73,
+  "fields": {
+    "background": 13,
+    "number": 1,
+    "text": "Уважение. Все люди, богатые ли они, или бедные, достойны уважения. (Добрый)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 74,
+  "fields": {
+    "background": 13,
+    "number": 2,
+    "text": "Общность. Вы должны заботиться друг о друге, ведь никто другой этого не сделает. (Законный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 75,
+  "fields": {
+    "background": 13,
+    "number": 3,
+    "text": "Перемены. Убогие возвысятся, а великие падут. Перемены в природе вещей. (Хаотичный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 76,
+  "fields": {
+    "background": 13,
+    "number": 4,
+    "text": "Возмездие. Нужно показать богачам, чего стоит жизнь и смерть в трущобах. (Злой)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 77,
+  "fields": {
+    "background": 13,
+    "number": 5,
+    "text": "Люди. Я помогаю тем, кто помогает мне. Это позволяет нам выжить. (Нейтральный)"
+  }
+},
+{
+  "model": "dnd5e.ideal",
+  "pk": 78,
+  "fields": {
+    "background": 13,
+    "number": 6,
+    "text": "Устремление. Я готов доказать, что достоин лучшей жизни. (Любой)"
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 1,
+  "fields": {
+    "background": 1,
+    "number": 1,
+    "text": "Я не проявляю снисходительности к другим, но к себе я еще более суров."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 2,
+  "fields": {
+    "background": 1,
+    "number": 2,
+    "text": "Я слишком доверяю тем, кто обладает властью в моей церковной иерархии."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 3,
+  "fields": {
+    "background": 1,
+    "number": 3,
+    "text": "Моя набожность зачастую приводит к тому, что я слепо верю всем, кто исповедует мою религию."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 4,
+  "fields": {
+    "background": 1,
+    "number": 4,
+    "text": "Я непреклонен в своих убеждениях."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 5,
+  "fields": {
+    "background": 1,
+    "number": 5,
+    "text": "Я настороженно отношусь к незнакомцам и всегда жду от них худшего."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 6,
+  "fields": {
+    "background": 1,
+    "number": 6,
+    "text": "Однажды выбрав цель, я становлюсь одержимым ею в ущерб всему прочему в своей жизни."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 7,
+  "fields": {
+    "background": 2,
+    "number": 1,
+    "text": "Я не могу устоять перед смазливой мордашкой."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 8,
+  "fields": {
+    "background": 2,
+    "number": 2,
+    "text": "Я постоянно в долгах. Я трачу свои нечестно нажитые деньги быстрее, чем их добываю."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 9,
+  "fields": {
+    "background": 2,
+    "number": 3,
+    "text": "Я убеждён в том, что никто не сможет одурачить меня так, как я одурачиваю других."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 10,
+  "fields": {
+    "background": 2,
+    "number": 4,
+    "text": "Я слишком жаден до золота. И не могу противиться риску, если в этом замешаны деньги."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 11,
+  "fields": {
+    "background": 2,
+    "number": 5,
+    "text": "Я не могу устоять и не облапошить людей, стоящих гораздо выше, чем я."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 12,
+  "fields": {
+    "background": 2,
+    "number": 6,
+    "text": "Я ненавижу себя за это, но я сбегу, чтобы спасти свою собственную шкуру, если вдруг запахнет жареным."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 13,
+  "fields": {
+    "background": 3,
+    "number": 1,
+    "text": "Когда я вижу что-то ценное, я не могу думать ни о чём другом, кроме мыслей о том, как это украсть."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 14,
+  "fields": {
+    "background": 3,
+    "number": 2,
+    "text": "Когда я становлюсь перед выбором между друзьями и деньгами, я обычно выбираю деньги."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 15,
+  "fields": {
+    "background": 3,
+    "number": 3,
+    "text": "Если есть какой-то план, я его наверняка забуду. А если не забуду, то попросту проигнорирую."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 16,
+  "fields": {
+    "background": 3,
+    "number": 4,
+    "text": "У меня есть привычка, которая выдаёт меня, когда я вру."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 17,
+  "fields": {
+    "background": 3,
+    "number": 5,
+    "text": "Я поджимаю хвост и убегаю, когда всё складывается плохо."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 18,
+  "fields": {
+    "background": 3,
+    "number": 6,
+    "text": "Невинный человек находится в тюрьме из-за преступления, что я совершил. Меня это не беспокоит."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 19,
+  "fields": {
+    "background": 4,
+    "number": 1,
+    "text": "Я пойду на всё ради славы и известности."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 20,
+  "fields": {
+    "background": 4,
+    "number": 2,
+    "text": "Не могу устоять перед смазливым личиком."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 21,
+  "fields": {
+    "background": 4,
+    "number": 3,
+    "text": "Я не могу вернуться домой из-за скандала. Неприятности такого рода словно преследуют меня."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 22,
+  "fields": {
+    "background": 4,
+    "number": 4,
+    "text": "Однажды я высмеял дворянина, который всё еще хочет оторвать мне голову. Это была ошибка, но я могу повторить её еще неоднократно."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 23,
+  "fields": {
+    "background": 4,
+    "number": 5,
+    "text": "Я не могу скрывать свои истинные чувства. Острый язык всегда приносит мне неприятности."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 24,
+  "fields": {
+    "background": 4,
+    "number": 6,
+    "text": "Я очень стараюсь исправиться, но друзьям не стоит на меня полагаться."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 25,
+  "fields": {
+    "background": 5,
+    "number": 1,
+    "text": "Тиран, правящий моими землями, ни перед чем не остановится, лишь бы убить меня."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 26,
+  "fields": {
+    "background": 5,
+    "number": 2,
+    "text": "Я слепо верю в своё предназначение, и не замечаю ни своих недостатков, ни смертельных опасностей."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 27,
+  "fields": {
+    "background": 5,
+    "number": 3,
+    "text": "Те, кто знают меня молодым, знают и мою самую постыдную тайну, так что я никогда не вернусь домой."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 28,
+  "fields": {
+    "background": 5,
+    "number": 4,
+    "text": "Я беззащитен перед пороками большого города, особенно перед пьянством."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 29,
+  "fields": {
+    "background": 5,
+    "number": 5,
+    "text": "Я тайно считаю, что было бы хорошо стать тираном, правящим землями."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 30,
+  "fields": {
+    "background": 5,
+    "number": 6,
+    "text": "Я не доверяю союзникам."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 31,
+  "fields": {
+    "background": 6,
+    "number": 1,
+    "text": "Я сделаю всё что угодно, чтобы заполучить что-то редкое или очень ценное."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 32,
+  "fields": {
+    "background": 6,
+    "number": 2,
+    "text": "Мне всегда кажется, что меня пытаются обжулить."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 33,
+  "fields": {
+    "background": 6,
+    "number": 3,
+    "text": "Никто не должен знать, что я однажды украл деньги из казны гильдии."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 34,
+  "fields": {
+    "background": 6,
+    "number": 4,
+    "text": "Мне всегда мало того, что у меня есть — всегда нужно больше."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 35,
+  "fields": {
+    "background": 6,
+    "number": 5,
+    "text": "Я готов убить ради получения благородного титула."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 36,
+  "fields": {
+    "background": 6,
+    "number": 6,
+    "text": "Я ужасно завидую тем, кто может превзойти мой труд. Куда бы я ни пошёл, меня окружают конкуренты."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 37,
+  "fields": {
+    "background": 7,
+    "number": 1,
+    "text": "Слабость 1 \tТеперь, вернувшись в мир, я слишком сильно увлекаюсь его радостями."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 38,
+  "fields": {
+    "background": 7,
+    "number": 2,
+    "text": "Теперь, вернувшись в мир, я слишком сильно увлекаюсь его радостями. 2 \tЯ скрываю тёмные, кровожадные мысли, не ушедшие ни после изоляции, ни после медитаций."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 39,
+  "fields": {
+    "background": 7,
+    "number": 3,
+    "text": "Я категоричен в мыслях и подходе к жизни."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 40,
+  "fields": {
+    "background": 7,
+    "number": 4,
+    "text": "Я позволяю жажде победить в споре становиться сильнее дружбы и гармонии."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 41,
+  "fields": {
+    "background": 7,
+    "number": 5,
+    "text": "Я слишком сильно рискую, стремясь найти утраченные частички знаний."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 42,
+  "fields": {
+    "background": 7,
+    "number": 6,
+    "text": "Мне нравится хранить тайны, и я ими ни с кем не делюсь."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 43,
+  "fields": {
+    "background": 8,
+    "number": 1,
+    "text": "Я втайне считаю всех ниже себя."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 44,
+  "fields": {
+    "background": 8,
+    "number": 2,
+    "text": "Я скрываю позорную тайну, которая может уничтожить мою семью."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 45,
+  "fields": {
+    "background": 8,
+    "number": 3,
+    "text": "Я слишком часто слышал завуалированные оскорбления и угрозы, и потому быстро впадаю в гнев."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 46,
+  "fields": {
+    "background": 8,
+    "number": 4,
+    "text": "У меня неустанная страсть к плотским удовольствиям."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 47,
+  "fields": {
+    "background": 8,
+    "number": 5,
+    "text": "Весь мир вращается вокруг меня."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 48,
+  "fields": {
+    "background": 8,
+    "number": 6,
+    "text": "Я часто навлекаю позор на свою семью словами и действиями."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 49,
+  "fields": {
+    "background": 9,
+    "number": 1,
+    "text": "Я слишком пристрастен к элю, вину и прочим спиртным напиткам."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 50,
+  "fields": {
+    "background": 9,
+    "number": 2,
+    "text": "В жизни на полную катушку нет места осторожности."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 51,
+  "fields": {
+    "background": 9,
+    "number": 3,
+    "text": "Я помню все полученные оскорбления и таю злобу на всех обидчиков."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 52,
+  "fields": {
+    "background": 9,
+    "number": 4,
+    "text": "Я с трудом доверяю представителям других рас, племён и сообществ."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 53,
+  "fields": {
+    "background": 9,
+    "number": 5,
+    "text": "На любые неурядицы я почти всегда отвечаю насилием."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 54,
+  "fields": {
+    "background": 9,
+    "number": 6,
+    "text": "Не думайте, что я буду спасать тех, кто не может сам о себе позаботиться. Сильные должны процветать, а слабые погибают, и это нормально."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 55,
+  "fields": {
+    "background": 10,
+    "number": 1,
+    "text": "Меня легко отвлечь, пообещав информацию."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 56,
+  "fields": {
+    "background": 10,
+    "number": 2,
+    "text": "Увидев демона, большинство закричит и убежит. Я же остановлюсь и буду изучать его анатомию."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 57,
+  "fields": {
+    "background": 10,
+    "number": 3,
+    "text": "Для раскрытия древних тайн можно пожертвовать современной цивилизацией."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 58,
+  "fields": {
+    "background": 10,
+    "number": 4,
+    "text": "Я избегаю очевидных решений, пользуясь замысловатыми."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 59,
+  "fields": {
+    "background": 10,
+    "number": 5,
+    "text": "Я говорю, не обдумывая слова, чем часто оскорбляю других."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 60,
+  "fields": {
+    "background": 10,
+    "number": 6,
+    "text": "Ради спасения своей или чьей-либо еще жизни я выболтаю любую тайну."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 61,
+  "fields": {
+    "background": 11,
+    "number": 1,
+    "text": "Я выполняю приказы, даже если считаю, что они несправедливые."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 62,
+  "fields": {
+    "background": 11,
+    "number": 2,
+    "text": "Я наплету с три короба, лишь бы не делать лишнюю работу."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 63,
+  "fields": {
+    "background": 11,
+    "number": 3,
+    "text": "Когда кто-то бросает мне вызов, я никогда не отступлюсь, какой бы опасной не была ситуация."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 64,
+  "fields": {
+    "background": 11,
+    "number": 4,
+    "text": "Начав пить, я не могу остановиться."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 65,
+  "fields": {
+    "background": 11,
+    "number": 5,
+    "text": "Не могу ничего поделать, но деньги у меня не задерживаются."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 66,
+  "fields": {
+    "background": 11,
+    "number": 6,
+    "text": "Моя гордость меня когда-нибудь погубит."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 67,
+  "fields": {
+    "background": 12,
+    "number": 1,
+    "text": "Одно чудовище, с которым мы когда-то сразились, до сих пор заставляет меня дрожать от страха."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 68,
+  "fields": {
+    "background": 12,
+    "number": 2,
+    "text": "Я мало уважаю тех, кто не доказал, что является достойным воителем."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 69,
+  "fields": {
+    "background": 12,
+    "number": 3,
+    "text": "В одном сражении я совершил ужасную ошибку, стоившую жизни многим — и я сделаю что угодно, лишь бы это оставалось в тайне."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 70,
+  "fields": {
+    "background": 12,
+    "number": 4,
+    "text": "Ярость к врагам ослепляет меня и делает безрассудным."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 71,
+  "fields": {
+    "background": 12,
+    "number": 5,
+    "text": "Я подчиняюсь закону, даже если закон вызывает страдания."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 72,
+  "fields": {
+    "background": 12,
+    "number": 6,
+    "text": "Я скорее съем свой доспех, чем признаюсь, что был неправ."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 73,
+  "fields": {
+    "background": 13,
+    "number": 1,
+    "text": "Если я в меньшинстве, то я убегу из битвы."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 74,
+  "fields": {
+    "background": 13,
+    "number": 2,
+    "text": "Золото в любом виде выглядит для меня как большая куча денег, и я сделаю всё, чтобы его у меня стало больше."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 75,
+  "fields": {
+    "background": 13,
+    "number": 3,
+    "text": "Я никогда не доверяю полностью кому бы то ни было, кроме себя."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 76,
+  "fields": {
+    "background": 13,
+    "number": 4,
+    "text": "Я предпочту убить кого-нибудь во сне, нежели в честном поединке."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 77,
+  "fields": {
+    "background": 13,
+    "number": 5,
+    "text": "Это не воровство, если я взял то, в чём нуждаюсь больше, чем кто-либо другой."
+  }
+},
+{
+  "model": "dnd5e.flaw",
+  "pk": 78,
+  "fields": {
+    "background": 13,
+    "number": 6,
+    "text": "Те, кто не могут позаботиться о себе, получат то, что заслужили."
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 1,
+  "fields": {
+    "background": 2,
+    "number": 1,
+    "text": "Я мухлюю в азартных играх."
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 2,
+  "fields": {
+    "background": 2,
+    "number": 2,
+    "text": "Я подделываю монеты или документы."
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 3,
+  "fields": {
+    "background": 2,
+    "number": 3,
+    "text": "Я втираюсь к людям в доверие, чтобы потом играть на их слабостях и наживаться за их счёт."
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 4,
+  "fields": {
+    "background": 2,
+    "number": 4,
+    "text": "Я меняю личности как перчатки."
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 5,
+  "fields": {
+    "background": 2,
+    "number": 5,
+    "text": "Я занимаюсь уличным жульничеством с помощью ловкости рук."
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 6,
+  "fields": {
+    "background": 2,
+    "number": 6,
+    "text": "Я убеждаю людей, что эта бесполезная куча хлама стоит их кровно заработанных денег."
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 7,
+  "fields": {
+    "background": 4,
+    "number": 1,
+    "text": "Акробат"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 8,
+  "fields": {
+    "background": 4,
+    "number": 2,
+    "text": "Актер"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 9,
+  "fields": {
+    "background": 4,
+    "number": 3,
+    "text": "Жонглер"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 10,
+  "fields": {
+    "background": 4,
+    "number": 4,
+    "text": "Музыкант"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 11,
+  "fields": {
+    "background": 4,
+    "number": 5,
+    "text": "Певец"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 12,
+  "fields": {
+    "background": 4,
+    "number": 6,
+    "text": "Пожиратель огня"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 13,
+  "fields": {
+    "background": 4,
+    "number": 7,
+    "text": "Поэт"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 14,
+  "fields": {
+    "background": 4,
+    "number": 8,
+    "text": "Рассказчик"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 15,
+  "fields": {
+    "background": 4,
+    "number": 9,
+    "text": "Танцор"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 16,
+  "fields": {
+    "background": 4,
+    "number": 10,
+    "text": "Шут"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 17,
+  "fields": {
+    "background": 5,
+    "number": 1,
+    "text": "Я дал отпор прислужникам тирана."
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 18,
+  "fields": {
+    "background": 5,
+    "number": 2,
+    "text": "Я спас народ от природного катаклизма."
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 19,
+  "fields": {
+    "background": 5,
+    "number": 3,
+    "text": "Я сразился один на один с ужасным чудищем."
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 20,
+  "fields": {
+    "background": 5,
+    "number": 4,
+    "text": "Я обокрал продажного торговца, чтобы помочь бедным."
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 21,
+  "fields": {
+    "background": 5,
+    "number": 5,
+    "text": "Я возглавил ополчение, отбросившее врага."
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 22,
+  "fields": {
+    "background": 5,
+    "number": 6,
+    "text": "Я вломился в замок тирана и украл оружие для своего народа."
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 23,
+  "fields": {
+    "background": 5,
+    "number": 7,
+    "text": "Я учил крестьян, как использовать обычные инструменты в качестве оружия против солдат тирана."
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 24,
+  "fields": {
+    "background": 5,
+    "number": 8,
+    "text": "Лорд отменил непопулярный закон после того как я выступил с акцией протеста."
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 25,
+  "fields": {
+    "background": 5,
+    "number": 9,
+    "text": "Небожитель, фея или другое подобное существо благословило меня или открыло тайну моего рождения."
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 26,
+  "fields": {
+    "background": 5,
+    "number": 10,
+    "text": "Вступив в армию лорда, я получил хорошее звание и заслужил благодарности."
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 27,
+  "fields": {
+    "background": 6,
+    "number": 1,
+    "text": "Алхимики и аптекари"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 28,
+  "fields": {
+    "background": 6,
+    "number": 2,
+    "text": "Гончары и мастера керамики"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 29,
+  "fields": {
+    "background": 6,
+    "number": 3,
+    "text": "Жестянщики, проволочники и литейщики"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 30,
+  "fields": {
+    "background": 6,
+    "number": 4,
+    "text": "Каллиграфы, писцы и нотариусы"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 31,
+  "fields": {
+    "background": 6,
+    "number": 5,
+    "text": "Каменщики и камнерезы"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 32,
+  "fields": {
+    "background": 6,
+    "number": 6,
+    "text": "Картографы, землемеры и чертёжники"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 33,
+  "fields": {
+    "background": 6,
+    "number": 7,
+    "text": "Кожевенники, меховщики и дубильщики"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 34,
+  "fields": {
+    "background": 6,
+    "number": 8,
+    "text": "Кузнецы и бронники"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 35,
+  "fields": {
+    "background": 6,
+    "number": 9,
+    "text": "Металлурги и мастера обработки металла"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 36,
+  "fields": {
+    "background": 6,
+    "number": 10,
+    "text": "Пивовары и виноделы"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 37,
+  "fields": {
+    "background": 6,
+    "number": 11,
+    "text": "Плотники, кровельщики и штукатуры"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 38,
+  "fields": {
+    "background": 6,
+    "number": 12,
+    "text": "Повара и пекари"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 39,
+  "fields": {
+    "background": 6,
+    "number": 13,
+    "text": "Сапожники и чеботари"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 40,
+  "fields": {
+    "background": 6,
+    "number": 14,
+    "text": "Стеклодувы и стекольщики"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 41,
+  "fields": {
+    "background": 6,
+    "number": 15,
+    "text": "Столяры, бондари и лучных дел мастера"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 42,
+  "fields": {
+    "background": 6,
+    "number": 16,
+    "text": "Судостроители и парусные мастера"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 43,
+  "fields": {
+    "background": 6,
+    "number": 17,
+    "text": "Тележники и колёсных дел мастера"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 44,
+  "fields": {
+    "background": 6,
+    "number": 18,
+    "text": "Ткачи и красильщики"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 45,
+  "fields": {
+    "background": 6,
+    "number": 19,
+    "text": "Художники, иллюстраторы и маляры"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 46,
+  "fields": {
+    "background": 6,
+    "number": 20,
+    "text": "Ювелиры и огранщики"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 47,
+  "fields": {
+    "background": 7,
+    "number": 1,
+    "text": "Я искал духовное просветление."
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 48,
+  "fields": {
+    "background": 7,
+    "number": 2,
+    "text": "Я жил в общине согласно предписаниям моей веры."
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 49,
+  "fields": {
+    "background": 7,
+    "number": 3,
+    "text": "Я был изгнан за преступление, которого не совершал."
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 50,
+  "fields": {
+    "background": 7,
+    "number": 4,
+    "text": "Я покинул общество после события, изменившего мою жизнь."
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 51,
+  "fields": {
+    "background": 7,
+    "number": 5,
+    "text": "Мне нужно было тихое место для работы над картиной, книгой, музыкой или манифестом."
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 52,
+  "fields": {
+    "background": 7,
+    "number": 6,
+    "text": "Мне нужна была община, близкая к природе, вдали от цивилизации."
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 53,
+  "fields": {
+    "background": 7,
+    "number": 7,
+    "text": "Я был смотрителем древних руин или реликвии."
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 54,
+  "fields": {
+    "background": 7,
+    "number": 8,
+    "text": "Я был пилигримом, ищущим существо, место или реликвию."
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 55,
+  "fields": {
+    "background": 9,
+    "number": 1,
+    "text": "Лесник"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 56,
+  "fields": {
+    "background": 9,
+    "number": 2,
+    "text": "Траппер"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 57,
+  "fields": {
+    "background": 9,
+    "number": 3,
+    "text": "Поселенец"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 58,
+  "fields": {
+    "background": 9,
+    "number": 4,
+    "text": "Проводник"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 59,
+  "fields": {
+    "background": 9,
+    "number": 5,
+    "text": "Изгнанник"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 60,
+  "fields": {
+    "background": 9,
+    "number": 6,
+    "text": "Охотник за головами"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 61,
+  "fields": {
+    "background": 9,
+    "number": 7,
+    "text": "Пилигрим"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 62,
+  "fields": {
+    "background": 9,
+    "number": 8,
+    "text": "Кочевник"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 63,
+  "fields": {
+    "background": 9,
+    "number": 9,
+    "text": "Охотник-собиратель"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 64,
+  "fields": {
+    "background": 9,
+    "number": 10,
+    "text": "Мародер"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 65,
+  "fields": {
+    "background": 10,
+    "number": 1,
+    "text": "Академик с испорченной репутацией"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 66,
+  "fields": {
+    "background": 10,
+    "number": 2,
+    "text": "Алхимик"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 67,
+  "fields": {
+    "background": 10,
+    "number": 3,
+    "text": "Астроном"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 68,
+  "fields": {
+    "background": 10,
+    "number": 4,
+    "text": "Библиотекарь"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 69,
+  "fields": {
+    "background": 10,
+    "number": 5,
+    "text": "Исследователь"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 70,
+  "fields": {
+    "background": 10,
+    "number": 6,
+    "text": "Писец"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 71,
+  "fields": {
+    "background": 10,
+    "number": 7,
+    "text": "Подмастерье волшебника"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 72,
+  "fields": {
+    "background": 10,
+    "number": 8,
+    "text": "Профессор"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 73,
+  "fields": {
+    "background": 12,
+    "number": 1,
+    "text": "Офицер"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 74,
+  "fields": {
+    "background": 12,
+    "number": 2,
+    "text": "Разведчик"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 75,
+  "fields": {
+    "background": 12,
+    "number": 3,
+    "text": "Пехотинец"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 76,
+  "fields": {
+    "background": 12,
+    "number": 4,
+    "text": "Кавалерист"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 77,
+  "fields": {
+    "background": 12,
+    "number": 5,
+    "text": "Врач"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 78,
+  "fields": {
+    "background": 12,
+    "number": 6,
+    "text": "Интендант"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 79,
+  "fields": {
+    "background": 12,
+    "number": 7,
+    "text": "Знаменосец"
+  }
+},
+{
+  "model": "dnd5e.backgroundpath",
+  "pk": 80,
+  "fields": {
+    "background": 12,
+    "number": 8,
+    "text": "Обслуживающий персонал (повар, кузнец и т.п.)"
+  }
+},
+{
+  "model": "dnd5e.background",
+  "pk": 1,
+  "fields": {
+    "name": "Прислужник",
+    "orig_name": null,
+    "description": "Вы провели свою жизнь, служа в храме, посвящённому какому-то конкретному богу или же пантеону богов. Вы — посредник между царством небесным и миром живых. Вы совершали священные ритуалы и приносили жертвоприношения для того чтобы молящиеся могли предстать пред ликом богов. Вы не обязательно жрец — совершение священных обрядов не то же самое, что направление божественной силы.",
+    "path_label": null,
+    "known_languages": 2,
+    "skills_proficiency": [
+      9,
+      11
+    ],
+    "tools_proficiency": [],
+    "choices": []
+  }
+},
+{
+  "model": "dnd5e.background",
+  "pk": 2,
+  "fields": {
+    "name": "Шарлатан",
+    "orig_name": null,
+    "description": "Вы хорошо знаете людей. Вы понимаете, что ими движет, и можете распознать их самые сокровенные желания спустя всего пару минут после начала разговора. Несколько наводящих вопросов, и вот вы уже читаете их словно книжки, написанные для детей. Это полезный талант, и вы вполне готовы использовать его себе на благо.\r\n\r\nВы знаете, что люди хотят, и вы даёте им это, или же обещаете дать. Чувство здравого смысла должно заставлять людей держаться подальше от тех вещей, которые слишком хорошо звучат, чтобы быть правдой. Но здравый смысл куда-то улетучивается, когда вы неподалёку. Бутылочка с розовой жидкостью всенепременно вылечит эту неблаговидную сыпь, а эта чудодейственная мазь (не более чем горсть жира, смешанного с серебряной пылью) без сомнения вернёт молодость и энергичность. Все эти чудеса, конечно, звучат неправдоподобно, но вы знаете, как преподнести их так, чтобы они казались крайне выгодным делом.",
+    "path_label": "Излюбленные махинации",
+    "known_languages": 0,
+    "skills_proficiency": [
+      3,
+      15
+    ],
+    "tools_proficiency": [
+      8,
+      37
+    ],
+    "choices": []
+  }
+},
+{
+  "model": "dnd5e.background",
+  "pk": 3,
+  "fields": {
+    "name": "Преступник",
+    "orig_name": null,
+    "description": "Вы опытный преступник с большим послужным списком. Вы провели много времени, вращаясь в преступных кругах, и до сих пор имеете связи с подпольным миром. В отличие от обычных людей вы близко познакомились с убийствами, воровством и жестокостью, что пропитывают низшие слои общества. Вы научились выживать, пренебрегая правилами и ограничениями, которым подчиняются другие.",
+    "path_label": "Преступная направленость",
+    "known_languages": 0,
+    "skills_proficiency": [
+      4,
+      15
+    ],
+    "tools_proficiency": [
+      1
+    ],
+    "choices": []
+  }
+},
+{
+  "model": "dnd5e.background",
+  "pk": 4,
+  "fields": {
+    "name": "Артист",
+    "orig_name": null,
+    "description": "Вам нравится выступать на публике. Вы знаете, как их развлечь, очаровать и даже воодушевить. Ваша поэзия может трогать сердца слушателей, пробуждать в них горе или радость, смех или гнев. Ваша музыка ободряет их или заставляет скорбеть. Ваши танцы захватывают, а шутки всегда смешны. Чем бы вы ни занимались, ваша жизнь тесно связана с искусством.",
+    "path_label": "Амплуа",
+    "known_languages": 0,
+    "skills_proficiency": [
+      2,
+      17
+    ],
+    "tools_proficiency": [
+      8
+    ],
+    "choices": []
+  }
+},
+{
+  "model": "dnd5e.background",
+  "pk": 5,
+  "fields": {
+    "name": "Народный герой",
+    "orig_name": null,
+    "description": "У вас было низкое социальное положение, но судьбой было уготовано большее. Жители вашей родной деревни уже считают вас своим героем, но вам предначертано сражаться с тиранами и чудовищами, угрожающими другим.",
+    "path_label": "Определяющее событие",
+    "known_languages": 0,
+    "skills_proficiency": [
+      14,
+      10
+    ],
+    "tools_proficiency": [
+      38
+    ],
+    "choices": []
+  }
+},
+{
+  "model": "dnd5e.background",
+  "pk": 6,
+  "fields": {
+    "name": "Гильдейский ремесленник",
+    "orig_name": null,
+    "description": "Вы — член гильдии ремесленников, знаток в какой-то области, связанный с другими мастеровыми. Вы крепко стоите на ногах в этом торгашеском мире, отделённые своим талантом и богатством от оков феодального строя. Когда-то вы учились у мастера, под опекой гильдии, и вот вы сами стали таким умельцем.",
+    "path_label": "Специализация гильдии",
+    "known_languages": 1,
+    "skills_proficiency": [
+      11,
+      18
+    ],
+    "tools_proficiency": [],
+    "choices": []
+  }
+},
+{
+  "model": "dnd5e.background",
+  "pk": 7,
+  "fields": {
+    "name": "Отшельник",
+    "orig_name": null,
+    "description": "Вы значительную часть своей жизни прожили в уединении — либо в закрытой общине, такой как монастырь, либо вообще в одиночестве. Вдали от шумного общества вы нашли тишину, спокойствие, а возможно, и ответы на важные вопросы.",
+    "path_label": "Жизнь в уединении",
+    "known_languages": 1,
+    "skills_proficiency": [
+      9,
+      12
+    ],
+    "tools_proficiency": [
+      36
+    ],
+    "choices": []
+  }
+},
+{
+  "model": "dnd5e.background",
+  "pk": 8,
+  "fields": {
+    "name": "Благородный",
+    "orig_name": null,
+    "description": "Вы знаете, что такое богатство, власть и привилегии. У вас благородный титул, а ваша семья владеет землями, собирает налоги, и обладает серьёзным политическим влиянием. Вы можете быть изнеженным аристократом, незнакомым с работой и неудобствами, бывшим торговцем, только-только получившим титул, или лишённым наследства негодяем с гипертрофированным чувством собственного права. Или же вы можете быть честным, трудолюбивым землевладельцем, искренне заботящимся о тех, кто живёт и трудится на его земле, ощущая за них ответственность.\r\n\r\nПридумайте вместе с Мастером надлежащий титул и определите, какую власть этот титул даёт. Благородный титул не существует сам по себе — он связан со всей вашей семьёй, и каким бы титу- лом вы ни обладали, вы передадите его своим детям. Вам нужно не только определить титул, но также описать вместе с Мастером вашу семью и её влияние на вас.\r\n\r\nВаша семья старая и прославленная, или она основана недавно? Каким влиянием она обладает, и в какой области? Какая репутация у вашей семьи среди прочих местных аристократов? Как к вам относятся обыватели?\r\n\r\nКакое место занимаете вы в своей семье? Являетесь ли вы наследником главы семейства? Перешёл ли к вам уже титул? Как вы относитесь к этой ответственности? Или вы так далеки от получения наследства, что всем всё равно, чем вы там занимаетесь, лишь бы не во вред семье? Как глава вашего семейства относится к вашей карьере искателя приключений? Вы в милости, или родственники сторонятся вас?\r\n\r\nЕсть ли у вашей семьи герб? Есть ли у вас кольцо с печатью? Может, вы одеты в особые цвета? Есть ли животное, считающееся символом вашей родословной или духовным наставником? Такие детали помогут сформировать образ вашей семьи в контексте мира и кампании.",
+    "path_label": null,
+    "known_languages": 1,
+    "skills_proficiency": [
+      6,
+      18
+    ],
+    "tools_proficiency": [],
+    "choices": []
+  }
+},
+{
+  "model": "dnd5e.background",
+  "pk": 9,
+  "fields": {
+    "name": "Чужеземец",
+    "orig_name": null,
+    "description": "Вы выросли в глуши, вдали от цивилизации и её благ. Вы видели миграцию стад, чей размер был больше леса, выживали при температуре, которую горожанам и не представить, и наслаждались таким уединением, что на многие мили вокруг вы были единственным мыслящим существом. Дикая природа в вашей крови, будь вы кочевником, исследователем, затворником, охотником-собирателем или даже мародёром. Даже в неизвестном месте вы найдёте что-то, что вам понятно.",
+    "path_label": "Занятие",
+    "known_languages": 1,
+    "skills_proficiency": [
+      14,
+      1
+    ],
+    "tools_proficiency": [],
+    "choices": []
+  }
+},
+{
+  "model": "dnd5e.background",
+  "pk": 10,
+  "fields": {
+    "name": "Мудрец",
+    "orig_name": "Sage",
+    "description": "Вы провели много лет, постигая тайны мультивселенной. Вы читали рукописи, изучали свитки, и общались с величайшими экспертами в интересующих вас темах. Всё это сделало вас знатоком в своей области.",
+    "path_label": "Специализация",
+    "known_languages": 2,
+    "skills_proficiency": [
+      6,
+      5
+    ],
+    "tools_proficiency": [],
+    "choices": []
+  }
+},
+{
+  "model": "dnd5e.background",
+  "pk": 11,
+  "fields": {
+    "name": "Моряк",
+    "orig_name": null,
+    "description": "Вы много лет плавали на морском судне. Вы видели могучие шторма, глубоководных чудовищ и тех, кто хотел отправить вас на дно. Первая любовь осталась далеко за горизонтом, и настало время попробовать что-то новое.\r\n\r\nРешите вместе с Мастером, на каком корабле вы до этого плавали. Это было торговое, пассажирское, исследовательское или пиратское судно? Насколько оно прославилось (в хорошем или дурном смысле)? Много ли вы путешествовали? Оно всё еще на плаву, потоплено или утеряно?\r\n\r\nКем вы были на борту — боцманом, капитаном, лоцманом, коком или кем-то другим? Кем были капитан и его первый помощник? Вы расстались с экипажем в хороших отношениях или поссорились с ними?",
+    "path_label": null,
+    "known_languages": 0,
+    "skills_proficiency": [
+      13,
+      1
+    ],
+    "tools_proficiency": [
+      39,
+      6
+    ],
+    "choices": []
+  }
+},
+{
+  "model": "dnd5e.background",
+  "pk": 12,
+  "fields": {
+    "name": "Солдат",
+    "orig_name": null,
+    "description": "Сколько вы помните, в вашей жизни всегда была война. С молодости вы проходили тренировки, учились использовать оружие и доспехи, изучали технику выживания, включая то, как оставаться живым на поле боя. Вы могли быть частью армии страны или отряда наёмников, а может, были местным ополченцем во время войны.\r\n\r\nВыбрав эту предысторию, определите вместе с Мастером, в какой военной организации вы состояли, до какого звания вы дослужились, и что вам за это время довелось пережить. Что это было, регулярная армия, городская стража или деревенское ополчение? Это могла быть частная армия наёмников дворянина или самостоятельный бродячий отряд наёмников.",
+    "path_label": "Специализация",
+    "known_languages": 0,
+    "skills_proficiency": [
+      1,
+      16
+    ],
+    "tools_proficiency": [
+      38
+    ],
+    "choices": []
+  }
+},
+{
+  "model": "dnd5e.background",
+  "pk": 13,
+  "fields": {
+    "name": "Беспризорник",
+    "orig_name": null,
+    "description": "Вы выросли на улице в бедности и одиночестве, лишённые родителей. Никто не присматривал и не заботился о вас, и вам пришлось научиться делать это самому. Вам приходилось постоянно бороться за еду и следить за другими неприкаянными душами, способными обокрасть вас. Вы спали на чердаках и в переулках, мокли под дождём и боролись с болезнями, не получая медицинской помощи или приюта. Вы выжили, невзирая на все трудности, и сделали это благодаря своей сноровке, силе или скорости.\r\n\r\nВы начинаете приключение с суммой денег, достаточной, чтоб скромно, но уверенно прожить десять дней. Как вы получили эти деньги? Что позволило вам перейти к нормальной жизни, преодолев нищету?",
+    "path_label": null,
+    "known_languages": 0,
+    "skills_proficiency": [
+      3,
+      4
+    ],
+    "tools_proficiency": [
+      1,
+      8
+    ],
+    "choices": []
+  }
+}
+]
