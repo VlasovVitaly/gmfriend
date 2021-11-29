@@ -92,8 +92,10 @@ class CLASS_BATTLE_001(CharacterChoice):
     selection_limit = 3
     
     def apply_data(self, data):
-        print("do something")
-        return None
+        get_model('characterdice').objects.create(
+            character=self.character, dtype='superiority', dice='1d8', count=4, maximum=4
+        )
+        self.character.known_maneuvers.set(data['maneuvers'])
 
 
 class CLASS_ROG_001(CharacterChoice):
@@ -180,7 +182,7 @@ class CHAR_ADVANCE_003(CharacterChoice):
             id__in=self.character.languages.all().values_list('id')
         )
 
-        super().get_form(request)
+        return super().get_form(request)
 
     def apply_data(self, data):
         for lang in data['langs']:
@@ -199,9 +201,9 @@ class CHAR_ADVANCE_004(CharacterChoice):
         )
 
     def apply_data(self, data):
-        print(data)
-        for key, val in data.items():
-            print(type(key), key, val)
+        _ = get_model('characterbackground').objects.create(
+            character=self.character, **data
+        )
 
 
 class POST_FEAT_001:
