@@ -1,108 +1,117 @@
+import re
 from django.apps import apps
 
+from dnd5e.models import CharacterToolProficiency
+
 from .forms import (
-    AddCharLanguageFromBackground, AddCharSkillProficiency, CharacterBackgroundForm, MasterMindIntrigueSelect,
-    SelectAbilityAdvanceForm, SelectCompetenceForm, SelectFeatureForm, SelectSubclassForm, SelectToolProficiency
+    AddCharLanguageFromBackground, AddCharSkillProficiency, CharacterBackgroundForm,
+    ManeuversSelectForm, MasterMindIntrigueSelect, SelectAbilityAdvanceForm,
+    SelectCompetenceForm, SelectFeatureForm, SelectSubclassForm, SelectToolProficiency
 )
 
 dnd5e_app = apps.app_configs['dnd5e']
+get_model = dnd5e_app.get_model
 
 
-class PROF_TOOLS_001:
-    form_class = SelectToolProficiency
-    queryset = dnd5e_app.get_model('tool').objects.filter(category=15)  # Gamble
-    selection_limit = 1
+class CharacterChoice:
+    form_class = None
+    queryset = None
+    selection_limit = None
 
     def __init__(self, character):
         self.character = character
-
+    
     def get_form(self, request):
-        return self.form_class(data=request.POST or None, limit=self.selection_limit, queryset=self.queryset)
+        if self.form_class is None: raise AssertionError('Choice formclass is not set')
+
+        form_args = {'data': request.POST or None, 'files': None}
+
+        if self.queryset:
+            form_args['queryset'] = self.queryset
+        
+        if self.selection_limit:
+            form_args['limit'] = self.selection_limit
+
+        return self.form_class(**form_args)
+    
+    def apply_data(self, data):
+        raise AssertionError('apply_data is not defined')
+
+
+class PROF_TOOLS_001(CharacterChoice):
+    """ Владение одним игровым набором """
+    form_class = SelectToolProficiency
+    queryset = get_model('tool').objects.filter(category=15)  # Gamble
+    selection_limit = 1
 
     def apply_data(self, data):
-        for tool in data['tools']:
-            dnd5e_app.get_model('charactertoolproficiency').objects.create(character=self.character, tool=tool)
+        CharToolsModel = get_model('charactertoolproficiency')
+        CharToolsModel.objects.bulk_create(
+            CharToolsModel(character=self.character, tool=tool) for tool in data['tools']
+        )
 
 
 class PROF_TOOLS_002(PROF_TOOLS_001):
-    queryset = dnd5e_app.get_model('tool').objects.filter(category=10)  # Musical
+    """ Владение одним музыкальным инструментом """
+    queryset = get_model('tool').objects.filter(category=10)  # Musical
 
 
 class PROF_TOOLS_003(PROF_TOOLS_001):
-    queryset = dnd5e_app.get_model('tool').objects.filter(category=5)  # Artisian
+    """ Владение одним ремесленным инструментом """
+    queryset = get_model('tool').objects.filter(category=5)  # Artisian
 
 
-class CLASS_WAR_001:
+class CLASS_WAR_001(CharacterChoice):
     """ Боевой стиль воина """
     form_class = SelectFeatureForm
-    queryset = dnd5e_app.get_model('feature').objects.filter(group='fight_style')
-
-    def __init__(self, character):
-        self.character = character
+    queryset = get_model('feature').objects.filter(group='fight_style')
 
     def get_form(self, request):
-        exclude_feats = self.character.features.filter(feature__group='fight_style').values_list('feature_id')  # Already know
-        return self.form_class(data=request.POST or None, queryset=self.queryset.exclude(id__in=exclude_feats))
+        self.queryset = get_model('feature').objects.filter(group='fight_style').exclude(
+            id__in=self.character.features.filter(feature__group='fight_style').values_list('feature_id') 
+        )
+
+        return super().get_form(request)
 
     def apply_data(self, data):
-        CharacterFeature = dnd5e_app.get_model('characterfeature')
-        CharacterFeature.objects.create(character=self.character, feature=data['feature'])
+        get_model('characterfeature').objects.create(character=self.character, feature=data['feature'])
 
 
-class CLASS_WAR_002:
+class CLASS_WAR_002(CharacterChoice):
     """ Воинский архетип """
-    queryset = dnd5e_app.get_model('subclass').objects.filter(parent__orig_name='Fighter')
+    queryset = get_model('subclass').objects.filter(parent__orig_name='Fighter')
     form_class = SelectSubclassForm
-
-    def __init__(self, character):
-        self.character = character
-
-    def get_form(self, request):
-        return self.form_class(data=request.POST or None, queryset=self.queryset)
 
     def apply_data(self, data):
         self.character.apply_subclass(data['subclass'], 3)  # Fighter select arhtype on level 3
 
 
-class CLASS_BATTLE_001:
+class CLASS_BATTLE_001(CharacterChoice):
     """ Мастер боевых исскуств / Боевое превосходство """
-    def __init__(self, character):
-        self.character = character
-    
-    def get_form(self, request):
-        return None
+    form_class = ManeuversSelectForm
     
     def apply_data(self, data):
+        print("do something")
         return None
 
 
-class CLASS_ROG_001:
+class CLASS_ROG_001(CharacterChoice):
     """ Rogue archtype selection """
-    queryset = dnd5e_app.get_model('subclass').objects.filter(parent__orig_name='Rogue')
+    queryset = get_model('subclass').objects.filter(parent__orig_name='Rogue')
     form_class = SelectSubclassForm
-
-    def __init__(self, character):
-        self.character = character
-
-    def get_form(self, request):
-        return self.form_class(data=request.POST or None, queryset=self.queryset)
 
     def apply_data(self, data):
         self.character.apply_subclass(data['subclass'], 3)  # Rogue select arhtype on level 3
 
 
-class CLASS_ROG_002:
+class CLASS_ROG_002(CharacterChoice):
     template = 'dnd5e/adventures/include/choices/rogue_002.html'
     form_class = SelectCompetenceForm
 
-    def __init__(self, character):
-        self.character = character
-
     def get_form(self, request):
-        return self.form_class(
-            data=request.POST or None,
-            queryset=self.character.skills.filter(competence=False, proficiency=True)
-        )
+        self.queryset = self.character.skills.filter(competence=False, proficiency=True)
+
+        return super().get_form(request)
 
     def apply_data(self, data):
         data['skills'].update(competence=True)
@@ -111,52 +120,43 @@ class CLASS_ROG_002:
             data['tool'].save(update_fields=['competence'])
 
 
-class CLASS_ROG_003:
+class CLASS_ROG_003(CharacterChoice):
     """ Выбор для интригана """
     form_class = MasterMindIntrigueSelect
-
-    def __init__(self, character):
-        self.character = character
 
     def get_form(self, request):
         return self.form_class(request.POST or None, character=self.character)
 
     def apply_data(self, data):
-        _ = dnd5e_app.get_model('charactertoolproficiency').objects.create(
+        _ = get_model('charactertoolproficiency').objects.create(
             character=self.character, tool=data['tool']
         )
         for lang in data['languages']:
             self.character.languages.add(lang)
 
 
-class CHAR_ADVANCE_001:
+class CHAR_ADVANCE_001(CharacterChoice):
     ''' Повышение характеристик '''
     template = 'dnd5e/adventures/include/choices/advance_001.html'
     form_class = SelectAbilityAdvanceForm
 
-    def __init__(self, character):
-        self.character = character
-
     def get_form(self, request):
-        return self.form_class(
-            data=request.POST or None, files=request.FILES or None,
-            queryset=dnd5e_app.get_model('characterabilities').objects.filter(character=self.character)
-        )
+        self.queryset = get_model('characterabilities').objects.filter(character=self.character)
+
+        return super().get_form(request)
 
     def apply_data(self, data):
         abilities = data['abilities']
+
         if len(abilities) == 2:
             abilities.increase_value(1)
         elif len(abilities) == 1:
             abilities.increase_value(2)
 
 
-class CHAR_ADVANCE_002:
+class CHAR_ADVANCE_002(CharacterChoice):
     ''' Выбор мастерства классовых навыков '''
     form_class = AddCharSkillProficiency
-
-    def __init__(self, character):
-        self.character = character
 
     def get_form(self, request):
         return self.form_class(
@@ -169,32 +169,27 @@ class CHAR_ADVANCE_002:
         data['skills'].update(proficiency=True)
 
 
-class CHAR_ADVANCE_003:
-    ''' Выбор языков из прелыстории '''
+class CHAR_ADVANCE_003(CharacterChoice):
+    ''' Выбор языков из предыстории '''
     form_class = AddCharLanguageFromBackground
 
-    def __init__(self, character):
-        self.character = character
-
     def get_form(self, request):
-        return self.form_class(
-            data=request.POST or None, files=None,
-            limit=self.character.background.known_languages,
-            queryset=dnd5e_app.get_model('language').objects.exclude(id__in=self.character.languages.all().values_list('id'))
+        self.selection_limit = self.character.background.known_languages 
+        self.queryset = get_model('language').objects.exclude(
+            id__in=self.character.languages.all().values_list('id')
         )
+
+        super().get_form(request)
 
     def apply_data(self, data):
         for lang in data['langs']:
             self.character.languages.add(lang)
 
 
-class CHAR_ADVANCE_004:
+class CHAR_ADVANCE_004(CharacterChoice):
     ''' Выбор деталей предыистории '''
     form_class = CharacterBackgroundForm
     template = 'dnd5e/adventures/include/choices/advance_004.html'
-
-    def __init__(self, character):
-        self.character = character
 
     def get_form(self, request):
         return self.form_class(
@@ -215,9 +210,9 @@ class POST_FEAT_001:
 
 class POST_FEAT_002:
     def apply(self, character):
-        char_choices = dnd5e_app.get_model('characteradvancmentchoice')
-        competence_choice = dnd5e_app.get_model('advancmentchoice').objects.get(code='CLASS_ROG_002')
-        reason_obj = dnd5e_app.get_model('class').objects.get(name='Плут')
+        char_choices = get_model('characteradvancmentchoice')
+        competence_choice = get_model('advancmentchoice').objects.get(code='CLASS_ROG_002')
+        reason_obj = get_model('class').objects.get(name='Плут')
 
         char_choices.objects.get_or_create(
             character=character, choice=competence_choice,
@@ -228,23 +223,23 @@ class POST_FEAT_002:
 class POST_FEAT_003(POST_FEAT_001):
     """ Убийца """
     def apply(self, character):
-        char_tools = dnd5e_app.get_model('charactertoolproficiency')
-        for tool in dnd5e_app.get_model('tool').objects.filter(name__in=['Инструменты отравителя', 'Набор для грима']):
+        char_tools = get_model('charactertoolproficiency')
+        for tool in get_model('tool').objects.filter(name__in=['Инструменты отравителя', 'Набор для грима']):
             _, _ = char_tools.objects.get_or_create(character=character, tool=tool)
 
 
 class POST_FEAT_004:
     """ Комбинатор / Интриган """
     def apply(self, character):
-        char_tools = dnd5e_app.get_model('charactertoolproficiency')
-        for tool in dnd5e_app.get_model('tool').objects.filter(name__in=['Набор для фальсификации', 'Набор для грима']):
+        char_tools = get_model('charactertoolproficiency')
+        for tool in get_model('tool').objects.filter(name__in=['Набор для фальсификации', 'Набор для грима']):
             _, _ = char_tools.objects.get_or_create(character=character, tool=tool)
 
-        char_choices = dnd5e_app.get_model('characteradvancmentchoice')
+        char_choices = get_model('characteradvancmentchoice')
         char_choices.objects.create(
             character=character,
-            choice=dnd5e_app.get_model('advancmentchoice').objects.get(code='CLASS_ROG_003'),
-            reason=dnd5e_app.get_model('subclass').objects.get(name='Комбинатор')
+            choice=get_model('advancmentchoice').objects.get(code='CLASS_ROG_003'),
+            reason=get_model('subclass').objects.get(name='Комбинатор')
         )
 
 

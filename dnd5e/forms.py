@@ -2,7 +2,7 @@ from django import forms
 
 from .models import (
     Character, CharacterAbilities, CharacterBackground, CharacterSkill,
-    CharacterToolProficiency, Feature, Language, Subclass, Tool
+    CharacterToolProficiency, Feature, Language, Maneuver, Subclass, Tool
 )
 from .widgets import AbilityListBoxSelect
 
@@ -198,3 +198,12 @@ class MasterMindIntrigueSelect(forms.Form):
 
         self.fields['languages'].widget.attrs = {'class': 'selectpicker'}
         self.fields['languages'].queryset = Language.objects.exclude(id__in=character.languages.values_list('id'))
+
+
+class ManeuversSelectForm(forms.Form):
+    maneuvers = forms.ModelMultipleChoiceField(queryset=Maneuver.objects.all())
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['maneuvers'].widget.attrs = {'class': 'selectpicker'}

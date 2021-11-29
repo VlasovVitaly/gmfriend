@@ -242,7 +242,7 @@ class Tool(models.Model):
         return f'[{self.__class__.__name__}]: {self.id} {self.name}'
 
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.get_category_display()}: {self.name}' if self.category else self.name
 
 
 class Stuff(models.Model):
