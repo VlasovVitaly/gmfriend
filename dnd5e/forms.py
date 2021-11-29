@@ -214,3 +214,22 @@ class ManeuversSelectForm(forms.Form):
             raise forms.ValidationError(f'Необходимо выбрать ровно {self.limit} приёма')
 
         return self.cleaned_data['maneuvers']
+
+
+class ManeuversUpgradeForm(forms.Form):
+    replace = forms.ModelChoiceField(required=False, queryset=Maneuver.objects.all())  # TOdO setup queryset
+    append = forms.ModelMultipleChoiceField(queryset=Maneuver.objects.all())  # TODO setup queryset
+
+    def __init__(self, *args, limit, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.limit = limit 
+        self.fields['replace'].widget.attrs = {'class': 'selectpicker'}
+        self.fields['append'].widget.attrs = {'class': 'selectpicker', 'data-max-options': limit}
+    
+    def clean_append(self):
+        append = self.cleaned_data['append']
+        if append.count() != self.limit:
+            raise forms.ValidationError(f'Необходимо выбрать ровно {self.limit} приёма')
+
+        return append

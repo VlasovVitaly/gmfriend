@@ -1,11 +1,12 @@
 import re
+
 from django.apps import apps
 
 from dnd5e.models import CharacterToolProficiency
 
 from .forms import (
     AddCharLanguageFromBackground, AddCharSkillProficiency, CharacterBackgroundForm,
-    ManeuversSelectForm, MasterMindIntrigueSelect, SelectAbilityAdvanceForm,
+    ManeuversSelectForm, ManeuversUpgradeForm, MasterMindIntrigueSelect, SelectAbilityAdvanceForm,
     SelectCompetenceForm, SelectFeatureForm, SelectSubclassForm, SelectToolProficiency
 )
 
@@ -96,6 +97,15 @@ class CLASS_BATTLE_001(CharacterChoice):
             character=self.character, dtype='superiority', dice='1d8', count=4, maximum=4
         )
         self.character.known_maneuvers.set(data['maneuvers'])
+
+
+class CLASS_BATTLE_002(CharacterChoice):
+    """ Мастер боевых исскуств / Боевое превосходство (повышение)"""
+    form_class = ManeuversUpgradeForm
+    selection_limit = 2
+
+    def apply_data(self, data):
+        print(data)
 
 
 class CLASS_ROG_001(CharacterChoice):
