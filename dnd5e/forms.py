@@ -203,7 +203,14 @@ class MasterMindIntrigueSelect(forms.Form):
 class ManeuversSelectForm(forms.Form):
     maneuvers = forms.ModelMultipleChoiceField(queryset=Maneuver.objects.all())
     
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, limit, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields['maneuvers'].widget.attrs = {'class': 'selectpicker'}
+        self.limit = limit
+        self.fields['maneuvers'].widget.attrs = {'class': 'selectpicker', 'data-max-options': limit}
+
+    def clean_maneuvers(self):
+        if self.cleaned_data['maneuvers'].count() != self.limit:
+            raise forms.ValidationError(f'Необходимо выбрать ровно {self.limit} приёма')
+
+        return self.cleaned_data['maneuvers']

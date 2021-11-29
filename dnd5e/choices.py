@@ -89,6 +89,7 @@ class CLASS_WAR_002(CharacterChoice):
 class CLASS_BATTLE_001(CharacterChoice):
     """ Мастер боевых исскуств / Боевое превосходство """
     form_class = ManeuversSelectForm
+    selection_limit = 3
     
     def apply_data(self, data):
         print("do something")
@@ -199,6 +200,8 @@ class CHAR_ADVANCE_004(CharacterChoice):
 
     def apply_data(self, data):
         print(data)
+        for key, val in data.items():
+            print(type(key), key, val)
 
 
 class POST_FEAT_001:
@@ -267,6 +270,7 @@ ALL_CHOICES = {
     'PROF_TOOLS_003': PROF_TOOLS_003,
     'CLASS_WAR_001': CLASS_WAR_001,
     'CLASS_WAR_002': CLASS_WAR_002,
+    'CLASS_BATTLE_001': CLASS_BATTLE_001,
     'CLASS_ROG_001': CLASS_ROG_001,
     'CLASS_ROG_002': CLASS_ROG_002,
     'CLASS_ROG_003': CLASS_ROG_003,
