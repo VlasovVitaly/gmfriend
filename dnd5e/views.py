@@ -109,7 +109,7 @@ def resolve_char_choice(request, adv_id, char_id, choice_id):
         return redirect(reverse('dnd5e:adventure:character:detail', kwargs={'adv_id': adventure.id, 'char_id': char.id}))
 
     selector = ALL_CHOICES[choice.choice.code](char)
-    form = selector.get_form(request, char)
+    form = selector.get_form(request)
 
     if form.is_valid():
         selector.apply_data(form.cleaned_data)

@@ -16,7 +16,7 @@ class PROF_TOOLS_001:
     def __init__(self, character):
         self.character = character
 
-    def get_form(self, request, character):
+    def get_form(self, request):
         return self.form_class(data=request.POST or None, limit=self.selection_limit, queryset=self.queryset)
 
     def apply_data(self, data):
@@ -40,7 +40,7 @@ class CLASS_WAR_001:
     def __init__(self, character):
         self.character = character
 
-    def get_form(self, request, character):
+    def get_form(self, request):
         exclude_feats = self.character.features.filter(feature__group='fight_style').values_list('feature_id')  # Already know
         return self.form_class(data=request.POST or None, queryset=self.queryset.exclude(id__in=exclude_feats))
 
@@ -57,11 +57,23 @@ class CLASS_WAR_002:
     def __init__(self, character):
         self.character = character
 
-    def get_form(self, request, character):
+    def get_form(self, request):
         return self.form_class(data=request.POST or None, queryset=self.queryset)
 
     def apply_data(self, data):
         self.character.apply_subclass(data['subclass'], 3)  # Fighter select arhtype on level 3
+
+
+class CLASS_BATTLE_001:
+    """ Мастер боевых исскуств / Боевое превосходство """
+    def __init__(self, character):
+        self.character = character
+    
+    def get_form(self, request):
+        return None
+    
+    def apply_data(self, data):
+        return None
 
 
 class CLASS_ROG_001:
@@ -72,7 +84,7 @@ class CLASS_ROG_001:
     def __init__(self, character):
         self.character = character
 
-    def get_form(self, request, character):
+    def get_form(self, request):
         return self.form_class(data=request.POST or None, queryset=self.queryset)
 
     def apply_data(self, data):
@@ -86,8 +98,11 @@ class CLASS_ROG_002:
     def __init__(self, character):
         self.character = character
 
-    def get_form(self, request, character):
-        return self.form_class(data=request.POST or None, queryset=character.skills.filter(competence=False, proficiency=True))
+    def get_form(self, request):
+        return self.form_class(
+            data=request.POST or None,
+            queryset=self.character.skills.filter(competence=False, proficiency=True)
+        )
 
     def apply_data(self, data):
         data['skills'].update(competence=True)
@@ -103,8 +118,8 @@ class CLASS_ROG_003:
     def __init__(self, character):
         self.character = character
 
-    def get_form(self, request, character):
-        return self.form_class(request.POST or None, character=character)
+    def get_form(self, request):
+        return self.form_class(request.POST or None, character=self.character)
 
     def apply_data(self, data):
         _ = dnd5e_app.get_model('charactertoolproficiency').objects.create(
@@ -115,16 +130,17 @@ class CLASS_ROG_003:
 
 
 class CHAR_ADVANCE_001:
+    ''' Повышение характеристик '''
     template = 'dnd5e/adventures/include/choices/advance_001.html'
     form_class = SelectAbilityAdvanceForm
 
     def __init__(self, character):
         self.character = character
 
-    def get_form(self, request, character):
+    def get_form(self, request):
         return self.form_class(
             data=request.POST or None, files=request.FILES or None,
-            queryset=dnd5e_app.get_model('characterabilities').objects.filter(character=character)
+            queryset=dnd5e_app.get_model('characterabilities').objects.filter(character=self.character)
         )
 
     def apply_data(self, data):
@@ -142,11 +158,11 @@ class CHAR_ADVANCE_002:
     def __init__(self, character):
         self.character = character
 
-    def get_form(self, request, character):
+    def get_form(self, request):
         return self.form_class(
             data=request.POST or None, files=None,
-            limit=character.klass.skill_proficiency_limit,
-            skills=character.skills.exclude(proficiency=True)
+            limit=self.character.klass.skill_proficiency_limit,
+            skills=self.character.skills.exclude(proficiency=True)
         )
 
     def apply_data(self, data):
@@ -160,11 +176,11 @@ class CHAR_ADVANCE_003:
     def __init__(self, character):
         self.character = character
 
-    def get_form(self, request, character):
+    def get_form(self, request):
         return self.form_class(
             data=request.POST or None, files=None,
-            limit=character.background.known_languages,
-            queryset=dnd5e_app.get_model('language').objects.exclude(id__in=character.languages.all().values_list('id'))
+            limit=self.character.background.known_languages,
+            queryset=dnd5e_app.get_model('language').objects.exclude(id__in=self.character.languages.all().values_list('id'))
         )
 
     def apply_data(self, data):
@@ -180,10 +196,10 @@ class CHAR_ADVANCE_004:
     def __init__(self, character):
         self.character = character
 
-    def get_form(self, request, character):
+    def get_form(self, request):
         return self.form_class(
             data=request.POST or None, files=None,
-            background=character.background
+            background=self.character.background
         )
 
     def apply_data(self, data):

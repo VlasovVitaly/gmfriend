@@ -125,7 +125,7 @@ class Adventure(models.Model):
     )
     name = models.CharField(max_length=256, db_index=True, verbose_name='Название')
     created = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
-    monsters = models.ManyToManyField('Monster', related_name='in_adventures')
+    monsters = models.ManyToManyField('Monster', related_name='in_adventures', editable=False)
 
     class Meta:
         ordering = ['name']
@@ -490,9 +490,13 @@ class Feature(models.Model):
         (RECHARGE_LONG_REST, 'Длинный отдых'),
     )
 
+    GROUP_CHOICES = (
+        ('fight_style', 'Боевой стиль'),
+    )
+
     name = models.CharField(max_length=64, db_index=True, unique=True)
     description = models.TextField()
-    group = models.CharField(max_length=12, verbose_name='Группа умений', blank=True)
+    group = models.CharField(max_length=12, verbose_name='Группа умений', blank=True, choices=GROUP_CHOICES)
     stackable = models.BooleanField(default=False)
     rechargeable = models.PositiveSmallIntegerField(choices=RECHARGE_CHOICES, default=RECHARGE_CONSTANT)
 
@@ -1220,21 +1224,27 @@ class Character(models.Model):
         if self.background.known_languages:
             char_choices.append(
                 CharacterAdvancmentChoice(
-                    character=self, choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_003'), reason=self.background
+                    character=self,
+                    choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_003'),
+                    reason=self.background
                 )
             )
 
         # Skills proficiency choice
         char_choices.append(
             CharacterAdvancmentChoice(
-                character=self, choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_002'), reason=self.klass
+                character=self,
+                choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_002'),
+                reason=self.klass
             )
         )
 
         # Background story
         char_choices.append(
             CharacterAdvancmentChoice(
-                character=self, choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_004'), reason=self.klass
+                character=self,
+                choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_004'),
+                reason=self.klass
             )
         )
 
