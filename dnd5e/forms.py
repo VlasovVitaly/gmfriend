@@ -217,22 +217,32 @@ class ManeuversSelectForm(forms.Form):
 
 
 class ManeuversUpgradeForm(forms.Form):
-    replace_src = forms.ModelChoiceField(required=False, queryset=Maneuver.objects.all())  # TOdO setup queryset
-    replace_dst = forms.ModelChoiceField(required=False, queryset=Maneuver.objects.all())
-    append = forms.ModelMultipleChoiceField(queryset=Maneuver.objects.all())  # TODO setup queryset
+    replace_src = forms.ModelChoiceField(required=False, queryset=Maneuver.objects.none())
+    replace_dst = forms.ModelChoiceField(required=False, queryset=Maneuver.objects.none())
+    append = forms.ModelMultipleChoiceField(queryset=Maneuver.objects.none())
 
-    def __init__(self, *args, limit, **kwargs):
+    def __init__(self, *args, character, limit, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.limit = limit
-        self.fields['replace_src'].widget.attrs = {'class': 'selectpicker'}
-        self.fields['replace_dst'].widget.attrs = {'class': 'selectpicker'}
+        self.character = character
+
+        known_maneuvers = character.known_maneuvers.all()
+        unknown_maneuvers = Maneuver.objects.exclude(id__in=known_maneuvers)
+
+        self.fields['replace_src'].queryset = known_maneuvers
+        self.fields['replace_src'].widget.attrs = {'class': 'selecticker'}
+
+        self.fields['replace_dst'].queryset = unknown_maneuvers
+        self.fields['replace_dst'].widget.attrs = {'class': 'selectpcker'}
+
+        self.fields['append'].queryset = unknown_maneuvers
         self.fields['append'].widget.attrs = {'class': 'selectpicker', 'data-max-options': limit}
 
     def clean(self):
         src = self.cleaned_data.get('replace_src')
         dst = self.cleaned_data.get('replace_dst')
-        # append = self.cleaned_data['append']
+        append = self.cleaned_data['append']
 
         if src and dst is None:
             self.add_error(
@@ -242,7 +252,11 @@ class ManeuversUpgradeForm(forms.Form):
             self.add_error(
                 'replace_src', forms.ValidationError('При замене навыка нужно указать какой навык поменять')
             )
-        # TODO check if dst in to append list
+
+        if append.filter(id=dst.id).exists():
+            self.add_error(
+                'replace_dst', forms.ValidationError('Вы хотите поменять на навык, который уже выбрали')
+            )
 
     def clean_append(self):
         append = self.cleaned_data['append']

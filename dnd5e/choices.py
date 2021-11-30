@@ -14,6 +14,7 @@ class CharacterChoice:
     form_class = None
     queryset = None
     selection_limit = None
+    pass_char = False  # Pass character to form_class
 
     def __init__(self, character):
         self.character = character
@@ -29,6 +30,9 @@ class CharacterChoice:
 
         if self.selection_limit:
             form_args['limit'] = self.selection_limit
+
+        if self.pass_char:
+            form_args['character'] = self.character
 
         return self.form_class(**form_args)
 
@@ -100,10 +104,16 @@ class CLASS_BATTLE_002(CharacterChoice):
     """ Мастер боевых исскуств / Боевое превосходство (повышение)"""
     form_class = ManeuversUpgradeForm
     selection_limit = 2
+    pass_char = True
 
     def apply_data(self, data):
         get_model('characterdice').objects.get(character=self.character, dtype='superiority').increase_count()
-        print(data)
+        to_append = list(data['append'])
+        if data.get('replace_src'):
+            self.character.known_maneuvers.remove(data['replace_src'])
+            to_append.append(data['replace_dst'])
+
+        self.character.known_maneuvers.add(*to_append)
 
 
 class CLASS_ROG_001(CharacterChoice):
