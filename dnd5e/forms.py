@@ -202,7 +202,7 @@ class MasterMindIntrigueSelect(forms.Form):
 
 class ManeuversSelectForm(forms.Form):
     maneuvers = forms.ModelMultipleChoiceField(queryset=Maneuver.objects.all())
-    
+
     def __init__(self, *args, limit, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -217,16 +217,33 @@ class ManeuversSelectForm(forms.Form):
 
 
 class ManeuversUpgradeForm(forms.Form):
-    replace = forms.ModelChoiceField(required=False, queryset=Maneuver.objects.all())  # TOdO setup queryset
+    replace_src = forms.ModelChoiceField(required=False, queryset=Maneuver.objects.all())  # TOdO setup queryset
+    replace_dst = forms.ModelChoiceField(required=False, queryset=Maneuver.objects.all())
     append = forms.ModelMultipleChoiceField(queryset=Maneuver.objects.all())  # TODO setup queryset
 
     def __init__(self, *args, limit, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.limit = limit 
-        self.fields['replace'].widget.attrs = {'class': 'selectpicker'}
+        self.limit = limit
+        self.fields['replace_src'].widget.attrs = {'class': 'selectpicker'}
+        self.fields['replace_dst'].widget.attrs = {'class': 'selectpicker'}
         self.fields['append'].widget.attrs = {'class': 'selectpicker', 'data-max-options': limit}
-    
+
+    def clean(self):
+        src = self.cleaned_data.get('replace_src')
+        dst = self.cleaned_data.get('replace_dst')
+        # append = self.cleaned_data['append']
+
+        if src and dst is None:
+            self.add_error(
+                'replace_dst', forms.ValidationError('При замене навыка необходимо указать на что поменять')
+            )
+        if dst and src is None:
+            self.add_error(
+                'replace_src', forms.ValidationError('При замене навыка нужно указать какой навык поменять')
+            )
+        # TODO check if dst in to append list
+
     def clean_append(self):
         append = self.cleaned_data['append']
         if append.count() != self.limit:

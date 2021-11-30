@@ -1470,6 +1470,12 @@ class CharacterDice(models.Model):
     class Meta:
         default_permissions = ()
 
+    def increase_count(self, num=1):
+        self.count = models.F('count') + num
+        self.maximum = models.F('maximum') + num
+
+        self.save(update_fields=['count', 'maximum'])
+
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'
 

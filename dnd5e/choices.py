@@ -1,8 +1,4 @@
-import re
-
 from django.apps import apps
-
-from dnd5e.models import CharacterToolProficiency
 
 from .forms import (
     AddCharLanguageFromBackground, AddCharSkillProficiency, CharacterBackgroundForm,
@@ -21,20 +17,21 @@ class CharacterChoice:
 
     def __init__(self, character):
         self.character = character
-    
+
     def get_form(self, request):
-        if self.form_class is None: raise AssertionError('Choice formclass is not set')
+        if self.form_class is None:
+            raise AssertionError('Choice formclass is not set')
 
         form_args = {'data': request.POST or None, 'files': None}
 
         if self.queryset:
             form_args['queryset'] = self.queryset
-        
+
         if self.selection_limit:
             form_args['limit'] = self.selection_limit
 
         return self.form_class(**form_args)
-    
+
     def apply_data(self, data):
         raise AssertionError('apply_data is not defined')
 
@@ -69,7 +66,7 @@ class CLASS_WAR_001(CharacterChoice):
 
     def get_form(self, request):
         self.queryset = get_model('feature').objects.filter(group='fight_style').exclude(
-            id__in=self.character.features.filter(feature__group='fight_style').values_list('feature_id') 
+            id__in=self.character.features.filter(feature__group='fight_style').values_list('feature_id')
         )
 
         return super().get_form(request)
@@ -91,7 +88,7 @@ class CLASS_BATTLE_001(CharacterChoice):
     """ Мастер боевых исскуств / Боевое превосходство """
     form_class = ManeuversSelectForm
     selection_limit = 3
-    
+
     def apply_data(self, data):
         get_model('characterdice').objects.create(
             character=self.character, dtype='superiority', dice='1d8', count=4, maximum=4
@@ -105,6 +102,7 @@ class CLASS_BATTLE_002(CharacterChoice):
     selection_limit = 2
 
     def apply_data(self, data):
+        get_model('characterdice').objects.get(character=self.character, dtype='superiority').increase_count()
         print(data)
 
 
@@ -187,7 +185,7 @@ class CHAR_ADVANCE_003(CharacterChoice):
     form_class = AddCharLanguageFromBackground
 
     def get_form(self, request):
-        self.selection_limit = self.character.background.known_languages 
+        self.selection_limit = self.character.background.known_languages
         self.queryset = get_model('language').objects.exclude(
             id__in=self.character.languages.all().values_list('id')
         )
@@ -283,6 +281,7 @@ ALL_CHOICES = {
     'CLASS_WAR_001': CLASS_WAR_001,
     'CLASS_WAR_002': CLASS_WAR_002,
     'CLASS_BATTLE_001': CLASS_BATTLE_001,
+    'CLASS_BATTLE_002': CLASS_BATTLE_002,
     'CLASS_ROG_001': CLASS_ROG_001,
     'CLASS_ROG_002': CLASS_ROG_002,
     'CLASS_ROG_003': CLASS_ROG_003,
