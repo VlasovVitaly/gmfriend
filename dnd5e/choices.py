@@ -116,6 +116,25 @@ class CLASS_BATTLE_002(CharacterChoice):
         self.character.known_maneuvers.add(*to_append)
 
 
+class CLASS_BATTLE_003(CharacterChoice):
+    """ Мастер боевых исскуств / Улучшенное боевое превосходство (кость и приемы) """
+    form_class = ManeuversUpgradeForm
+    selection_limit = 2
+    pass_char = True
+
+    def apply_data(self, data):
+        superiority_dice = get_model('characterdice').objects.get(character=self.character, dtype='superiority')
+        superiority_dice.dice = 'd10'
+        superiority_dice.save(update_fields=['dice'])
+
+        to_append = list(data['append'])
+        if data.get('replace_src'):
+            self.character.known_maneuvers.remove(data['replace_src'])
+            to_append.append(data['replace_dst'])
+
+        self.character.known_maneuvers.add(*to_append)
+
+
 class CLASS_ROG_001(CharacterChoice):
     """ Rogue archtype selection """
     queryset = get_model('subclass').objects.filter(parent__orig_name='Rogue')
@@ -292,6 +311,7 @@ ALL_CHOICES = {
     'CLASS_WAR_002': CLASS_WAR_002,
     'CLASS_BATTLE_001': CLASS_BATTLE_001,
     'CLASS_BATTLE_002': CLASS_BATTLE_002,
+    'CLASS_BATTLE_003': CLASS_BATTLE_003,
     'CLASS_ROG_001': CLASS_ROG_001,
     'CLASS_ROG_002': CLASS_ROG_002,
     'CLASS_ROG_003': CLASS_ROG_003,

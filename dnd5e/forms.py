@@ -253,7 +253,7 @@ class ManeuversUpgradeForm(forms.Form):
                 'replace_src', forms.ValidationError('При замене навыка нужно указать какой навык поменять')
             )
 
-        if append.filter(id=dst.id).exists():
+        if dst and append.filter(id=dst.id).exists():
             self.add_error(
                 'replace_dst', forms.ValidationError('Вы хотите поменять на навык, который уже выбрали')
             )
