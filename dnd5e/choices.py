@@ -88,51 +88,59 @@ class CLASS_WAR_002(CharacterChoice):
         self.character.apply_subclass(data['subclass'], 3)  # Fighter select arhtype on level 3
 
 
-class CLASS_BATTLE_001(CharacterChoice):
-    """ Мастер боевых исскуств / Боевое превосходство """
-    form_class = ManeuversSelectForm
-    selection_limit = 3
+class CombatSuperiorityChoice(CharacterChoice):
+    def improve_dice(self, new_value):
+        superiority_dice = get_model('characterdice').objects.get(character=self.character, dtype='superiority')
+        superiority_dice.dice = new_value
+        superiority_dice.save(update_fields=['dice'])
 
-    def apply_data(self, data):
+    def add_dice(self):
+        get_model('characterdice').objects.get(character=self.character, dtype='superiority').increase_count()
+
+    def add_maneuvers(self, data):
+        to_append = list(data['append'])
+        if data.get('replace_src'):
+            self.character.known_maneuvers.remove(data['replace_src'])
+            to_append.append(data['replace_dst'])
+
+        self.character.known_maneuvers.add(*to_append)
+
+    def set_maneuvers(self, data):
         get_model('characterdice').objects.create(
             character=self.character, dtype='superiority', dice='1d8', count=4, maximum=4
         )
         self.character.known_maneuvers.set(data['maneuvers'])
 
 
-class CLASS_BATTLE_002(CharacterChoice):
+class CLASS_BATTLE_001(CombatSuperiorityChoice):
+    """ Мастер боевых исскуств / Боевое превосходство """
+    form_class = ManeuversSelectForm
+    selection_limit = 3
+
+    def apply_data(self, data):
+        self.set_maneuvers(data)
+
+
+class CLASS_BATTLE_002(CombatSuperiorityChoice):
     """ Мастер боевых исскуств / Боевое превосходство (повышение)"""
     form_class = ManeuversUpgradeForm
     selection_limit = 2
     pass_char = True
 
     def apply_data(self, data):
-        get_model('characterdice').objects.get(character=self.character, dtype='superiority').increase_count()
-        to_append = list(data['append'])
-        if data.get('replace_src'):
-            self.character.known_maneuvers.remove(data['replace_src'])
-            to_append.append(data['replace_dst'])
-
-        self.character.known_maneuvers.add(*to_append)
+        self.add_dice()
+        self.add_maneuvers(data)
 
 
-class CLASS_BATTLE_003(CharacterChoice):
+class CLASS_BATTLE_003(CombatSuperiorityChoice):
     """ Мастер боевых исскуств / Улучшенное боевое превосходство (кость и приемы) """
     form_class = ManeuversUpgradeForm
     selection_limit = 2
     pass_char = True
 
     def apply_data(self, data):
-        superiority_dice = get_model('characterdice').objects.get(character=self.character, dtype='superiority')
-        superiority_dice.dice = 'd10'
-        superiority_dice.save(update_fields=['dice'])
-
-        to_append = list(data['append'])
-        if data.get('replace_src'):
-            self.character.known_maneuvers.remove(data['replace_src'])
-            to_append.append(data['replace_dst'])
-
-        self.character.known_maneuvers.add(*to_append)
+        self.improve_dice('1d10')
+        self.add_maneuvers(data)
 
 
 class CLASS_ROG_001(CharacterChoice):
