@@ -1312,6 +1312,8 @@ class CharacterAdvancmentChoice(models.Model):
     choice = models.ForeignKey(
         AdvancmentChoice, on_delete=models.CASCADE, related_name='+'
     )
+
+    # TODO WHY WE NEED REASON
     reason_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     reason_object_id = models.PositiveIntegerField()
     reason = GenericForeignKey('reason_content_type', 'reason_object_id')

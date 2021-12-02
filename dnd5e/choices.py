@@ -307,6 +307,20 @@ class POST_FEAT_006:
         pass
 
 
+class POST_COMBAT_SUPERIORITY_001:
+    """ Боевое превосходство """
+    def apply(self, character):
+        get_model('characterdice').objects.create(
+            character=character, dtype='superiority', dice='1d8', count=4, maximum=4
+        )
+        char_choices = get_model('characteradvancmentchoice')
+        char_choices.objects.create(
+            character=character,
+            choice=get_model('advancmentchoice').objects.get(code='CLASS_BATTLE_001'),
+            reason=get_model('subclass').objects.get(name='Мастер боевых искуств')
+        )
+
+
 ALL_CHOICES = {
     'CHAR_ADVANCE_001': CHAR_ADVANCE_001,
     'CHAR_ADVANCE_002': CHAR_ADVANCE_002,
@@ -329,4 +343,5 @@ ALL_CHOICES = {
     'POST_FEAT_004': POST_FEAT_004,
     'POST_FEAT_005': POST_FEAT_005,
     'POST_FEAT_006': POST_FEAT_006,
+    'POST_COMBAT_SUPERIORITY_001': POST_COMBAT_SUPERIORITY_001,
 }
