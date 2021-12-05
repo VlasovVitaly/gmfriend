@@ -2,7 +2,7 @@ from django import forms
 
 from .models import (
     Character, CharacterAbilities, CharacterBackground, CharacterSkill,
-    CharacterToolProficiency, Feature, Language, Subclass, Tool
+    CharacterToolProficiency, Feature, Language, Maneuver, Subclass, Tool
 )
 from .widgets import AbilityListBoxSelect
 
@@ -198,3 +198,69 @@ class MasterMindIntrigueSelect(forms.Form):
 
         self.fields['languages'].widget.attrs = {'class': 'selectpicker'}
         self.fields['languages'].queryset = Language.objects.exclude(id__in=character.languages.values_list('id'))
+
+
+class ManeuversSelectForm(forms.Form):
+    maneuvers = forms.ModelMultipleChoiceField(queryset=Maneuver.objects.all())
+
+    def __init__(self, *args, limit, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.limit = limit
+        self.fields['maneuvers'].widget.attrs = {'class': 'selectpicker', 'data-max-options': limit}
+
+    def clean_maneuvers(self):
+        if self.cleaned_data['maneuvers'].count() != self.limit:
+            raise forms.ValidationError(f'Необходимо выбрать ровно {self.limit} приёма')
+
+        return self.cleaned_data['maneuvers']
+
+
+class ManeuversUpgradeForm(forms.Form):
+    replace_src = forms.ModelChoiceField(required=False, queryset=Maneuver.objects.none())
+    replace_dst = forms.ModelChoiceField(required=False, queryset=Maneuver.objects.none())
+    append = forms.ModelMultipleChoiceField(queryset=Maneuver.objects.none())
+
+    def __init__(self, *args, character, limit, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.limit = limit
+        self.character = character
+
+        known_maneuvers = character.known_maneuvers.all()
+        unknown_maneuvers = Maneuver.objects.exclude(id__in=known_maneuvers)
+
+        self.fields['replace_src'].queryset = known_maneuvers
+        self.fields['replace_src'].widget.attrs = {'class': 'selecticker'}
+
+        self.fields['replace_dst'].queryset = unknown_maneuvers
+        self.fields['replace_dst'].widget.attrs = {'class': 'selectpcker'}
+
+        self.fields['append'].queryset = unknown_maneuvers
+        self.fields['append'].widget.attrs = {'class': 'selectpicker', 'data-max-options': limit}
+
+    def clean(self):
+        src = self.cleaned_data.get('replace_src')
+        dst = self.cleaned_data.get('replace_dst')
+        append = self.cleaned_data['append']
+
+        if src and dst is None:
+            self.add_error(
+                'replace_dst', forms.ValidationError('При замене навыка необходимо указать на что поменять')
+            )
+        if dst and src is None:
+            self.add_error(
+                'replace_src', forms.ValidationError('При замене навыка нужно указать какой навык поменять')
+            )
+
+        if dst and append.filter(id=dst.id).exists():
+            self.add_error(
+                'replace_dst', forms.ValidationError('Вы хотите поменять на навык, который уже выбрали')
+            )
+
+    def clean_append(self):
+        append = self.cleaned_data['append']
+        if append.count() != self.limit:
+            raise forms.ValidationError(f'Необходимо выбрать ровно {self.limit} приёма')
+
+        return append

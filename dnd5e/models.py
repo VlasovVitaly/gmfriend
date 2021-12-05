@@ -125,7 +125,7 @@ class Adventure(models.Model):
     )
     name = models.CharField(max_length=256, db_index=True, verbose_name='Название')
     created = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
-    monsters = models.ManyToManyField('Monster', related_name='in_adventures')
+    monsters = models.ManyToManyField('Monster', related_name='in_adventures', editable=False)
 
     class Meta:
         ordering = ['name']
@@ -242,7 +242,7 @@ class Tool(models.Model):
         return f'[{self.__class__.__name__}]: {self.id} {self.name}'
 
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.get_category_display()}: {self.name}' if self.category else self.name
 
 
 class Stuff(models.Model):
@@ -490,9 +490,13 @@ class Feature(models.Model):
         (RECHARGE_LONG_REST, 'Длинный отдых'),
     )
 
+    GROUP_CHOICES = (
+        ('fight_style', 'Боевой стиль'),
+    )
+
     name = models.CharField(max_length=64, db_index=True, unique=True)
     description = models.TextField()
-    group = models.CharField(max_length=12, verbose_name='Группа умений', blank=True)
+    group = models.CharField(max_length=12, verbose_name='Группа умений', blank=True, choices=GROUP_CHOICES)
     stackable = models.BooleanField(default=False)
     rechargeable = models.PositiveSmallIntegerField(choices=RECHARGE_CHOICES, default=RECHARGE_CONSTANT)
 
@@ -531,6 +535,23 @@ class Feature(models.Model):
 
     def __str__(self):
         return f'{self.name}'
+
+
+class Maneuver(models.Model):
+    name = models.CharField(max_length=32, verbose_name='Название')
+    description = models.TextField(verbose_name='Описание')
+
+    class Meta:
+        default_permissions = ()
+        verbose_name = 'Приём'
+        verbose_name_plural = 'Приёмы'
+        ordering = ['name']
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+
+    def __str__(self):
+        return self.name
 
 
 class Trap(models.Model):
@@ -1125,8 +1146,8 @@ class Character(models.Model):
         Background, on_delete=models.CASCADE, related_name='+', verbose_name='Предыстория'
     )
     dead = models.BooleanField(verbose_name='Мертв', default=False, editable=False)
-
     languages = models.ManyToManyField('Language', related_name='+', verbose_name='Владение языками', editable=False)
+    known_maneuvers = models.ManyToManyField(Maneuver, related_name='+', verbose_name='Известные приёмы', editable=False)
 
     class Meta:
         ordering = ['name', 'level']
@@ -1203,21 +1224,27 @@ class Character(models.Model):
         if self.background.known_languages:
             char_choices.append(
                 CharacterAdvancmentChoice(
-                    character=self, choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_003'), reason=self.background
+                    character=self,
+                    choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_003'),
+                    reason=self.background
                 )
             )
 
         # Skills proficiency choice
         char_choices.append(
             CharacterAdvancmentChoice(
-                character=self, choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_002'), reason=self.klass
+                character=self,
+                choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_002'),
+                reason=self.klass
             )
         )
 
         # Background story
         char_choices.append(
             CharacterAdvancmentChoice(
-                character=self, choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_004'), reason=self.klass
+                character=self,
+                choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_004'),
+                reason=self.klass
             )
         )
 
@@ -1285,6 +1312,8 @@ class CharacterAdvancmentChoice(models.Model):
     choice = models.ForeignKey(
         AdvancmentChoice, on_delete=models.CASCADE, related_name='+'
     )
+
+    # TODO WHY WE NEED REASON
     reason_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     reason_object_id = models.PositiveIntegerField()
     reason = GenericForeignKey('reason_content_type', 'reason_object_id')
@@ -1442,6 +1471,12 @@ class CharacterDice(models.Model):
 
     class Meta:
         default_permissions = ()
+
+    def increase_count(self, num=1):
+        self.count = models.F('count') + num
+        self.maximum = models.F('maximum') + num
+
+        self.save(update_fields=['count', 'maximum'])
 
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'
