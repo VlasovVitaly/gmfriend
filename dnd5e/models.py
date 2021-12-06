@@ -1276,6 +1276,40 @@ class Character(models.Model):
         return self.name
 
 
+class CharacterClass(models.Model):
+    character = models.ForeignKey(
+        Character, on_delete=models.CASCADE, related_name='classes', related_query_name='class'
+    )
+    klass = models.ForeignKey(
+        Class, on_delete=models.CASCADE, verbose_name='Класс', related_name='+'
+    )
+    subclass = models.ForeignKey(
+        Subclass, on_delete=models.CASCADE, verbose_name='Архетип', related_name='+', null=True, default=None
+    )
+    level = models.PositiveSmallIntegerField(verbose_name='Уровень', default=1)
+
+    # Spellcasting stuff
+    # max_known_cantrips = models.PositiveSmallIntegerField(verbose_name='Известные заговоры', default=0)
+    # max_known_spells = models.PositiveSmallIntegerField(verbose_name='Известные заклинания', default=0)
+    # prepared_spells = models.ManyToManyField(verbose_name='Подготовленные заклинания', to=Spell, related_name='+')
+    # # NOTE let DB calc max_prepared_spells
+    # ability = models.ForeignKey('Ability', on_delete=models.CASCADE)
+    # # TODO spellcasting, without slots
+
+    class Meta:
+        ordering = ['character', 'level']
+        unique_together = ['character', 'klass']
+        default_permissions = ()
+        verbose_name = 'Класс персонажа'
+        verbose_name_plural = 'Классы персонажа'
+
+    def __str__(self):
+        return f'{self.subclass if self.subclass_id else self.klass} {self.level} уровень'
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+
+
 class CharacterFeature(models.Model):
     character = models.ForeignKey(
         Character, on_delete=models.CASCADE, related_name='features', related_query_name='feature'
