@@ -1134,9 +1134,9 @@ class Character(models.Model):
     subrace = models.ForeignKey(
         Subrace, on_delete=models.CASCADE, related_name='+', verbose_name='Разновидность расы', blank=True, null=True
     )
-    klass = models.ForeignKey(
-        Class, on_delete=models.CASCADE, verbose_name='Класс', related_name='+'
-    )
+    #klass = models.ForeignKey(
+    #    Class, on_delete=models.CASCADE, verbose_name='Класс', related_name='+'
+    #)
     subclass = models.ForeignKey(
         Subclass, on_delete=models.CASCADE, verbose_name='Архетип', related_name='+', null=True, default=None
     )
@@ -1156,25 +1156,27 @@ class Character(models.Model):
         verbose_name_plural = 'Персонажи'
 
     def _apply_class_advantages(self, level):
-        try:
-            klass_advantage = self.klass.level_feats.get(level=level)
-        except ClassLevels.DoesNotExist:
-            return
+        pass  # TODO should be moved in CharClass model
+        # try:
+        #     klass_advantage = self.klass.level_feats.get(level=level)
+        # except ClassLevels.DoesNotExist:
+        #     return
 
-        for advantage in klass_advantage.advantages.all():
-            advantage.apply_for_character(self)
+        # for advantage in klass_advantage.advantages.all():
+        #     advantage.apply_for_character(self)
 
     def _apply_subclass_advantages(self, level):
-        try:
-            subclass_advantage = self.subclass.level_feats.get(level=level)
-        except ClassLevels.DoesNotExist:
-            return
+        pass  # TODO should be moved in CharClass model
+        # try:
+        #     subclass_advantage = self.subclass.level_feats.get(level=level)
+        # except ClassLevels.DoesNotExist:
+        #     return
 
-        for advantage in subclass_advantage.advantages.all():
-            advantage.apply_for_character(self)
+        # for advantage in subclass_advantage.advantages.all():
+        #     advantage.apply_for_character(self)
 
-    def init(self):
-        class_saving_trows = self.klass.saving_trows.all()
+    def init(self, klass):
+        class_saving_trows = klass.saving_trows.all()
         abilities = []
 
         # Initial abilities values
@@ -1202,13 +1204,12 @@ class Character(models.Model):
         for feat in features:
             CharacterFeature.objects.create(character=self, feature=feat)
 
-        # for advantage in self.klass.level_feats.get(level=self.level).advantages.all():
-        for advantage in self.klass.level_feats.get(level=1).advantages.all():
+        for advantage in klass.level_feats.get(level=1).advantages.all():
             advantage.apply_for_character(self)
 
         # Tools proficiency
         tools = self.background.tools_proficiency.order_by()
-        tools = tools.union(self.klass.tools_proficiency.order_by())
+        tools = tools.union(klass.tools_proficiency.order_by())
         CharacterToolProficiency.objects.bulk_create(
             [CharacterToolProficiency(character=self, tool=tool) for tool in tools]
         )
@@ -1235,7 +1236,7 @@ class Character(models.Model):
             CharacterAdvancmentChoice(
                 character=self,
                 choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_002'),
-                reason=self.klass
+                reason=klass
             )
         )
 
@@ -1244,14 +1245,14 @@ class Character(models.Model):
             CharacterAdvancmentChoice(
                 character=self,
                 choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_004'),
-                reason=self.klass
+                reason=klass
             )
         )
 
         CharacterAdvancmentChoice.objects.bulk_create(char_choices)
 
         # Create dices
-        CharacterDice.objects.create(character=self, dice=self.klass.hit_dice)
+        CharacterDice.objects.create(character=self, dice=klass.hit_dice)
 
     def level_up(self):
         self._apply_class_advantages(self.level + 1)

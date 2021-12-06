@@ -9,7 +9,7 @@ from .filters import MonsterFilter, SpellFilter
 from .forms import CharacterForm, CharacterStatsFormset
 from .models import (
     NPC, Adventure, AdventureMonster, Character, CharacterAbilities, CharacterAdvancmentChoice,
-    Class, ClassLevels, Monster, Place, Spell, Stage, Subclass, Zone
+    Class, ClassLevels, Monster, Place, Spell, Stage, Subclass, Zone, CharacterClass
 )
 
 
@@ -65,7 +65,8 @@ def create_character(request, adv_id):
 
         with transaction.atomic():
             char.save()
-            char.init()
+            CharacterClass.objects.create(character=char, klass=form.cleaned_data['klass'])
+            char.init(form.cleaned_data['klass'])
 
         return redirect('dnd5e:adventure:character:detail', adv_id=adventure.id, char_id=char.id)
 
