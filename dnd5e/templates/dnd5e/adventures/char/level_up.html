@@ -1,0 +1,33 @@
+{% extends "dnd5e/base.html" %}
+
+{% block title %}Поднять уровень{% endblock title %}
+
+{% block before-content %}
+    <nav class="m-4">
+        <ol class="breadcrumb bg-light">
+            <li class="breadcrumb-item"><a href="{% url 'dnd5e:adventure:detail' adventure.id %}">{{ adventure }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'dnd5e:adventure:character:detail' adventure.id char.id %}">{{ char.name }}</a></li>
+            <li class="breadcrumb-item active">Повышение уровня</li>
+        </ol>
+    </nav>
+    <style> {# TODO Temp class #}
+        .newlevel_class {
+            width: 400px;
+            height: 200px;
+            border: 1px solid black;
+            padding: 15px;
+        }
+    </style>
+{% endblock before-content %}
+
+{% block content %}
+<h3 class="text-center mt-5">Выберите в каком классе повысить уровень</h3>
+<div class="row mt-5">
+    <div class="col">
+        {% for cls in classes %}
+            <div class="newlevel_class">{{ cls }}</div>
+        {% endfor %}
+        <div class="newlevel_class">Multiclass </div>
+    </div>
+</div>
+{% endblock %}

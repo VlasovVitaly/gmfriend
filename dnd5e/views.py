@@ -98,6 +98,17 @@ def set_character_stats(request, adv_id, char_id):
 
 
 @login_required
+def level_up(request, adv_id, char_id):
+    char = get_object_or_404(Character, id=char_id)
+    adventure = get_object_or_404(Adventure, id=adv_id)
+
+    context = {'char': char, 'adventure': adventure, 'classes': char.classes.all()
+}
+
+    return render(request, 'dnd5e/adventures/char/level_up.html', context)
+
+
+@login_required
 @transaction.atomic()
 def resolve_char_choice(request, adv_id, char_id, choice_id):
     adventure = get_object_or_404(Adventure, id=adv_id)

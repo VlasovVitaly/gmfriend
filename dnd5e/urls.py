@@ -10,6 +10,7 @@ character_patterns = ([
     path('<int:char_id>', views.character_detail, name='detail'),
     path('<int:char_id>/set-stats', views.set_character_stats, name='set_stats'),
     path('<int:char_id>/resolve-choice/<int:choice_id>', views.resolve_char_choice, name='resolve_choice'),
+    path('<int:char_id>/levelup', views.level_up, name='level_up'),
 ], app_name)
 
 adventure_patterns = ([

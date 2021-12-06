@@ -26,6 +26,7 @@
                     <a href="{% url 'dnd5e:adventure:character:resolve_choice' adventure.id char.id choice.id %}" class="dropdown-item{% if blocking_choices and not choice.choice.important %} disabled{% endif %}">{{ choice.choice }}</a>
                 {% endfor %}
             </div>
+            <a href="{% url 'dnd5e:adventure:character:level_up' adventure.id char.id %}" class="btn btn-primary">Level Up!</a>
         </div>
     </div>
 </div>
