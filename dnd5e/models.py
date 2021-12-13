@@ -1134,12 +1134,6 @@ class Character(models.Model):
     subrace = models.ForeignKey(
         Subrace, on_delete=models.CASCADE, related_name='+', verbose_name='Разновидность расы', blank=True, null=True
     )
-    #klass = models.ForeignKey(
-    #    Class, on_delete=models.CASCADE, verbose_name='Класс', related_name='+'
-    #)
-    subclass = models.ForeignKey(
-        Subclass, on_delete=models.CASCADE, verbose_name='Архетип', related_name='+', null=True, default=None
-    )
     level = models.PositiveSmallIntegerField(default=1, verbose_name='Уровень')
     proficiency = models.PositiveSmallIntegerField(verbose_name='Мастерство', default=2)
     background = models.ForeignKey(
@@ -1154,26 +1148,6 @@ class Character(models.Model):
         default_permissions = ()
         verbose_name = 'Персонаж'
         verbose_name_plural = 'Персонажи'
-
-    def _apply_class_advantages(self, level):
-        pass  # TODO should be moved in CharClass model
-        # try:
-        #     klass_advantage = self.klass.level_feats.get(level=level)
-        # except ClassLevels.DoesNotExist:
-        #     return
-
-        # for advantage in klass_advantage.advantages.all():
-        #     advantage.apply_for_character(self)
-
-    def _apply_subclass_advantages(self, level):
-        pass  # TODO should be moved in CharClass model
-        # try:
-        #     subclass_advantage = self.subclass.level_feats.get(level=level)
-        # except ClassLevels.DoesNotExist:
-        #     return
-
-        # for advantage in subclass_advantage.advantages.all():
-        #     advantage.apply_for_character(self)
 
     def init(self, klass):
         class_saving_trows = klass.saving_trows.all()
@@ -1255,20 +1229,14 @@ class Character(models.Model):
         CharacterDice.objects.create(character=self, dice=klass.hit_dice)
 
     def level_up(self):
-        self._apply_class_advantages(self.level + 1)
-
-        if self.subclass:
-            self._apply_subclass_advantages(self.level + 1)
-
         self.level = models.F('level') + 1
         self.save(update_fields=['level'])
 
-        self.refresh_from_db()
-
     def apply_subclass(self, subclass, level):
-        self.subclass = subclass
-        self.save(update_fields=['subclass'])
-        self._apply_subclass_advantages(level)
+        pass  # TODO rewrite it to support ClassCharacter
+        # self.subclass = subclass
+        # self.save(update_fields=['subclass'])
+        # self._apply_subclass_advantages(level)
 
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'
@@ -1304,11 +1272,44 @@ class CharacterClass(models.Model):
         verbose_name = 'Класс персонажа'
         verbose_name_plural = 'Классы персонажа'
 
-    def __str__(self):
-        return f'{self.subclass if self.subclass_id else self.klass} {self.level} уровень'
+    def _apply_class_advantages(self, level):
+        try:
+            klass_advantage = self.klass.level_feats.get(level=level)
+        except ClassLevels.DoesNotExist:
+            return
+
+        for advantage in klass_advantage.advantages.all():
+            advantage.apply_for_character(self.character)
+
+    def _apply_subclass_advantages(self, level):
+        try:
+            subclass_advantage = self.subclass.level_feats.get(level=level)
+        except ClassLevels.DoesNotExist:
+            return
+
+        for advantage in subclass_advantage.advantages.all():
+            advantage.apply_for_character(self.character)
+
+    def _increase_hit_dice(self):
+        self.character.dices.filter(dtype='hit').update(
+            count=models.F('count') + 1, maximum=models.F('maximum') + 1
+        )
+
+    def level_up(self):
+        self._apply_class_advantages(self.level + 1)
+
+        if self.subclass_id:
+            self._apply_subclass_advantages(self.level + 1)
+
+        self._increase_hit_dice()
+        self.level = models.F('level') + 1
+        self.save(update_fields=['level'])
 
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'
+
+    def __str__(self):
+        return f'{self.subclass if self.subclass_id else self.klass} {self.level} уровень'
 
 
 class CharacterFeature(models.Model):

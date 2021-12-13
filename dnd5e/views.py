@@ -98,12 +98,19 @@ def set_character_stats(request, adv_id, char_id):
 
 
 @login_required
-def level_up(request, adv_id, char_id):
+def level_up(request, adv_id, char_id, class_id=None):
     char = get_object_or_404(Character, id=char_id)
     adventure = get_object_or_404(Adventure, id=adv_id)
 
-    context = {'char': char, 'adventure': adventure, 'classes': char.classes.all()
-}
+    if class_id is not None:
+        with transaction.atomic():
+            char.level_up()
+            klass = CharacterClass.objects.get(id=class_id)
+            klass.level_up()
+        
+        return redirect('dnd5e:adventure:character:detail', adventure.id, char.id)
+
+    context = {'char': char, 'adventure': adventure, 'classes': char.classes.all()}
 
     return render(request, 'dnd5e/adventures/char/level_up.html', context)
 

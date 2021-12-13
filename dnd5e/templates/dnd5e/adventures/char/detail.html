@@ -34,11 +34,11 @@
     <div class="col">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">{{ char.name }}{% if char.party_id %} из {{ char.party }}{% endif %}</h4>
+                <h4 class="card-title">{{ char.name }}{% if char.party_id %} из {{ char.party }}{% endif %} / {{ char.level }} уровень</h4>
                 <hr>
                 <ul class="list-unstyled">
                     <li><strong>Раса: </strong>{% if char.subrace %}{{ char.subrace }}{% else %}{{ char.race }}{% endif %}</li>
-                    <li><strong>Класс: </strong>{% if char.subclass %}{{ char.subclass }}{% else %}{{ char.klass }}{% endif %} {{ char.level }} уровень</li>
+                    <li><strong>Класс: </strong>{% for kls in char.classes.all %}{{ kls }}{% endfor %}</li>
                     <li><strong>Пол: </strong>{{ char.get_gender_display }}</li>
                     <li><strong>Возраст: </strong>{{ char.age }}</li>
                     <li><strong>Мировозрение: </strong>{{ char.get_alignment_display }}</li>

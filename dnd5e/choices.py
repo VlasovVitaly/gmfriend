@@ -203,13 +203,13 @@ class CHAR_ADVANCE_001(CharacterChoice):
 
 
 class CHAR_ADVANCE_002(CharacterChoice):
-    ''' Выбор мастерства классовых навыков '''
+    ''' Выбор мастерства классовых навыков на первом уровне'''
     form_class = AddCharSkillProficiency
 
     def get_form(self, request):
         return self.form_class(
             data=request.POST or None, files=None,
-            limit=self.character.klass.skill_proficiency_limit,
+            limit=self.character.classes.first().klass.skill_proficiency_limit,
             skills=self.character.skills.exclude(proficiency=True)
         )
 

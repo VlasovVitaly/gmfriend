@@ -25,9 +25,12 @@
 <div class="row mt-5">
     <div class="col">
         {% for cls in classes %}
-            <div class="newlevel_class">{{ cls }}</div>
+            <div class="newlevel_class">
+                {{ cls }}
+                <a href="{% url 'dnd5e:adventure:character:level_up_class' adventure.id char.id cls.id %}">up</a>
+            </div>
         {% endfor %}
-        <div class="newlevel_class">Multiclass </div>
+        <div class="newlevel_class">Добавить другой класс<a>up</a></div>
     </div>
 </div>
 {% endblock %}
