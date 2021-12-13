@@ -557,7 +557,7 @@ class Maneuver(models.Model):
 class Trap(models.Model):
     name = models.CharField(max_length=32, verbose_name='Название')
     description = models.TextField(blank=True, verbose_name='Описание')
-    check = models.CharField(max_length=64, verbose_name='Проверка')
+    saving_check = models.CharField(max_length=64, verbose_name='Проверка')
     fail = models.CharField(max_length=64, verbose_name='Провал')
     exp_reward = models.PositiveSmallIntegerField(verbose_name='Награда за успех', default=0, blank=True)
 
