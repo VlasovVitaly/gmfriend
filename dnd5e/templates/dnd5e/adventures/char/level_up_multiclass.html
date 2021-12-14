@@ -1,0 +1,27 @@
+{% extends "dnd5e/base.html" %}
+
+{% block title %}Добавить новый класс персонажу{% endblock title %}
+
+{% block before-content %}
+    <nav class="m-4">
+        <ol class="breadcrumb bg-light">
+            <li class="breadcrumb-item"><a href="{% url 'dnd5e:adventure:detail' adventure.id %}">{{ adventure }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'dnd5e:adventure:character:detail' adventure.id char.id %}">{{ char.name }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'dnd5e:adventure:character:level_up' adventure.id char.id %}">Повышение уровня</a></li>
+            <li class="breadcrumb-item active">Новый класс</li>
+        </ol>
+    </nav>
+{% endblock before-content %}
+
+{% block content %}
+    <div class="row">
+        <div class="col">
+            <h3 class="text-center">Мультикласс: добавить новый класс</h3>
+            {# TODO some verbose text message here #}
+            {% for cls in classes %}
+                <p>{{ cls }}</p>
+                {% if cls.disabled_message %}<p>{{ cls.disabled_message }}</p>{% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

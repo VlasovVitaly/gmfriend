@@ -30,7 +30,9 @@
                 <a href="{% url 'dnd5e:adventure:character:level_up_class' adventure.id char.id cls.id %}">up</a>
             </div>
         {% endfor %}
-        <div class="newlevel_class">Добавить другой класс<a>up</a></div>
+        <div class="newlevel_class">
+            <a href="{% url 'dnd5e:adventure:character:level_up_multiclass' adventure.id char.id %}">Добавить мультикласс</a>
+        </div>
     </div>
 </div>
 {% endblock %}

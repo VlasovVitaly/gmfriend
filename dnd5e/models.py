@@ -1228,6 +1228,11 @@ class Character(models.Model):
         # Create dices
         CharacterDice.objects.create(character=self, dice=klass.hit_dice)
 
+    def get_all_abilities(self):
+        return self.abilities.values(
+            'value', name=models.functions.Lower(models.F('ability__orig_name'))
+        )
+
     def level_up(self):
         self.level = models.F('level') + 1
         self.save(update_fields=['level'])

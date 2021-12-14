@@ -116,6 +116,36 @@ def level_up(request, adv_id, char_id, class_id=None):
 
 
 @login_required
+def level_up_multiclass(request, adv_id, char_id):
+    # FIXME move this function to models
+    from dnd5e import dnd
+    char = get_object_or_404(Character, id=char_id)
+    adventure = get_object_or_404(Adventure, id=adv_id)
+    
+    possible_classes = Class.objects.all()
+    taken_classes = char.classes.values_list('klass_id', flat=True)
+    print('taken classes', taken_classes)
+
+    # Create character ability mapping
+    char_abilities = char.get_all_abilities()
+    char_abilities = dnd.CharacterAbilitiesLimit({abil['name']: abil['value'] for abil in char_abilities})
+
+    for cls in possible_classes:
+        if cls.id in taken_classes:
+            cls.disabled_message = 'вы уже овладели этим классом'
+            continue
+
+        mar = dnd.MULTICLASS_RESTRICTONS[cls.orig_name.lower()]
+        
+        if not char_abilities.check(mar):
+            cls.disabled_message = 'вы не можете овладеть этим классом по проверкам характеристик'
+
+    context = {'char': char, 'adventure': adventure, 'classes': possible_classes}
+
+    return render(request, 'dnd5e/adventures/char/level_up_multiclass.html', context)
+
+
+@login_required
 @transaction.atomic()
 def resolve_char_choice(request, adv_id, char_id, choice_id):
     adventure = get_object_or_404(Adventure, id=adv_id)
