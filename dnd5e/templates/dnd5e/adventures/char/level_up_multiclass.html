@@ -17,10 +17,30 @@
     <div class="row">
         <div class="col">
             <h3 class="text-center">Мультикласс: добавить новый класс</h3>
-            {# TODO some verbose text message here #}
-            {% for cls in classes %}
-                <p>{{ cls }}</p>
-                {% if cls.disabled_message %}<p>{{ cls.disabled_message }}</p>{% endif %}
+            {% for cls in classes %}{% spaceless %}{# TODO some verbose text message here #}
+            <div class="card mt-3 bg-gradient-light">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-2">
+                            <h4 class="card-title">{{ cls.name }}</h4>
+                            <h5 class="card-subtitle">{{ cls.orig_name }}</h5>
+                        </div>
+                        <div class="col">
+                            <p class="card-text">{% lorem 1 %}</p>
+                            <hr>
+                            <p class="card-text">{% spaceless %}
+                            
+                                {% if cls.disabled_message %}
+                                    <span>{{ cls.disabled_message }}</span>
+                                {% else %}
+                                    <span>вы можете овладеть этим классом</span>
+                                {% endif %}
+                            </p>{% endspaceless %}
+                        </div>
+                    </div>
+                </div> 
+            </div>
+            {% endspaceless %}
             {% endfor %}
         </div>
     </div>
