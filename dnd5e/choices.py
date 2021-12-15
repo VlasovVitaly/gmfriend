@@ -310,14 +310,14 @@ class POST_FEAT_006:
 class POST_WAR_STUDENT_001:
     """ Воин / Ученик войны """
     def apply(self, character):
-        ### TODO Нужен выбор, где учитываются изученные инструмены персонажа, PROF_TOOLS_003 не умеет
+        # TODO Нужен выбор, где учитываются изученные инструмены персонажа, PROF_TOOLS_003 не умеет
         char_choices = get_model('characteradvancmentchoice')
         char_choices.objects.create(
             character=character,
             choice=get_model('advancmentchoice').objects.get(code='PROF_TOOLS_003'),
             reason=get_model('subclass').objects.get(name='Мастер боевых искуств')
         )
-        
+
 
 class POST_COMBAT_SUPERIORITY_001:
     """ Боевое превосходство """
@@ -336,13 +336,13 @@ class POST_COMBAT_SUPERIORITY_001:
 class POST_COMBAT_SUPERIORITY_002:
     """ Улучшенное боевое превосходство """
     def apply(self, character):
-        get_model('characterdice').objects.filter(character=character, dtype='superiority').update(dice='1d10') 
+        get_model('characterdice').objects.filter(character=character, dtype='superiority').update(dice='1d10')
 
 
-class POST_COMBAT_SUPERIORITY_002:
+class POST_COMBAT_SUPERIORITY_003:
     """ Улучшенное боевое превосходство+ """
     def apply(self, character):
-        get_model('characterdice').objects.filter(character=character, dtype='superiority').update(dice='1d12') 
+        get_model('characterdice').objects.filter(character=character, dtype='superiority').update(dice='1d12')
         get_model('characterfeature').objects.filter(
             character=character, feature__post_action='POST_COMBAT_SUPERIORITY_002'
         ).delete()
@@ -372,5 +372,5 @@ ALL_CHOICES = {
     'POST_FEAT_006': POST_FEAT_006,
     'POST_COMBAT_SUPERIORITY_001': POST_COMBAT_SUPERIORITY_001,
     'POST_COMBAT_SUPERIORITY_002': POST_COMBAT_SUPERIORITY_002,
-    'POST_COMBAT_SUPERIORITY_003': POST_COMBAT_SUPERIORITY_002,
+    'POST_COMBAT_SUPERIORITY_003': POST_COMBAT_SUPERIORITY_003,
 }

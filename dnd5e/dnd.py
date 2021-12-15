@@ -33,7 +33,7 @@ class CharacterAbilitiesLimit(dict):
 
         if mar.mode is MAR_AND:
             return all(abilities)
-        
+
         if mar.mode is MAR_OR:
             return any(abilities)
 

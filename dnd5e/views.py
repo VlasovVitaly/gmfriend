@@ -109,7 +109,7 @@ def level_up(request, adv_id, char_id, class_id=None):
             char.level_up()
             klass = CharacterClass.objects.get(id=class_id)
             klass.level_up()
-        
+
         return redirect('dnd5e:adventure:character:detail', adventure.id, char.id)
 
     context = {'char': char, 'adventure': adventure, 'classes': char.classes.all()}
@@ -122,7 +122,7 @@ def level_up_multiclass(request, adv_id, char_id):
 
     char = get_object_or_404(Character, id=char_id)
     adventure = get_object_or_404(Adventure, id=adv_id)
-    
+
     if request.method == 'POST' and request.POST.get('klass_id'):
         # TODO check that klass can be assigned
         char.init_new_multiclass(get_object_or_404(Class, id=request.POST['klass_id']))
@@ -142,7 +142,7 @@ def level_up_multiclass(request, adv_id, char_id):
             continue
 
         mar = dnd.MULTICLASS_RESTRICTONS[cls.orig_name.lower()]
-        
+
         if not char_abilities.check(mar):
             cls.disabled_message = 'вы не можете овладеть этим классом по проверкам характеристик'
 

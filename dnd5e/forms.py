@@ -13,7 +13,7 @@ class CharacterForm(forms.ModelForm):
     class Meta:
         model = Character
         fields = ['name', 'age', 'gender', 'alignment', 'race', 'subrace', 'background']
-    
+
     field_order = ['name', 'age', 'gender', 'alignment', 'race', 'subrace', 'klass', 'background']
 
     def clean(self):
