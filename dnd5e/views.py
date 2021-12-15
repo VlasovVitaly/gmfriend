@@ -4,12 +4,14 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 
+from dnd5e import dnd
+
 from .choices import ALL_CHOICES
 from .filters import MonsterFilter, SpellFilter
 from .forms import CharacterForm, CharacterStatsFormset
 from .models import (
     NPC, Adventure, AdventureMonster, Character, CharacterAbilities, CharacterAdvancmentChoice,
-    Class, ClassLevels, Monster, Place, Spell, Stage, Subclass, Zone
+    CharacterClass, Class, ClassLevels, Monster, Place, Spell, Stage, Subclass, Zone
 )
 
 
@@ -65,7 +67,8 @@ def create_character(request, adv_id):
 
         with transaction.atomic():
             char.save()
-            char.init()
+            CharacterClass.objects.create(character=char, klass=form.cleaned_data['klass'])
+            char.init(form.cleaned_data['klass'])
 
         return redirect('dnd5e:adventure:character:detail', adv_id=adventure.id, char_id=char.id)
 
@@ -94,6 +97,58 @@ def set_character_stats(request, adv_id, char_id):
     context = {'char': char, 'adventure': adventure, 'formset': charstats_formset}
 
     return render(request, 'dnd5e/adventures/char/set_stats.html', context)
+
+
+@login_required
+def level_up(request, adv_id, char_id, class_id=None):
+    char = get_object_or_404(Character, id=char_id)
+    adventure = get_object_or_404(Adventure, id=adv_id)
+
+    if class_id is not None:
+        with transaction.atomic():
+            char.level_up()
+            klass = CharacterClass.objects.get(id=class_id)
+            klass.level_up()
+
+        return redirect('dnd5e:adventure:character:detail', adventure.id, char.id)
+
+    context = {'char': char, 'adventure': adventure, 'classes': char.classes.all()}
+
+    return render(request, 'dnd5e/adventures/char/level_up.html', context)
+
+
+@login_required
+def level_up_multiclass(request, adv_id, char_id):
+
+    char = get_object_or_404(Character, id=char_id)
+    adventure = get_object_or_404(Adventure, id=adv_id)
+
+    if request.method == 'POST' and request.POST.get('klass_id'):
+        # TODO check that klass can be assigned
+        char.init_new_multiclass(get_object_or_404(Class, id=request.POST['klass_id']))
+
+        return redirect('dnd5e:adventure:character:detail', adv_id=adventure.id, char_id=char.id)
+
+    possible_classes = Class.objects.all()
+    taken_classes = char.classes.values_list('klass_id', flat=True)
+
+    # Create character ability mapping
+    char_abilities = char.get_all_abilities()
+    char_abilities = dnd.CharacterAbilitiesLimit({abil['name']: abil['value'] for abil in char_abilities})
+
+    for cls in possible_classes:
+        if cls.id in taken_classes:
+            cls.disabled_message = 'вы уже овладели этим классом'
+            continue
+
+        mar = dnd.MULTICLASS_RESTRICTONS[cls.orig_name.lower()]
+
+        if not char_abilities.check(mar):
+            cls.disabled_message = 'вы не можете овладеть этим классом по проверкам характеристик'
+
+    context = {'char': char, 'adventure': adventure, 'classes': possible_classes}
+
+    return render(request, 'dnd5e/adventures/char/level_up_multiclass.html', context)
 
 
 @login_required

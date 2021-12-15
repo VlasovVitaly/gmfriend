@@ -26,6 +26,7 @@
                     <a href="{% url 'dnd5e:adventure:character:resolve_choice' adventure.id char.id choice.id %}" class="dropdown-item{% if blocking_choices and not choice.choice.important %} disabled{% endif %}">{{ choice.choice }}</a>
                 {% endfor %}
             </div>
+            <a href="{% url 'dnd5e:adventure:character:level_up' adventure.id char.id %}" class="btn btn-primary">Level Up!</a>
         </div>
     </div>
 </div>
@@ -33,11 +34,11 @@
     <div class="col">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">{{ char.name }}{% if char.party_id %} из {{ char.party }}{% endif %}</h4>
+                <h4 class="card-title">{{ char.name }}{% if char.party_id %} из {{ char.party }}{% endif %} / {{ char.level }} уровень</h4>
                 <hr>
                 <ul class="list-unstyled">
                     <li><strong>Раса: </strong>{% if char.subrace %}{{ char.subrace }}{% else %}{{ char.race }}{% endif %}</li>
-                    <li><strong>Класс: </strong>{% if char.subclass %}{{ char.subclass }}{% else %}{{ char.klass }}{% endif %} {{ char.level }} уровень</li>
+                    <li><strong>Класс: </strong>{% for kls in char.classes.all %}<span>{{ kls }} </span>{% endfor %}</li>
                     <li><strong>Пол: </strong>{{ char.get_gender_display }}</li>
                     <li><strong>Возраст: </strong>{{ char.age }}</li>
                     <li><strong>Мировозрение: </strong>{{ char.get_alignment_display }}</li>

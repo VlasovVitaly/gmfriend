@@ -1,0 +1,54 @@
+{% extends "dnd5e/base.html" %}
+
+{% block title %}Добавить новый класс персонажу{% endblock title %}
+
+{% block before-content %}
+    <nav class="m-4">
+        <ol class="breadcrumb bg-light">
+            <li class="breadcrumb-item"><a href="{% url 'dnd5e:adventure:detail' adventure.id %}">{{ adventure }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'dnd5e:adventure:character:detail' adventure.id char.id %}">{{ char.name }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'dnd5e:adventure:character:level_up' adventure.id char.id %}">Повышение уровня</a></li>
+            <li class="breadcrumb-item active">Новый класс</li>
+        </ol>
+    </nav>
+{% endblock before-content %}
+
+{% block content %}
+    <div class="row">
+        <div class="col">
+            <h3 class="text-center">Мультикласс: добавить новый класс</h3>
+            {% for cls in classes %}{% spaceless %}{# TODO some verbose text message here #}
+            <div class="card mt-3 bg-gradient-light">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-3">
+                            <h4 class="card-title">{{ cls.name }}</h4>
+                            <h5 class="card-subtitle">{{ cls.orig_name }}</h5>
+                            {% if not cls.disabled_message %}
+                            <form action="" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="klass_id" value="{{ cls.id }}" />
+                                <button class="btn btn-light mt-3" type="submit">Выбрать этот класс</a>
+                            </form>
+                            {% endif %}
+                        </div>
+                        <div class="col">
+                            <p class="card-text">{% lorem 1 %}</p>
+                            <hr>
+                            <p class="card-text">{% spaceless %}
+                            
+                                {% if cls.disabled_message %}
+                                    <span>{{ cls.disabled_message }}</span>
+                                {% else %}
+                                    <span>вы можете овладеть этим классом</span>
+                                {% endif %}
+                            </p>{% endspaceless %}
+                        </div>
+                    </div>
+                </div> 
+            </div>
+            {% endspaceless %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

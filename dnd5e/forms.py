@@ -2,15 +2,19 @@ from django import forms
 
 from .models import (
     Character, CharacterAbilities, CharacterBackground, CharacterSkill,
-    CharacterToolProficiency, Feature, Language, Maneuver, Subclass, Tool
+    CharacterToolProficiency, Class, Feature, Language, Maneuver, Subclass, Tool
 )
 from .widgets import AbilityListBoxSelect
 
 
 class CharacterForm(forms.ModelForm):
+    klass = forms.ModelChoiceField(label='Класс', queryset=Class.objects.all())
+
     class Meta:
         model = Character
-        fields = ['name', 'age', 'gender', 'alignment', 'race', 'klass', 'race', 'subrace', 'level', 'background']
+        fields = ['name', 'age', 'gender', 'alignment', 'race', 'subrace', 'background']
+
+    field_order = ['name', 'age', 'gender', 'alignment', 'race', 'subrace', 'klass', 'background']
 
     def clean(self):
         race = self.cleaned_data['race']

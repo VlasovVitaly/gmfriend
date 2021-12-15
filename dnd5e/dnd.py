@@ -1,4 +1,41 @@
+from collections import namedtuple
 from math import floor
+
+# MAR is Multiclass ability restriction (mode)
+MAR_OR = 1
+MAR_AND = 2
+MAR = namedtuple('MulticlassAbilityRestriction', ['mode', 'abilities'])
+
+AbilityLimit = namedtuple('AbilityLimit', ['name', 'value'])
+
+MULTICLASS_RESTRICTONS = {
+    'barbarian': MAR(MAR_AND, [AbilityLimit('strength', 13)]),
+    'bard': MAR(MAR_AND, [AbilityLimit('charisma', 13)]),
+    'cleric': MAR(MAR_AND, [AbilityLimit('wisdom', 13)]),
+    'druid': MAR(MAR_AND, [AbilityLimit('wisdom', 13)]),
+    'fighter': MAR(MAR_OR, [AbilityLimit('strength', 13), AbilityLimit('dexterity', 13)]),
+    'monk': MAR(MAR_AND, [AbilityLimit('dexterity', 13), AbilityLimit('wisdom', 13)]),
+    'paladin': MAR(MAR_AND, [AbilityLimit('strength', 13), AbilityLimit('charisma', 13)]),
+    'ranger': MAR(MAR_AND, [AbilityLimit('dexterity', 13), AbilityLimit('wisdom', 13)]),
+    'rogue': MAR(MAR_AND, [AbilityLimit('dexterity', 13)]),
+    'sorcerer': MAR(MAR_AND, [AbilityLimit('charisma', 13)]),
+    'warlock': MAR(MAR_AND, [AbilityLimit('charisma', 13)]),
+    'wizard': MAR(MAR_AND, [AbilityLimit('intelligence', 13)]),
+}
+
+
+class CharacterAbilitiesLimit(dict):
+    def _check(self, ability):
+        return self[ability.name] >= ability.value
+
+    def check(self, mar):
+        abilities = map(self._check, mar.abilities)
+
+        if mar.mode is MAR_AND:
+            return all(abilities)
+
+        if mar.mode is MAR_OR:
+            return any(abilities)
 
 
 PROFICIENCY_BONUS = {
