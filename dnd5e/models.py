@@ -1228,6 +1228,14 @@ class Character(models.Model):
         # Create dices
         CharacterDice.objects.create(character=self, dice=klass.hit_dice)
 
+    def init_new_multiclass(self, klass):
+        char_class = CharacterClass.objects.create(
+            character=self,
+            klass=klass,
+            level=0
+        )
+        char_class.level_up()
+
     def get_all_abilities(self):
         return self.abilities.values(
             'value', name=models.functions.Lower(models.F('ability__orig_name'))
@@ -1236,12 +1244,6 @@ class Character(models.Model):
     def level_up(self):
         self.level = models.F('level') + 1
         self.save(update_fields=['level'])
-
-    def apply_subclass(self, subclass, level):
-        pass  # TODO rewrite it to support ClassCharacter
-        # self.subclass = subclass
-        # self.save(update_fields=['subclass'])
-        # self._apply_subclass_advantages(level)
 
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'
@@ -1271,7 +1273,7 @@ class CharacterClass(models.Model):
     # # TODO spellcasting, without slots
 
     class Meta:
-        ordering = ['character', 'level']
+        ordering = ['character', '-level', 'klass__name']
         unique_together = ['character', 'klass']
         default_permissions = ()
         verbose_name = 'Класс персонажа'

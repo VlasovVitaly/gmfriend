@@ -4,6 +4,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 
+from dnd5e import dnd
+
 from .choices import ALL_CHOICES
 from .filters import MonsterFilter, SpellFilter
 from .forms import CharacterForm, CharacterStatsFormset
@@ -117,14 +119,18 @@ def level_up(request, adv_id, char_id, class_id=None):
 
 @login_required
 def level_up_multiclass(request, adv_id, char_id):
-    # FIXME move this function to models
-    from dnd5e import dnd
+
     char = get_object_or_404(Character, id=char_id)
     adventure = get_object_or_404(Adventure, id=adv_id)
     
+    if request.method == 'POST' and request.POST.get('klass_id'):
+        # TODO check that klass can be assigned
+        char.init_new_multiclass(get_object_or_404(Class, id=request.POST['klass_id']))
+
+        return redirect('dnd5e:adventure:character:detail', adv_id=adventure.id, char_id=char.id)
+
     possible_classes = Class.objects.all()
     taken_classes = char.classes.values_list('klass_id', flat=True)
-    print('taken classes', taken_classes)
 
     # Create character ability mapping
     char_abilities = char.get_all_abilities()

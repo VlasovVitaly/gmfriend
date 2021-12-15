@@ -21,9 +21,16 @@
             <div class="card mt-3 bg-gradient-light">
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-2">
+                        <div class="col-3">
                             <h4 class="card-title">{{ cls.name }}</h4>
                             <h5 class="card-subtitle">{{ cls.orig_name }}</h5>
+                            {% if not cls.disabled_message %}
+                            <form action="" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="klass_id" value="{{ cls.id }}" />
+                                <button class="btn btn-light mt-3" type="submit">Выбрать этот класс</a>
+                            </form>
+                            {% endif %}
                         </div>
                         <div class="col">
                             <p class="card-text">{% lorem 1 %}</p>
