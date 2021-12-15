@@ -2,7 +2,10 @@
 
 <div class="card mt-4">
     <div class="card-body">
-        <h3 class="card-title pb-3 ml-4"><span>{{ mon }}</span></h3>
+        <h3 class="card-title pb-3 ml-4">
+            <span class="text-muted" data-toggle="tooltip" data-placement="top" title="{{ mon.source.name }}">{{ mon.source.code }} </span>
+            <span>{{ mon }}</span>
+        </h3>
         <h6 class="card-subtitle mb-2 text-muted text-lowercase">
             <span>{{ mon.get_size_display }} </span>
             <span>{{ mon.mtype.name }}{% if mon.subtype %} ({{ mon.subtype }})</span>{% endif %}

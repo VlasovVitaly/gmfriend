@@ -235,7 +235,7 @@ def spells_list(request):
 
 
 def monsters_list(request):
-    monsters = Monster.objects.all()
+    monsters = Monster.objects.select_related('source', 'mtype').prefetch_related('senses', 'traits', 'skills', 'actions')
 
     context = {'mfilter': MonsterFilter(request.GET, queryset=monsters)}
 
