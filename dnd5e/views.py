@@ -165,6 +165,7 @@ def resolve_char_choice(request, adv_id, char_id, choice_id):
 
     selector = ALL_CHOICES[choice.choice.code](char)
     form = selector.get_form(request)
+    print(request.POST)
 
     if form.is_valid():
         selector.apply_data(form.cleaned_data)

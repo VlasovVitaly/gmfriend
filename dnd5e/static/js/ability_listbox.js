@@ -15,18 +15,14 @@ function recalculate_item(list_item, increase_value) {
     list_item.children('.ability-mod').text(stat_mod(newvalue));
 }
 
-function FormSubmitCallback(event) {
-    event.preventDefault();
+function OnFormSubmit(event) {
+    let form = jQuery(event.currentTarget);
 
-    let csrf_token = jQuery('[name=csrfmiddlewaretoken').val();
+    event.data.data('selected').forEach(function ( element ) {
+        form.prepend(jQuery(`<input type="hidden" name="abilities" value="${element}" />`));
+    });
 
-    jQuery.post({
-        'url': window.location,
-        'data': {'abilities': event.data.data('selected'), 'csrfmiddlewaretoken': csrf_token},
-        'error': function (a, b, c) {console.log(a,b,c)},
-        'traditional': true,
-        'success': function (data, textStatus, jqXHR) { document.write(data) }
-    })
+    return true;
 }
 
 function ListBoxToggleActiveCallback(event) {
@@ -40,7 +36,7 @@ function ListBoxToggleActiveCallback(event) {
     event.preventDefault();
 
     if (is_active) {
-        if (selected_items >= 2) { console.log("Reached selection limit"); return }
+        if (selected_items >= 2) { return /* selection limit */}
         list_root.data('selected').push(item_value);
         selected_items += 1;
     } else {
@@ -73,9 +69,10 @@ function ListBoxToggleActiveCallback(event) {
 }
 
 jQuery(function () {
-    ///// TODO make it more abstract and DRY
-    let root_item = jQuery('#id_abilities');
+    let root_item = jQuery('.abilities-listbox');
     root_item.data('increase-bonus', 0).data('selected', new Array());
-    jQuery('a.list-group-item-action').click(ListBoxToggleActiveCallback);
-    jQuery('button.btn-submit').click(root_item, FormSubmitCallback);
+    root_item.closest('form').submit(root_item, OnFormSubmit);
+
+    let items = root_item.children('a.list-group-item-action');
+    items.click(ListBoxToggleActiveCallback);
 });
