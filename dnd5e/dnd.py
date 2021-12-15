@@ -1,5 +1,5 @@
-from math import floor
 from collections import namedtuple
+from math import floor
 
 # MAR is Multiclass ability restriction (mode)
 MAR_OR = 1

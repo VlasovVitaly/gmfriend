@@ -11,7 +11,7 @@ from .filters import MonsterFilter, SpellFilter
 from .forms import CharacterForm, CharacterStatsFormset
 from .models import (
     NPC, Adventure, AdventureMonster, Character, CharacterAbilities, CharacterAdvancmentChoice,
-    Class, ClassLevels, Monster, Place, Spell, Stage, Subclass, Zone, CharacterClass
+    CharacterClass, Class, ClassLevels, Monster, Place, Spell, Stage, Subclass, Zone
 )
 
 

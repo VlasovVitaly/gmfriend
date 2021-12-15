@@ -2,7 +2,7 @@ from django import forms
 
 from .models import (
     Character, CharacterAbilities, CharacterBackground, CharacterSkill,
-    CharacterToolProficiency, Feature, Language, Maneuver, Subclass, Tool, Class
+    CharacterToolProficiency, Class, Feature, Language, Maneuver, Subclass, Tool
 )
 from .widgets import AbilityListBoxSelect
 

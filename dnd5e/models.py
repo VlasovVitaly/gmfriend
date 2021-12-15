@@ -13,7 +13,7 @@ from multiselectfield import MultiSelectField
 
 from dnd5e import dnd
 
-from .model_fields import DiceField, CostField
+from .model_fields import CostField, DiceField
 
 GENDER_CHOICES = (
     (1, 'Муж.'),
