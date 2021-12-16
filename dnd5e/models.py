@@ -699,6 +699,9 @@ class Class(models.Model):
         'ClassLevels', object_id_field='class_object_id', content_type_field='class_content_type'
     )
     hit_dice = DiceField()
+    armor_proficiency = models.ManyToManyField(
+        ArmorCategory, related_name='+', verbose_name='Владение доспехами'
+    )
 
     class Meta:
         ordering = ['name']
