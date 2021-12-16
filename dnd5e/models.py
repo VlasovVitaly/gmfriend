@@ -1170,6 +1170,9 @@ class Character(models.Model):
     )
     dead = models.BooleanField(verbose_name='Мертв', default=False, editable=False)
     languages = models.ManyToManyField('Language', related_name='+', verbose_name='Владение языками', editable=False)
+    armor_proficiency = models.ManyToManyField(
+        ArmorCategory, related_name='+', verbose_name='Владение доспехами', blank=True
+    )
     known_maneuvers = models.ManyToManyField(Maneuver, related_name='+', verbose_name='Известные приёмы', editable=False)
 
     class Meta:
@@ -1216,6 +1219,9 @@ class Character(models.Model):
         CharacterToolProficiency.objects.bulk_create(
             [CharacterToolProficiency(character=self, tool=tool) for tool in tools]
         )
+
+        # Armor proficiency
+        self.armor_proficiency.set(klass.armor_proficiency.all())
 
         # Character choices
         char_choices = []

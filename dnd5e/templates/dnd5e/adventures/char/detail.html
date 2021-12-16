@@ -52,6 +52,12 @@
                         {% empty %}Нет
                         {% endfor %}
                     </li>{% endspaceless %}
+                    {% spaceless %}
+                    <li>
+                        <strong>Владение доспехами: </strong>
+                        {% for armor in char.armor_proficiency.all %}<span>{{ armor }} </span>{% endfor %}
+                    </li>
+                    {% endspaceless %}
                     <li><strong>Кости здоровья: </strong>{% for dice in char.dices.all %}{% if dice.dtype == 'hit' %}{{ dice }} {% endif %}{% endfor %}</li>{# FIXME dirty values spaces #}
                     <li><strong>Умения и особенности: </strong></li>
                     {% for feat in char.features.all %}<li><span class="badge badge-light">{{ feat.feature.source.name }}</span>{{ feat.feature }} {% if feat.max_charges %}{{ feat.max_charges }}{% endif %}</li>{% endfor %}
