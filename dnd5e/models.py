@@ -700,7 +700,7 @@ class Class(models.Model):
     )
     hit_dice = DiceField()
     armor_proficiency = models.ManyToManyField(
-        ArmorCategory, related_name='+', verbose_name='Владение доспехами'
+        ArmorCategory, related_name='+', verbose_name='Владение доспехами', blank=True
     )
 
     class Meta:
