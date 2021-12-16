@@ -11,14 +11,15 @@ class Command(BaseCommand):
 
     def print_character(self, char):
         self.stdout.write(
-            f'{char.name}, {char.get_gender_display()}, {char.age} лет, {char.get_alignment_display()}'
+            f'{char.name}, {char.get_gender_display()}, {char.age} лет, {char.get_alignment_display()}, {char.level} уровень'
         )
         self.stdout.write(f'Раса: {char.subrace if char.subrace else char.race}')
-        self.stdout.write(f'Класс: {char.klass}')
+        self.stdout.write(f'Классы: {", ".join(str(cls) for cls in char.classes.all())}')
         self.stdout.write(f'Предыстория: {char.background}')
 
         self.stdout.write(f'Владение языками: {", ".join(lang.name for lang in char.languages.all())}')
         self.stdout.write(f'Владение инструментами: {", ".join(str(tool) for tool in char.tools_proficiency.all())}')
+        self.stdout.write(f'Владение доспехами: {", ".join(str(armor) for armor in char.armor_proficiency.all())}')
 
         self.stdout.write('Кости здоровья: ', ending='')
         for char_dice in char.dices.filter(dtype='hit'):

@@ -103,6 +103,13 @@ CONDITIONS = (
     ('Frightened', 'Испруг'),
 )
 
+ARMOR_CLASSES = (
+    ('light', 'Лёгкие доспехи'),
+    ('medium', 'Средние доспехи'),
+    ('heavy', 'Тяжелые доспехи'),
+    ('shield', 'Щиты'),
+)
+
 
 class RuleBook(models.Model):
     name = models.CharField(max_length=64, db_index=True, unique=True)
@@ -243,6 +250,25 @@ class Tool(models.Model):
 
     def __str__(self):
         return f'{self.get_category_display()}: {self.name}' if self.category else self.name
+
+
+class ArmorCategory(models.Model):
+    order_num = models.PositiveSmallIntegerField(verbose_name='Порядок сортировки', unique=True)
+    name = models.CharField(verbose_name='Название', max_length=24)
+    orig_name = models.CharField(verbose_name='Ориг. название', max_length=16)
+    description = models.TextField(verbose_name='Описание', blank=True)
+
+    class Meta:
+        ordering = ['order_num']
+        default_permissions = ()
+        verbose_name = 'Категория доспехов'
+        verbose_name_plural = 'Категории доспехов'
+    
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+    
+    def __str__(self):
+        return self.name
 
 
 class Stuff(models.Model):
@@ -673,6 +699,9 @@ class Class(models.Model):
         'ClassLevels', object_id_field='class_object_id', content_type_field='class_content_type'
     )
     hit_dice = DiceField()
+    armor_proficiency = models.ManyToManyField(
+        ArmorCategory, related_name='+', verbose_name='Владение доспехами', blank=True
+    )
 
     class Meta:
         ordering = ['name']
@@ -1141,6 +1170,9 @@ class Character(models.Model):
     )
     dead = models.BooleanField(verbose_name='Мертв', default=False, editable=False)
     languages = models.ManyToManyField('Language', related_name='+', verbose_name='Владение языками', editable=False)
+    armor_proficiency = models.ManyToManyField(
+        ArmorCategory, related_name='+', verbose_name='Владение доспехами', blank=True
+    )
     known_maneuvers = models.ManyToManyField(Maneuver, related_name='+', verbose_name='Известные приёмы', editable=False)
 
     class Meta:
@@ -1187,6 +1219,9 @@ class Character(models.Model):
         CharacterToolProficiency.objects.bulk_create(
             [CharacterToolProficiency(character=self, tool=tool) for tool in tools]
         )
+
+        # Armor proficiency
+        self.armor_proficiency.set(klass.armor_proficiency.all())
 
         # Character choices
         char_choices = []
