@@ -303,6 +303,7 @@ class Weapon(models.Model):
     dmg_dice = DiceField(verbose_name='Урон')
     cost = CostField(blank=True)
     weight = models.PositiveSmallIntegerField(blank=True)
+    # TODO Add weapon tag
 
     class Meta:
         default_permissions = ()
@@ -747,6 +748,7 @@ class Class(models.Model):
     armor_proficiency = models.ManyToManyField(
         ArmorCategory, related_name='+', verbose_name='Владение доспехами', blank=True
     )
+    # weapon_proficency = 
 
     class Meta:
         ordering = ['name']
