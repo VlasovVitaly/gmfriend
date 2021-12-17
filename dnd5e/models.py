@@ -271,6 +271,51 @@ class ArmorCategory(models.Model):
         return self.name
 
 
+class WeaponCategory(models.Model):
+    name = models.CharField(max_length=16, verbose_name='Название')
+    code = models.CharField(max_length=16, verbose_name='Кодовое название')
+
+    class Meta:
+        default_permissions = ()
+        verbose_name = 'Категория оружия'
+        verbose_name_plural = 'Категории оружия'
+    
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+    
+    def __str__(self):
+        return f'{self.name} оружие'
+
+
+class Weapon(models.Model):
+    SUBTYPE_CHOICES = (
+        (1, 'Меч'),
+    )
+
+    name = models.CharField(max_length=24, verbose_name='Название')
+    code = models.CharField(max_length=16, verbose_name='Кодовое название')
+    subtype = models.PositiveSmallIntegerField(blank=True, choices=SUBTYPE_CHOICES)
+    category = models.ForeignKey(
+        WeaponCategory, on_delete=models.CASCADE, verbose_name='Категория',
+        related_name='weapons', related_query_name='weapon'
+    )
+    dmg_type = models.CharField(max_length=12, verbose_name='Тип урона')
+    dmg_dice = DiceField(verbose_name='Урон')
+    cost = CostField(blank=True)
+    weight = models.PositiveSmallIntegerField(blank=True)
+
+    class Meta:
+        default_permissions = ()
+        verbose_name = 'Тип оружия'
+        verbose_name_plural = 'Типы оружия'
+    
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+    
+    def __str__(self):
+        return f'{self.name}'
+
+
 class Stuff(models.Model):
     name = models.CharField(max_length=64)
     cost = CostField(verbose_name='Стоимость')
