@@ -13,6 +13,7 @@ INSTALLED_APPS = [
     'bootstrap4',
     'markdownx',
     'multiselectfield',
+    'gm2m',
     'dnd5e.apps.Dnd5EConfig',
 ]
 
