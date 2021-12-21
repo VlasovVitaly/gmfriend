@@ -7,6 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.safestring import mark_safe
 
+from gm2m import GM2MField
 from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
 from multiselectfield import MultiSelectField
@@ -263,10 +264,10 @@ class ArmorCategory(models.Model):
         default_permissions = ()
         verbose_name = 'Категория доспехов'
         verbose_name_plural = 'Категории доспехов'
-    
+
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'
-    
+
     def __str__(self):
         return self.name
 
@@ -279,10 +280,10 @@ class WeaponCategory(models.Model):
         default_permissions = ()
         verbose_name = 'Категория оружия'
         verbose_name_plural = 'Категории оружия'
-    
+
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'
-    
+
     def __str__(self):
         return f'{self.name} оружие'
 
@@ -309,10 +310,10 @@ class Weapon(models.Model):
         default_permissions = ()
         verbose_name = 'Тип оружия'
         verbose_name_plural = 'Типы оружия'
-    
+
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'
-    
+
     def __str__(self):
         return f'{self.name}'
 
@@ -748,7 +749,7 @@ class Class(models.Model):
     armor_proficiency = models.ManyToManyField(
         ArmorCategory, related_name='+', verbose_name='Владение доспехами', blank=True
     )
-    # weapon_proficency = 
+    weapon_proficency = GM2MField(WeaponCategory, Weapon, verbose_name='Владение оружием')
 
     class Meta:
         ordering = ['name']
