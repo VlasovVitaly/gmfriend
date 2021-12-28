@@ -774,7 +774,7 @@ class Class(models.Model):
     armor_proficiency = models.ManyToManyField(
         ArmorCategory, related_name='+', verbose_name='Владение доспехами', blank=True
     )
-    weapon_proficency = GM2MField(WeaponCategory, Weapon, verbose_name='Владение оружием')
+    weapon_proficiency = GM2MField(WeaponCategory, Weapon, verbose_name='Владение оружием')
 
     class Meta:
         ordering = ['name']
