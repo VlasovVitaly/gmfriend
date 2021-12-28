@@ -290,24 +290,49 @@ class WeaponCategory(models.Model):
 
 class Weapon(models.Model):
     SUBTYPE_CHOICES = (
+        (0, 'Нет'),
         (1, 'Меч'),
+        (2, 'Посох'),
+        (3, 'Булава'),
+        (4, 'Дубина'),
+        (5, 'Кинжал'),
+        (6, 'Копьё'),
+        (7, 'Молот'),
+        (8, 'Метательное копьё'),
+        (9, 'Топор'),
+        (10, 'Серп'),
+        (11, 'Арбалет'),
+        (12, 'Дротик'),
+        (13, 'Лук'),
+        (14, 'Праща'),
+        (15, 'Алебарда'),
+        (16, 'Кирка'),
+        (17, 'Глева'),
+        (18, 'Кнут'),
+        (19, 'Моргенштерн'),
+        (20, 'Пика'),
+        (21, 'Трезубец'),
+        (22, 'Цеп'),
+        (23, 'Духовая трубка'),
+        (24, 'Сеть')
     )
 
     name = models.CharField(max_length=24, verbose_name='Название')
-    code = models.CharField(max_length=16, verbose_name='Кодовое название')
-    subtype = models.PositiveSmallIntegerField(blank=True, choices=SUBTYPE_CHOICES)
+    code = models.CharField(max_length=24, verbose_name='Кодовое название')
+    subtype = models.PositiveSmallIntegerField(default=0, choices=SUBTYPE_CHOICES)
     category = models.ForeignKey(
         WeaponCategory, on_delete=models.CASCADE, verbose_name='Категория',
         related_name='weapons', related_query_name='weapon'
     )
-    dmg_type = models.CharField(max_length=12, verbose_name='Тип урона')
+    dmg_type = models.CharField(max_length=12, verbose_name='Тип урона', choices=DAMAGE_TYPES)
     dmg_dice = DiceField(verbose_name='Урон')
     cost = CostField(blank=True)
-    weight = models.PositiveSmallIntegerField(blank=True)
+    weight = models.PositiveSmallIntegerField(null=True, default=None)
     # TODO Add weapon tag
 
     class Meta:
         default_permissions = ()
+        ordering = ['name']
         verbose_name = 'Тип оружия'
         verbose_name_plural = 'Типы оружия'
 
@@ -863,6 +888,7 @@ class ClassLevels(models.Model):
 
     class Meta:
         ordering = ['class_content_type', 'class_object_id', 'level']
+        unique_together = ['class_content_type', 'class_object_id', 'level'] 
         default_permissions = ()
         verbose_name = 'Таблица уровней'
         verbose_name_plural = 'Таблицы уровней'
@@ -1221,6 +1247,7 @@ class Character(models.Model):
     armor_proficiency = models.ManyToManyField(
         ArmorCategory, related_name='+', verbose_name='Владение доспехами', blank=True
     )
+    weapon_proficiency = GM2MField(WeaponCategory, Weapon, verbose_name='Владение оружием')
     known_maneuvers = models.ManyToManyField(Maneuver, related_name='+', verbose_name='Известные приёмы', editable=False)
 
     class Meta:
@@ -1270,6 +1297,9 @@ class Character(models.Model):
 
         # Armor proficiency
         self.armor_proficiency.set(klass.armor_proficiency.all())
+
+        # Weapon proficiency
+        self.weapon_proficiency.set(klass.weapon_proficiency.all())
 
         # Character choices
         char_choices = []
