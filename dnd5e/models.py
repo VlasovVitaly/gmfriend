@@ -772,7 +772,8 @@ class Class(models.Model):
     )
     hit_dice = DiceField()
     armor_proficiency = models.ManyToManyField(
-        ArmorCategory, related_name='+', verbose_name='Владение доспехами', blank=True
+        ArmorCategory, related_name='+', verbose_name='Владение доспехами', blank=True,
+        through='ClassArmorProficiency'
     )
     weapon_proficiency = GM2MField(WeaponCategory, Weapon, verbose_name='Владение оружием')
 
@@ -787,6 +788,21 @@ class Class(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ClassArmorProficiency(models.Model):
+    klass = models.ForeignKey(Class, on_delete=models.CASCADE)
+    armor_category = models.ForeignKey(ArmorCategory, on_delete=models.CASCADE)
+    in_multiclass = models.BooleanField(default=False)
+    
+    class Meta:
+        default_permissions = ()
+    
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+
+    def __str__(self):
+        return 'TODO'
 
 
 class Subclass(models.Model):
