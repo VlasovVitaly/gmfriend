@@ -5,3 +5,6 @@ django-markdownx
 django-bootstrap4
 django-multiselectfield
 tabulate
+
+## Fixed Django Generic M2M version
+git+https://github.com/VlasovVitaly/django-gm2m

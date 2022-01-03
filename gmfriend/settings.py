@@ -13,6 +13,7 @@ INSTALLED_APPS = [
     'bootstrap4',
     'markdownx',
     'multiselectfield',
+    'gm2m',
     'dnd5e.apps.Dnd5EConfig',
 ]
 
@@ -32,7 +33,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'gmfriend', 'templates')],
-        'APP_DIRS': False,
+        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -40,19 +41,11 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-            'loaders': [
-                'django.template.loaders.filesystem.Loader',
-                'django.template.loaders.app_directories.Loader',
-            ]
         },
     },
 ]
 
 WSGI_APPLICATION = 'gmfriend.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
@@ -108,5 +101,6 @@ ENABLE_DEBUG_TOOLBAR = False
 from .local_settings import *
 
 if ENABLE_DEBUG_TOOLBAR:
+    INTERNAL_IPS = ['127.0.0.1']
     INSTALLED_APPS += ['debug_toolbar']
     MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']

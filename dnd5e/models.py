@@ -7,6 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.safestring import mark_safe
 
+from gm2m import GM2MField
 from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
 from multiselectfield import MultiSelectField
@@ -263,12 +264,83 @@ class ArmorCategory(models.Model):
         default_permissions = ()
         verbose_name = 'Категория доспехов'
         verbose_name_plural = 'Категории доспехов'
-    
+
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'
-    
+
     def __str__(self):
         return self.name
+
+
+class WeaponCategory(models.Model):
+    name = models.CharField(max_length=16, verbose_name='Название')
+    code = models.CharField(max_length=16, verbose_name='Кодовое название')
+
+    class Meta:
+        default_permissions = ()
+        verbose_name = 'Категория оружия'
+        verbose_name_plural = 'Категории оружия'
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+
+    def __str__(self):
+        return f'{self.name} оружие'
+
+
+class Weapon(models.Model):
+    SUBTYPE_CHOICES = (
+        (0, 'Нет'),
+        (1, 'Меч'),
+        (2, 'Посох'),
+        (3, 'Булава'),
+        (4, 'Дубина'),
+        (5, 'Кинжал'),
+        (6, 'Копьё'),
+        (7, 'Молот'),
+        (8, 'Метательное копьё'),
+        (9, 'Топор'),
+        (10, 'Серп'),
+        (11, 'Арбалет'),
+        (12, 'Дротик'),
+        (13, 'Лук'),
+        (14, 'Праща'),
+        (15, 'Алебарда'),
+        (16, 'Кирка'),
+        (17, 'Глева'),
+        (18, 'Кнут'),
+        (19, 'Моргенштерн'),
+        (20, 'Пика'),
+        (21, 'Трезубец'),
+        (22, 'Цеп'),
+        (23, 'Духовая трубка'),
+        (24, 'Сеть')
+    )
+
+    name = models.CharField(max_length=24, verbose_name='Название')
+    code = models.CharField(max_length=24, verbose_name='Кодовое название')
+    subtype = models.PositiveSmallIntegerField(default=0, choices=SUBTYPE_CHOICES)
+    category = models.ForeignKey(
+        WeaponCategory, on_delete=models.CASCADE, verbose_name='Категория',
+        related_name='weapons', related_query_name='weapon'
+    )
+    dmg_type = models.CharField(max_length=12, verbose_name='Тип урона', choices=DAMAGE_TYPES)
+    dmg_dice = DiceField(verbose_name='Урон')
+    cost = CostField(blank=True)
+    weight = models.PositiveSmallIntegerField(null=True, default=None)
+    # TODO Add weapon tag
+
+    class Meta:
+        default_permissions = ()
+        ordering = ['name']
+        verbose_name = 'Тип оружия'
+        verbose_name_plural = 'Типы оружия'
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+
+    def __str__(self):
+        return f'{self.name}'
 
 
 class Stuff(models.Model):
@@ -700,8 +772,10 @@ class Class(models.Model):
     )
     hit_dice = DiceField()
     armor_proficiency = models.ManyToManyField(
-        ArmorCategory, related_name='+', verbose_name='Владение доспехами', blank=True
+        ArmorCategory, related_name='+', verbose_name='Владение доспехами', blank=True,
+        through='ClassArmorProficiency'
     )
+    weapon_proficiency = GM2MField(WeaponCategory, Weapon, verbose_name='Владение оружием')
 
     class Meta:
         ordering = ['name']
@@ -714,6 +788,46 @@ class Class(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ClassArmorProficiency(models.Model):
+    klass = models.ForeignKey(Class, on_delete=models.CASCADE)
+    armor_category = models.ForeignKey(ArmorCategory, on_delete=models.CASCADE)
+    in_multiclass = models.BooleanField(default=False)
+    
+    class Meta:
+        default_permissions = ()
+        verbose_name = 'Класс владение доспехом'
+        verbose_name_plural = 'Класс владения доспехами'
+    
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+
+    def __str__(self):
+        return f'{self.klass}: {self.armor_category}'
+
+
+class MultiClassProficiency(models.Model):
+    klass = models.ForeignKey(
+        Class, on_delete=models.CASCADE,
+        related_name='multiclass_advancments', related_query_name='multiclass_advancment'
+    )
+    content_type = models.ForeignKey(
+        ContentType, on_delete=models.CASCADE,
+    )
+    object_id = models.PositiveIntegerField()
+    proficiency = GenericForeignKey('content_type', 'object_id')
+
+    class Meta:
+        default_permissions = ()
+        verbose_name = 'Умение мультикласса'
+        verbose_name_plural = 'Умения мультикласа'
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+
+    def __str__(self):
+        return f'{self.klass}: {self.proficiency}'
 
 
 class Subclass(models.Model):
@@ -815,6 +929,7 @@ class ClassLevels(models.Model):
 
     class Meta:
         ordering = ['class_content_type', 'class_object_id', 'level']
+        unique_together = ['class_content_type', 'class_object_id', 'level'] 
         default_permissions = ()
         verbose_name = 'Таблица уровней'
         verbose_name_plural = 'Таблицы уровней'
@@ -1173,6 +1288,7 @@ class Character(models.Model):
     armor_proficiency = models.ManyToManyField(
         ArmorCategory, related_name='+', verbose_name='Владение доспехами', blank=True
     )
+    weapon_proficiency = GM2MField(WeaponCategory, Weapon, verbose_name='Владение оружием')
     known_maneuvers = models.ManyToManyField(Maneuver, related_name='+', verbose_name='Известные приёмы', editable=False)
 
     class Meta:
@@ -1223,6 +1339,9 @@ class Character(models.Model):
         # Armor proficiency
         self.armor_proficiency.set(klass.armor_proficiency.all())
 
+        # Weapon proficiency
+        self.weapon_proficiency.set(klass.weapon_proficiency.all())
+
         # Character choices
         char_choices = []
 
@@ -1263,13 +1382,27 @@ class Character(models.Model):
         # Create dices
         CharacterDice.objects.create(character=self, dice=klass.hit_dice)
 
-    def init_new_multiclass(self, klass):
+    def init_new_multiclass(self, klass):  # TODO transaction???
         char_class = CharacterClass.objects.create(
             character=self,
             klass=klass,
             level=0
         )
         char_class.level_up()
+
+        # Add multiclass profiiciencies
+        ## Armor
+        for armor in ClassArmorProficiency.objects.filter(klass_id=klass.id, in_multiclass=True):
+            self.armor_proficiency.add(armor.armor_category)
+
+        # Weapon
+        profs = MultiClassProficiency.objects.filter(klass_id=klass.id)
+        for weapon in profs.filter(content_type__app_label='dnd5e', content_type__model__in=['weaponcategory', 'weapon']):
+            self.weapon_proficiency.add(weapon.proficiency)
+
+        # Choices
+        for choice in profs.filter(content_type__app_label='dnd5e', content_type__model='advancmentchoice'):
+            CharacterAdvancmentChoice.objects.create(character=self, choice=choice.proficiency, reason=klass)
 
     def get_all_abilities(self):
         return self.abilities.values(

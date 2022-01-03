@@ -251,6 +251,22 @@ class CHAR_ADVANCE_004(CharacterChoice):
         )
 
 
+class CHAR_ADVANCE_005(CharacterChoice):
+    ''' Выбор мастерства в одном классовом навыке'''
+    form_class = AddCharSkillProficiency
+    selection_limit = 1
+
+    def get_form(self, request):
+        return self.form_class(
+            data=request.POST or None, files=None,
+            limit=self.selection_limit,
+            skills=self.character.skills.exclude(proficiency=True)
+        )
+
+    def apply_data(self, data):
+        data['skills'].update(proficiency=True)
+
+
 class POST_FEAT_001:
     def apply(self, character):
         wisdom = character.abilities.get(ability__orig_name='Wisdom')
@@ -353,6 +369,7 @@ ALL_CHOICES = {
     'CHAR_ADVANCE_002': CHAR_ADVANCE_002,
     'CHAR_ADVANCE_003': CHAR_ADVANCE_003,
     'CHAR_ADVANCE_004': CHAR_ADVANCE_004,
+    'CHAR_ADVANCE_005': CHAR_ADVANCE_005,
     'PROF_TOOLS_001': PROF_TOOLS_001,
     'PROF_TOOLS_002': PROF_TOOLS_002,
     'PROF_TOOLS_003': PROF_TOOLS_003,

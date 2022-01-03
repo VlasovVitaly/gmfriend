@@ -19,6 +19,7 @@ class Command(BaseCommand):
 
         self.stdout.write(f'Владение языками: {", ".join(lang.name for lang in char.languages.all())}')
         self.stdout.write(f'Владение инструментами: {", ".join(str(tool) for tool in char.tools_proficiency.all())}')
+        self.stdout.write(f'Владение оружием: {", ".join(str(weapon) for weapon in char.weapon_proficiency.all())}')
         self.stdout.write(f'Владение доспехами: {", ".join(str(armor) for armor in char.armor_proficiency.all())}')
 
         self.stdout.write('Кости здоровья: ', ending='')

@@ -54,6 +54,12 @@
                     </li>{% endspaceless %}
                     {% spaceless %}
                     <li>
+                        <strong>Владение оружием: </strong>
+                        {% for weapon in char.weapon_proficiency.all %}<span>{{ weapon }} </span>{% endfor %}
+                    </li>
+                    {% endspaceless %}
+                    {% spaceless %}
+                    <li>
                         <strong>Владение доспехами: </strong>
                         {% for armor in char.armor_proficiency.all %}<span>{{ armor }} </span>{% endfor %}
                     </li>
