@@ -805,6 +805,26 @@ class ClassArmorProficiency(models.Model):
         return 'TODO'
 
 
+class MultiClassProficiency(models.Model):
+    klass = models.ForeignKey(
+        Class, on_delete=models.CASCADE,
+        related_name='multiclass_advancments', related_query_name='multiclass_advancment'
+    )
+    content_type = models.ForeignKey(
+        ContentType, on_delete=models.CASCADE,
+    )
+    object_id = models.PositiveIntegerField()
+    proficiency = GenericForeignKey('content_type', 'object_id')
+
+    class Meta:
+        default_permissions = ()
+        verbose_name = 'Умение мультикласса'
+        verbose_name_plural = 'Умения мультикласа'
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+
+
 class Subclass(models.Model):
     parent = models.ForeignKey(Class, on_delete=models.CASCADE, verbose_name='Родительский класс')
     name = models.CharField(max_length=64, verbose_name='Название')
