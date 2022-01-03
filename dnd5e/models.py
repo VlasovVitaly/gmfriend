@@ -797,12 +797,14 @@ class ClassArmorProficiency(models.Model):
     
     class Meta:
         default_permissions = ()
+        verbose_name = 'Класс владение доспехом'
+        verbose_name_plural = 'Класс владения доспехами'
     
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'
 
     def __str__(self):
-        return 'TODO'
+        return f'{self.klass}: {self.armor_category}'
 
 
 class MultiClassProficiency(models.Model):
@@ -823,6 +825,9 @@ class MultiClassProficiency(models.Model):
 
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'
+
+    def __str__(self):
+        return f'{self.klass}: {self.proficiency}'
 
 
 class Subclass(models.Model):
@@ -1377,13 +1382,27 @@ class Character(models.Model):
         # Create dices
         CharacterDice.objects.create(character=self, dice=klass.hit_dice)
 
-    def init_new_multiclass(self, klass):
+    def init_new_multiclass(self, klass):  # TODO transaction???
         char_class = CharacterClass.objects.create(
             character=self,
             klass=klass,
             level=0
         )
         char_class.level_up()
+
+        # Add multiclass profiiciencies
+        ## Armor
+        for armor in ClassArmorProficiency.objects.filter(klass_id=klass.id, in_multiclass=True):
+            self.armor_proficiency.add(armor.armor_category)
+
+        # Weapon
+        profs = MultiClassProficiency.objects.filter(klass_id=klass.id)
+        for weapon in profs.filter(content_type__app_label='dnd5e', content_type__model__in=['weaponcategory', 'weapon']):
+            self.weapon_proficiency.add(weapon.proficiency)
+
+        # Choices
+        for choice in profs.filter(content_type__app_label='dnd5e', content_type__model='advancmentchoice'):
+            CharacterAdvancmentChoice.objects.create(character=self, choice=choice.proficiency, reason=klass)
 
     def get_all_abilities(self):
         return self.abilities.values(
