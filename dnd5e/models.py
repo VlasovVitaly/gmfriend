@@ -776,7 +776,7 @@ class Class(models.Model):
         through='ClassArmorProficiency'
     )
     weapon_proficiency = GM2MField(WeaponCategory, Weapon, verbose_name='Владение оружием')
-    spell_ability = models.ForeignKey('Ability', on_delete=models.CASCADE, editable=False, null=True, default=None)
+    spell_ability = models.ForeignKey('Ability', on_delete=models.CASCADE, null=True, default=None)
 
     class Meta:
         ordering = ['name']
