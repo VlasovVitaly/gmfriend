@@ -776,6 +776,7 @@ class Class(models.Model):
         through='ClassArmorProficiency'
     )
     weapon_proficiency = GM2MField(WeaponCategory, Weapon, verbose_name='Владение оружием')
+    spell_ability = models.ForeignKey('Ability', on_delete=models.CASCADE, editable=False, null=True, default=None)
 
     class Meta:
         ordering = ['name']
@@ -1434,7 +1435,6 @@ class CharacterClass(models.Model):
 
     # NOTE let DB calc max_prepared_spells
     prepared_spells = models.ManyToManyField(verbose_name='Подготовленные заклинания', to=Spell, related_name='+')
-    spell_ability = models.ForeignKey('Ability', on_delete=models.CASCADE, editable=False, null=True, default=None)
 
     # Spellcasting stuff
     # max_known_cantrips = models.PositiveSmallIntegerField(
