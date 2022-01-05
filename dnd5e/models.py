@@ -1432,13 +1432,17 @@ class CharacterClass(models.Model):
     )
     level = models.PositiveSmallIntegerField(verbose_name='Уровень', default=1)
 
+    # NOTE let DB calc max_prepared_spells
+    prepared_spells = models.ManyToManyField(verbose_name='Подготовленные заклинания', to=Spell, related_name='+')
+    spell_ability = models.ForeignKey('Ability', on_delete=models.CASCADE, editable=False, null=True, default=None)
+
     # Spellcasting stuff
-    # max_known_cantrips = models.PositiveSmallIntegerField(verbose_name='Известные заговоры', default=0)
-    # max_known_spells = models.PositiveSmallIntegerField(verbose_name='Известные заклинания', default=0)
-    # prepared_spells = models.ManyToManyField(verbose_name='Подготовленные заклинания', to=Spell, related_name='+')
-    # # NOTE let DB calc max_prepared_spells
-    # ability = models.ForeignKey('Ability', on_delete=models.CASCADE)
-    # # TODO spellcasting, without slots
+    # max_known_cantrips = models.PositiveSmallIntegerField(
+    #    verbose_name='Известные заговоры', null=True, default=None, editable=False
+    # )
+    # max_known_spells = models.PositiveSmallIntegerField(
+    #     verbose_name='Известные заклинания', null=True, default=None, editable=False
+    # )
 
     class Meta:
         ordering = ['character', '-level', 'klass__name']

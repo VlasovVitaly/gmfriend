@@ -24,6 +24,76 @@ MULTICLASS_RESTRICTONS = {
 }
 
 
+SPELLCASTING = {
+    'bard': {
+        1: {'cantrips': 2, 'spells': 4, 'slots': (2, )},
+        2: {'cantrips': 2, 'spells': 5, 'slots': (3, )},
+        3: {'cantrips': 2, 'spells': 6, 'slots': (4, 2)},
+        4: {'cantrips': 3, 'spells': 7, 'slots': (4, 3)},
+        5: {'cantrips': 3, 'spells': 8, 'slots': (4, 3, 2)},
+        6: {'cantrips': 3, 'spells': 9, 'slots': (4, 3, 3)},
+        7: {'cantrips': 3, 'spells': 10, 'slots': (4, 3, 3, 1)},
+        8: {'cantrips': 3, 'spells': 11, 'slots': (4, 3, 3, 2)},
+        9: {'cantrips': 3, 'spells': 12, 'slots': (4, 3, 3, 3, 1)},
+        10: {'cantrips': 4, 'spells': 14, 'slots': (4, 3, 3, 3, 2)},
+        11: {'cantrips': 4, 'spells': 15, 'slots': (4, 3, 3, 3, 2, 1)},
+        12: {'cantrips': 4, 'spells': 15, 'slots': (4, 3, 3, 3, 2, 1)},
+        13: {'cantrips': 4, 'spells': 16, 'slots': (4, 3, 3, 3, 2, 1, 1)},
+        14: {'cantrips': 4, 'spells': 18, 'slots': (4, 3, 3, 3, 2, 1, 1)},
+        15: {'cantrips': 4, 'spells': 19, 'slots': (4, 3, 3, 3, 2, 1, 1, 1)},
+        16: {'cantrips': 4, 'spells': 19, 'slots': (4, 3, 3, 3, 2, 1, 1, 1)},
+        17: {'cantrips': 4, 'spells': 20, 'slots': (4, 3, 3, 3, 2, 1, 1, 1)},
+        18: {'cantrips': 4, 'spells': 22, 'slots': (4, 3, 3, 3, 3, 1, 1, 1, 1)},
+        19: {'cantrips': 4, 'spells': 22, 'slots': (4, 3, 3, 3, 3, 2, 1, 1, 1)},
+        20: {'cantrips': 4, 'spells': 22, 'slots': (4, 3, 3, 3, 3, 2, 2, 1, 1)},
+    },
+    'wizard': {
+        1: {'cantrips': 3, 'slots': (2, )},
+        2: {'cantrips': 3, 'slots': (3, )},
+        3: {'cantrips': 3, 'slots': (4, 2)},
+        4: {'cantrips': 4, 'slots': (4, 3)},
+        5: {'cantrips': 4, 'slots': (4, 3, 2)},
+        6: {'cantrips': 4, 'slots': (4, 3, 3)},
+        7: {'cantrips': 4, 'slots': (4, 3, 3, 1)},
+        8: {'cantrips': 4, 'slots': (4, 3, 3, 2)},
+        9: {'cantrips': 4, 'slots': (4, 3, 3, 3, 1)},
+        10: {'cantrips': 5, 'slots': (4, 3, 3, 3, 2)},
+        11: {'cantrips': 5, 'slots': (4, 3, 3, 3, 2, 1)},
+        12: {'cantrips': 5, 'slots': (4, 3, 3, 3, 2, 1)},
+        13: {'cantrips': 5, 'slots': (4, 3, 3, 3, 2, 1, 1)},
+        14: {'cantrips': 5, 'slots': (4, 3, 3, 3, 2, 1, 1)},
+        15: {'cantrips': 5, 'slots': (4, 3, 3, 3, 2, 1, 1, 1)},
+        16: {'cantrips': 5, 'slots': (4, 3, 3, 3, 2, 1, 1, 1)},
+        17: {'cantrips': 5, 'slots': (4, 3, 3, 3, 2, 1, 1, 1, 1)},
+        18: {'cantrips': 5, 'slots': (4, 3, 3, 3, 3, 1, 1, 1, 1)},
+        19: {'cantrips': 5, 'slots': (4, 3, 3, 3, 3, 2, 1, 1, 1)},
+        20: {'cantrips': 5, 'slots': (4, 3, 3, 3, 3, 2, 2, 1, 1)},
+    },
+}
+
+MULTICLASS_SLOTS = {
+    1: (2, ),
+    2: (3, ),
+    3: (4, 2),
+    4: (4, 3),
+    5: (4, 3, 2),
+    6: (4, 3, 3),
+    7: (4, 3, 3, 1),
+    8: (4, 3, 3, 2),
+    9: (4, 3, 3, 3, 1),
+    10: (4, 3, 3, 3, 2),
+    11: (4, 3, 3, 3, 2, 1),
+    12: (4, 3, 3, 3, 2, 1),
+    13: (4, 3, 3, 3, 2, 1, 1),
+    14: (4, 3, 3, 3, 2, 1, 1),
+    15: (4, 3, 3, 3, 2, 1, 1, 1),
+    16: (4, 3, 3, 3, 2, 1, 1, 1),
+    17: (4, 3, 3, 3, 2, 1, 1, 1, 1),
+    18: (4, 3, 3, 3, 3, 1, 1, 1, 1),
+    19: (4, 3, 3, 3, 3, 2, 1, 1, 1),
+    20: (4, 3, 3, 3, 3, 2, 2, 1, 1),
+}
+
 class CharacterAbilitiesLimit(dict):
     def _check(self, ability):
         return self[ability.name] >= ability.value
