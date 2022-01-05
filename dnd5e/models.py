@@ -1383,6 +1383,16 @@ class Character(models.Model):
         # Create dices
         CharacterDice.objects.create(character=self, dice=klass.hit_dice)
 
+        # Create spellslots if need
+        spellcasting = dnd.SPELLCASTING.get(klass.orig_name)
+        if not spellcasting:
+            return
+        
+        for level, count in enumerate(spellcasting[1]['slots'], 1):  # On 1 level of klass since it is init
+            for _ in range(count):
+                self.spell_slots.create(level=level)
+                # print(f'Creating spell slot in level {slot_lvl} {slot_num}')
+
     def init_new_multiclass(self, klass):  # TODO transaction???
         char_class = CharacterClass.objects.create(
             character=self,
@@ -1419,6 +1429,26 @@ class Character(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class CharacterSpellSlot(models.Model):
+    character = models.ForeignKey(
+        Character, on_delete=models.CASCADE, related_name='spell_slots', related_query_name='spell_slot'
+    )
+    level = models.PositiveSmallIntegerField(verbose_name='Уровень')
+    spent = models.BooleanField(verbose_name='Потрачен', default=False)
+
+    class Meta:
+        ordering = ['character_id', 'spent', '-level']
+        default_permissions = ()
+        verbose_name = 'Слот заклинания'
+        verbose_name_plural = 'Слоты заклинаний'
+    
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+    
+    def __str__(self):
+        return f'{self.character} {self.level}'
 
 
 class CharacterClass(models.Model):
@@ -1483,6 +1513,8 @@ class CharacterClass(models.Model):
         self._increase_hit_dice()
         self.level = models.F('level') + 1
         self.save(update_fields=['level'])
+
+        # TODO Add spellslots
 
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'

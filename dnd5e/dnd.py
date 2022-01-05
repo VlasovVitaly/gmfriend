@@ -25,7 +25,7 @@ MULTICLASS_RESTRICTONS = {
 
 
 SPELLCASTING = {
-    'bard': {
+    'Bard': {
         1: {'cantrips': 2, 'spells': 4, 'slots': (2, )},
         2: {'cantrips': 2, 'spells': 5, 'slots': (3, )},
         3: {'cantrips': 2, 'spells': 6, 'slots': (4, 2)},
@@ -47,7 +47,7 @@ SPELLCASTING = {
         19: {'cantrips': 4, 'spells': 22, 'slots': (4, 3, 3, 3, 3, 2, 1, 1, 1)},
         20: {'cantrips': 4, 'spells': 22, 'slots': (4, 3, 3, 3, 3, 2, 2, 1, 1)},
     },
-    'wizard': {
+    'Wizard': {
         1: {'cantrips': 3, 'slots': (2, )},
         2: {'cantrips': 3, 'slots': (3, )},
         3: {'cantrips': 3, 'slots': (4, 2)},
