@@ -7,8 +7,8 @@
             <span>{{ mon }}</span>
         </h3>
         <h6 class="card-subtitle mb-2 text-muted text-lowercase">
-            <span>{{ mon.get_size_display }} </span>
-            <span>{{ mon.mtype.name }}{% if mon.subtype %} ({{ mon.subtype }})</span>{% endif %}
+            <span>{{ mon.get_size_display }} | </span>
+            <span>{{ mon.mtype.name }}{% if mon.subtype %} ({{ mon.subtype }}) {% endif %} | </span>
             <span>{{ mon.get_alignment_display }}</span>
         </h6>
         <ul class="list-unstyled">
@@ -44,7 +44,7 @@
             <li><strong>Пассив. внимательность: </strong>{{ mon.passive_perception }}</li>
             <li><strong>Навыки: </strong>{{ mon.skills.all|join:', '|default:'Нет' }}</li>
             <li><strong>Чувства: </strong>{{ mon.senses.all|join:', '|default:'Нет' }}</li>
-            <li><strong>Опастность: </strong>{{ mon.get_challenge_display }} ({{ mon.challenge }} exp.)</li>
+            <li><strong>Опасность: </strong>{{ mon.get_challenge_display }} ({{ mon.challenge }} exp.)</li>
         </ul>
         <h4 class="ml-3">Способности</h4>
         <ul class="list-unstyled">

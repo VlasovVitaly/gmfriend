@@ -1388,10 +1388,10 @@ class Character(models.Model):
         if not spellcasting:
             return
         
-        for level, count in enumerate(spellcasting[1]['slots'], 1):  # On 1 level of klass since it is init
-            for _ in range(count):
-                self.spell_slots.create(level=level)
-                # print(f'Creating spell slot in level {slot_lvl} {slot_num}')
+        # for level, count in enumerate(spellcasting[1]['slots'], 1):  # On 1 level of klass since it is init
+        #     for _ in range(count):
+        #         self.spell_slots.create(level=level)
+        #         # print(f'Creating spell slot in level {slot_lvl} {slot_num}')
 
     def init_new_multiclass(self, klass):  # TODO transaction???
         char_class = CharacterClass.objects.create(
@@ -1401,8 +1401,7 @@ class Character(models.Model):
         )
         char_class.level_up()
 
-        # Add multiclass profiiciencies
-        ## Armor
+        # Armor
         for armor in ClassArmorProficiency.objects.filter(klass_id=klass.id, in_multiclass=True):
             self.armor_proficiency.add(armor.armor_category)
 
@@ -1504,17 +1503,26 @@ class CharacterClass(models.Model):
             count=models.F('count') + 1, maximum=models.F('maximum') + 1
         )
 
+    def get_spellcasting_rules(self):
+        spellcasting = dnd.SPELLCASTING.get(self.klass.orig_name)
+
+        return spellcasting
+
     def level_up(self):
         self._apply_class_advantages(self.level + 1)
 
         if self.subclass_id:
             self._apply_subclass_advantages(self.level + 1)
 
+        # Get spellcasting tables 
+        spellcasting = self.get_spellcasting_rules()
+        last_level = len(spellcasting[self.level + 1]['slots'])
+        _, _ = CharacterSpellSlot(character_id=self.character_id, level=last_level)
+
         self._increase_hit_dice()
         self.level = models.F('level') + 1
         self.save(update_fields=['level'])
 
-        # TODO Add spellslots
 
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'
