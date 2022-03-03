@@ -1293,12 +1293,16 @@ class Character(models.Model):
     )
     weapon_proficiency = GM2MField(WeaponCategory, Weapon, verbose_name='Владение оружием')
     known_maneuvers = models.ManyToManyField(Maneuver, related_name='+', verbose_name='Известные приёмы', editable=False)
+    spellcasting_rules = models.CharField(max_length=512, null=True, default=None, editable=False)
 
     class Meta:
         ordering = ['name', 'level']
         default_permissions = ()
         verbose_name = 'Персонаж'
         verbose_name_plural = 'Персонажи'
+
+    def get_spellcasting_rules(self):
+        raise NotImplementedError
 
     def init(self, klass):
         class_saving_trows = klass.saving_trows.all()
@@ -1385,14 +1389,16 @@ class Character(models.Model):
         # Create dices
         CharacterDice.objects.create(character=self, dice=klass.hit_dice)
 
-        # Create spellslots if need
-        spellcasting = dnd.SPELLCASTING.get(klass.orig_name)
+        # Create spellslots if spellcasting exists
+        spellcasting = dnd.SPELLCASTING.get(klass.codename)
         if not spellcasting:
             return
 
-        # for level, count in enumerate(spellcasting[1]['slots'], 1):  # On 1 level of klass since it is init
-        #     for _ in range(count):
-        #         self.spell_slots.create(level=level)
+        self.spellcasting_rules = klass.codename
+        self.save(update_fields=['spellcasting_rules'])
+        for level, count in enumerate(spellcasting[1]['slots'], 1):  # On 1 level of klass since it is init
+            for _ in range(count):
+                self.spell_slots.create(level=level)
         #         # print(f'Creating spell slot in level {slot_lvl} {slot_num}')
 
     def init_new_multiclass(self, klass):  # TODO transaction???
@@ -1506,7 +1512,7 @@ class CharacterClass(models.Model):
         )
 
     def get_spellcasting_rules(self):
-        spellcasting = dnd.SPELLCASTING.get(self.subklass.codename) if self.subklass else None
+        spellcasting = dnd.SPELLCASTING.get(self.subclass.codename) if self.subclass else None
         spellcasting = spellcasting or dnd.SPELLCASTING.get(self.klass.orig_name)
 
         return spellcasting
