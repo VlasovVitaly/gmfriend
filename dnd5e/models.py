@@ -795,12 +795,12 @@ class ClassArmorProficiency(models.Model):
     klass = models.ForeignKey(Class, on_delete=models.CASCADE)
     armor_category = models.ForeignKey(ArmorCategory, on_delete=models.CASCADE)
     in_multiclass = models.BooleanField(default=False)
-    
+
     class Meta:
         default_permissions = ()
         verbose_name = 'Класс владение доспехом'
         verbose_name_plural = 'Класс владения доспехами'
-    
+
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'
 
@@ -930,7 +930,7 @@ class ClassLevels(models.Model):
 
     class Meta:
         ordering = ['class_content_type', 'class_object_id', 'level']
-        unique_together = ['class_content_type', 'class_object_id', 'level'] 
+        unique_together = ['class_content_type', 'class_object_id', 'level']
         default_permissions = ()
         verbose_name = 'Таблица уровней'
         verbose_name_plural = 'Таблицы уровней'
@@ -1387,7 +1387,7 @@ class Character(models.Model):
         spellcasting = dnd.SPELLCASTING.get(klass.orig_name)
         if not spellcasting:
             return
-        
+
         # for level, count in enumerate(spellcasting[1]['slots'], 1):  # On 1 level of klass since it is init
         #     for _ in range(count):
         #         self.spell_slots.create(level=level)
@@ -1442,10 +1442,10 @@ class CharacterSpellSlot(models.Model):
         default_permissions = ()
         verbose_name = 'Слот заклинания'
         verbose_name_plural = 'Слоты заклинаний'
-    
+
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'
-    
+
     def __str__(self):
         return f'{self.character} {self.level}'
 
@@ -1514,7 +1514,7 @@ class CharacterClass(models.Model):
         if self.subclass_id:
             self._apply_subclass_advantages(self.level + 1)
 
-        # Get spellcasting tables 
+        # Get spellcasting tables
         spellcasting = self.get_spellcasting_rules()
         last_level = len(spellcasting[self.level + 1]['slots'])
         _, _ = CharacterSpellSlot(character_id=self.character_id, level=last_level)
@@ -1522,7 +1522,6 @@ class CharacterClass(models.Model):
         self._increase_hit_dice()
         self.level = models.F('level') + 1
         self.save(update_fields=['level'])
-
 
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'
