@@ -755,6 +755,7 @@ class Subrace(models.Model):
 class Class(models.Model):
     name = models.CharField(max_length=64, db_index=True, unique=True)
     orig_name = models.CharField(max_length=128, db_index=True, unique=True)
+    codename = models.CharField(verbose_name='Кодовое имя', db_index=True, max_length=32, blank=True)
 
     skills_proficiency = models.ManyToManyField(
         'Skill', related_name='+', verbose_name='Владение навыками', blank=True
@@ -837,6 +838,7 @@ class Subclass(models.Model):
     book = models.ForeignKey(
         RuleBook, on_delete=models.SET_NULL, verbose_name='Книга правил', null=True, default=None
     )
+    codename = models.CharField(verbose_name='Кодовое имя', max_length=64, db_index=True, blank=True)
     level_feats = GenericRelation(
         'ClassLevels', object_id_field='class_object_id', content_type_field='class_content_type'
     )
@@ -1504,7 +1506,8 @@ class CharacterClass(models.Model):
         )
 
     def get_spellcasting_rules(self):
-        spellcasting = dnd.SPELLCASTING.get(self.klass.orig_name)
+        spellcasting = dnd.SPELLCASTING.get(self.subklass.codename) if self.subklass else None
+        spellcasting = spellcasting or dnd.SPELLCASTING.get(self.klass.orig_name)
 
         return spellcasting
 

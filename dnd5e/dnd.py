@@ -69,6 +69,26 @@ SPELLCASTING = {
         19: {'cantrips': 5, 'slots': (4, 3, 3, 3, 3, 2, 1, 1, 1)},
         20: {'cantrips': 5, 'slots': (4, 3, 3, 3, 3, 2, 2, 1, 1)},
     },
+    'rogue.arcane_trickster': {
+        3: {'cantrips': 3, 'slots': (2,)},
+        4: {'cantrips': 3, 'slots': (3,)},
+        5: {'cantrips': 3, 'slots': (3,)},
+        6: {'cantrips': 3, 'slots': (3,)},
+        7: {'cantrips': 3, 'slots': (4, 2)},
+        8: {'cantrips': 3, 'slots': (4, 2)},
+        9: {'cantrips': 3, 'slots': (4, 2)},
+        10: {'cantrips': 4, 'slots': (4, 3)},
+        11: {'cantrips': 4, 'slots': (4, 3)},
+        12: {'cantrips': 4, 'slots': (4, 3)},
+        13: {'cantrips': 4, 'slots': (4, 3, 2)},
+        14: {'cantrips': 4, 'slots': (4, 3, 2)},
+        15: {'cantrips': 4, 'slots': (4, 3, 2)},
+        16: {'cantrips': 4, 'slots': (4, 3, 3)},
+        17: {'cantrips': 4, 'slots': (4, 3, 3)},
+        18: {'cantrips': 4, 'slots': (4, 3, 3)},
+        19: {'cantrips': 4, 'slots': (4, 3, 3, 1)},
+        20: {'cantrips': 4, 'slots': (4, 3, 3, 1)},
+    }
 }
 
 MULTICLASS_SLOTS = {
@@ -93,6 +113,7 @@ MULTICLASS_SLOTS = {
     19: (4, 3, 3, 3, 3, 2, 1, 1, 1),
     20: (4, 3, 3, 3, 3, 2, 2, 1, 1),
 }
+
 
 class CharacterAbilitiesLimit(dict):
     def _check(self, ability):
