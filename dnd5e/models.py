@@ -1981,13 +1981,13 @@ class Monster(models.Model):
     description = models.TextField(blank=True, verbose_name='Описание')
 
     damage_immunity = MultiSelectField(
-        verbose_name='Иммунитет к урону', blank=True, null=True, default=None, choices=DAMAGE_TYPES
+        verbose_name='Иммунитет к урону', blank=True, null=True, default=None, choices=DAMAGE_TYPES, max_length=56
     )
     damage_vuln = MultiSelectField(
-        verbose_name='Уязвимость к урону', blank=True, null=True, default=None, choices=DAMAGE_TYPES
+        verbose_name='Уязвимость к урону', blank=True, null=True, default=None, choices=DAMAGE_TYPES, max_length=56
     )
     condition_immunity = MultiSelectField(
-        verbose_name='Иммунитет к состоянию', blank=True, null=True, default=None, choices=CONDITIONS
+        verbose_name='Иммунитет к состоянию', blank=True, null=True, default=None, choices=CONDITIONS, max_length=56
     )
 
     class Meta:
