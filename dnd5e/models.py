@@ -755,6 +755,7 @@ class Subrace(models.Model):
 class Class(models.Model):
     name = models.CharField(max_length=64, db_index=True, unique=True)
     orig_name = models.CharField(max_length=128, db_index=True, unique=True)
+    codename = models.CharField(verbose_name='Кодовое имя', db_index=True, max_length=32, blank=True)
 
     skills_proficiency = models.ManyToManyField(
         'Skill', related_name='+', verbose_name='Владение навыками', blank=True
@@ -837,6 +838,7 @@ class Subclass(models.Model):
     book = models.ForeignKey(
         RuleBook, on_delete=models.SET_NULL, verbose_name='Книга правил', null=True, default=None
     )
+    codename = models.CharField(verbose_name='Кодовое имя', max_length=64, db_index=True, blank=True)
     level_feats = GenericRelation(
         'ClassLevels', object_id_field='class_object_id', content_type_field='class_content_type'
     )
@@ -1291,12 +1293,16 @@ class Character(models.Model):
     )
     weapon_proficiency = GM2MField(WeaponCategory, Weapon, verbose_name='Владение оружием')
     known_maneuvers = models.ManyToManyField(Maneuver, related_name='+', verbose_name='Известные приёмы', editable=False)
+    spellcasting_rules = models.CharField(max_length=512, null=True, default=None, editable=False)
 
     class Meta:
         ordering = ['name', 'level']
         default_permissions = ()
         verbose_name = 'Персонаж'
         verbose_name_plural = 'Персонажи'
+
+    def get_spellcasting_rules(self):
+        raise NotImplementedError
 
     def init(self, klass):
         class_saving_trows = klass.saving_trows.all()
@@ -1383,14 +1389,16 @@ class Character(models.Model):
         # Create dices
         CharacterDice.objects.create(character=self, dice=klass.hit_dice)
 
-        # Create spellslots if need
-        spellcasting = dnd.SPELLCASTING.get(klass.orig_name)
+        # Create spellslots if spellcasting exists
+        spellcasting = dnd.SPELLCASTING.get(klass.codename)
         if not spellcasting:
             return
 
-        # for level, count in enumerate(spellcasting[1]['slots'], 1):  # On 1 level of klass since it is init
-        #     for _ in range(count):
-        #         self.spell_slots.create(level=level)
+        self.spellcasting_rules = klass.codename
+        self.save(update_fields=['spellcasting_rules'])
+        for level, count in enumerate(spellcasting[1]['slots'], 1):  # On 1 level of klass since it is init
+            for _ in range(count):
+                self.spell_slots.create(level=level)
         #         # print(f'Creating spell slot in level {slot_lvl} {slot_num}')
 
     def init_new_multiclass(self, klass):  # TODO transaction???
@@ -1504,7 +1512,8 @@ class CharacterClass(models.Model):
         )
 
     def get_spellcasting_rules(self):
-        spellcasting = dnd.SPELLCASTING.get(self.klass.orig_name)
+        spellcasting = dnd.SPELLCASTING.get(self.subclass.codename) if self.subclass else None
+        spellcasting = spellcasting or dnd.SPELLCASTING.get(self.klass.orig_name)
 
         return spellcasting
 
@@ -1972,13 +1981,13 @@ class Monster(models.Model):
     description = models.TextField(blank=True, verbose_name='Описание')
 
     damage_immunity = MultiSelectField(
-        verbose_name='Иммунитет к урону', blank=True, null=True, default=None, choices=DAMAGE_TYPES
+        verbose_name='Иммунитет к урону', blank=True, null=True, default=None, choices=DAMAGE_TYPES, max_length=56
     )
     damage_vuln = MultiSelectField(
-        verbose_name='Уязвимость к урону', blank=True, null=True, default=None, choices=DAMAGE_TYPES
+        verbose_name='Уязвимость к урону', blank=True, null=True, default=None, choices=DAMAGE_TYPES, max_length=56
     )
     condition_immunity = MultiSelectField(
-        verbose_name='Иммунитет к состоянию', blank=True, null=True, default=None, choices=CONDITIONS
+        verbose_name='Иммунитет к состоянию', blank=True, null=True, default=None, choices=CONDITIONS, max_length=56
     )
 
     class Meta:
