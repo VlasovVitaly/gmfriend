@@ -248,6 +248,25 @@ class Zone(models.Model):
         return f'{self.num}. {self.name}'
 
 
+class Trap(models.Model):
+    name = models.CharField(max_length=32, verbose_name='Название')
+    description = models.TextField(blank=True, verbose_name='Описание')
+    saving_check = models.CharField(max_length=64, verbose_name='Проверка')
+    fail = models.CharField(max_length=64, verbose_name='Провал')
+    exp_reward = models.PositiveSmallIntegerField(verbose_name='Награда за успех', default=0, blank=True)
+
+    class Meta:
+        default_permissions = ()
+        verbose_name = 'Ловушка'
+        verbose_name_plural = 'Ловушки'
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.id}'
+
+    def __str__(self):
+        return f'{self.name}'
+
+
 class Treasure(models.Model):
     what_ct = models.ForeignKey(
         ContentType, on_delete=models.CASCADE, related_name='+',
