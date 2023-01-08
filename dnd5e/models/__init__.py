@@ -1,6 +1,7 @@
 # flake8: noqa: F401
 
-from .common import *
-from .adventure import *
-from .base import CombatAction
+from .choices import *
+from .base import *
 from .character import *
+from .adventure import *
+from .legacy import CombatAction

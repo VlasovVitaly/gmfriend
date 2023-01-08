@@ -6,7 +6,8 @@ from gm2m import GM2MField
 
 from dnd5e.models.choices import GENDER_CHOICES, ALIGNMENT_CHOICES
 from dnd5e.models.adventure import Adventure, Party
-from dnd5e.models.common import Class, Subclass, Race, Subrace, Ability, Background, ArmorCategory, WeaponCategory, Weapon, Maneuver, AdvancmentChoice, Feature, Tool, BackgroundPath, Ideal, Flaw, PersonalityTrait, Bond, Skill, ClassArmorProficiency, MultiClassProficiency, Spell, ClassLevels
+
+from dnd5e.models.base import Race, Subrace, Background, ArmorCategory, WeaponCategory, Weapon, Maneuver, Ability, Skill, AdvancmentChoice, ClassArmorProficiency, MultiClassProficiency, Class, Subclass, ClassLevels, BackgroundPath, Ideal, Flaw, PersonalityTrait, Bond, Feature, Spell, Tool
 from dnd5e.model_fields import DiceField
 from dnd5e import dnd
 
