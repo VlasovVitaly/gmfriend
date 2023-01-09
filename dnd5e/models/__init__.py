@@ -4,4 +4,3 @@ from .choices import *
 from .base import *
 from .character import *
 from .adventure import *
-from .legacy import CombatAction
