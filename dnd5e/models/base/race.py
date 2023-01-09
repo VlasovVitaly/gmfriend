@@ -1,6 +1,5 @@
-from django.db import models
-
 from django.contrib.contenttypes.fields import GenericRelation
+from django.db import models
 
 from dnd5e.models.choices import SIZE_CHOICES
 

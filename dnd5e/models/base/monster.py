@@ -2,7 +2,8 @@ from django.db import models
 
 from multiselectfield import MultiSelectField
 
-from dnd5e.models.choices import ALIGNMENT_CHOICES, SIZE_CHOICES, DAMAGE_TYPES, CONDITIONS
+from dnd5e.models.choices import ALIGNMENT_CHOICES, CONDITIONS, DAMAGE_TYPES, SIZE_CHOICES
+
 from .common import Language, RuleBook, Sense
 
 

@@ -1,15 +1,18 @@
-from django.db import models
-from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+from django.db import models
 
 from gm2m import GM2MField
 
-from dnd5e.models.choices import GENDER_CHOICES, ALIGNMENT_CHOICES
-from dnd5e.models.adventure import Adventure, Party
-
-from dnd5e.models.base import Race, Subrace, Background, ArmorCategory, WeaponCategory, Weapon, Maneuver, Ability, Skill, AdvancmentChoice, ClassArmorProficiency, MultiClassProficiency, Class, Subclass, ClassLevels, BackgroundPath, Ideal, Flaw, PersonalityTrait, Bond, Feature, Spell, Tool
-from dnd5e.model_fields import DiceField
 from dnd5e import dnd
+from dnd5e.model_fields import DiceField
+from dnd5e.models.adventure import Adventure, Party
+from dnd5e.models.base import (
+    Ability, AdvancmentChoice, ArmorCategory, Background, BackgroundPath, Bond, Class,
+    ClassArmorProficiency, ClassLevels, Feature, Flaw, Ideal, Maneuver, MultiClassProficiency,
+    PersonalityTrait, Race, Skill, Spell, Subclass, Subrace, Tool, Weapon, WeaponCategory
+)
+from dnd5e.models.choices import ALIGNMENT_CHOICES, GENDER_CHOICES
 
 
 class Character(models.Model):

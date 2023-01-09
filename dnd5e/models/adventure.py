@@ -1,16 +1,18 @@
-from django.db import models
+import random
+
 from django.contrib.auth import get_user_model
-from django.utils.safestring import mark_safe
-from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
+from django.db import models
+from django.utils.safestring import mark_safe
+
 from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
-from dnd5e.model_fields import CostField
 
 from dnd5e import dnd
-from .choices import GENDER_CHOICES
+from dnd5e.model_fields import CostField
 
-import random
+from .choices import GENDER_CHOICES
 
 USER_MODEL = get_user_model()
 
@@ -330,40 +332,6 @@ class Quest(models.Model):
         return f'{self.title}'
 
 
-class NPCRelation(models.Model):
-    REL_CHOICES = (
-        (0, 'Неизвестно'),
-        (1, 'Друг'),
-        (2, 'Муж'),
-        (3, 'Жена'),
-        (4, 'Сын'),
-        (5, 'Дочь'),
-        (6, 'Отец'),
-        (7, 'Мать'),
-        (8, 'Знакомый'),
-        (9, 'Хорошо знакомый'),
-        (10, 'Работодатель'),
-        (11, 'Работает на'),
-        (12, 'Брат'),
-        (13, 'Сестра'),
-    )
-
-    npc = models.ForeignKey('NPC', on_delete=models.CASCADE, related_name='relations', related_query_name='related')
-    other = models.ForeignKey('NPC', on_delete=models.CASCADE, related_name='+')
-    relation = models.PositiveSmallIntegerField(choices=REL_CHOICES)
-
-    class Meta:
-        default_permissions = ()
-        verbose_name = 'Отношения НПЦ'
-        verbose_name_plural = 'Отношения НПЦ'
-
-    def __repr__(self):
-        return f'[{self.__class__.__name__}]: {self.name}'
-
-    def __str__(self):
-        return f'{self.get_relation_display()} ({self.other.name})'
-
-
 class NPC(models.Model):
     adventure = models.ForeignKey(
         Adventure, on_delete=models.CASCADE, related_name='npc_set', related_query_name='npc'
@@ -402,6 +370,40 @@ class NPC(models.Model):
         if self.occupation:
             return f'{self.name} ({self.occupation})'
         return self.name
+
+
+class NPCRelation(models.Model):
+    REL_CHOICES = (
+        (0, 'Неизвестно'),
+        (1, 'Друг'),
+        (2, 'Муж'),
+        (3, 'Жена'),
+        (4, 'Сын'),
+        (5, 'Дочь'),
+        (6, 'Отец'),
+        (7, 'Мать'),
+        (8, 'Знакомый'),
+        (9, 'Хорошо знакомый'),
+        (10, 'Работодатель'),
+        (11, 'Работает на'),
+        (12, 'Брат'),
+        (13, 'Сестра'),
+    )
+
+    npc = models.ForeignKey(NPC, on_delete=models.CASCADE, related_name='relations', related_query_name='related')
+    other = models.ForeignKey(NPC, on_delete=models.CASCADE, related_name='+')
+    relation = models.PositiveSmallIntegerField(choices=REL_CHOICES)
+
+    class Meta:
+        default_permissions = ()
+        verbose_name = 'Отношения НПЦ'
+        verbose_name_plural = 'Отношения НПЦ'
+
+    def __repr__(self):
+        return f'[{self.__class__.__name__}]: {self.name}'
+
+    def __str__(self):
+        return f'{self.get_relation_display()} ({self.other.name})'
 
 
 class AdventureMonster(models.Model):

@@ -1,6 +1,6 @@
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.utils.safestring import mark_safe
-from django.contrib.contenttypes.fields import GenericRelation
 
 from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
