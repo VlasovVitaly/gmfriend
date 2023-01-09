@@ -1,5 +1,8 @@
 # flake8: noqa: F401
 
+# Need for migrations
+from dnd5e.model_fields import CostField, DiceField
+
 from .adventure import (
     NPC, Adventure, AdventureMap, AdventureMonster, Knowledge, MoneyAmount,
     NPCRelation, Party, Place, Quest, Stage, Trap, Treasure, Zone
