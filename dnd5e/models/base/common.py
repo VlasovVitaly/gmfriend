@@ -49,19 +49,6 @@ class Sense(models.Model):
         return f'{self.name} ({self.orig_name})'
 
 
-# TODO DO we need this?
-class RacialSense(models.Model):
-    race = models.ForeignKey('Race', on_delete=models.CASCADE, related_name='senses')
-    sense = models.ForeignKey(Sense, on_delete=models.CASCADE)
-    value = models.PositiveSmallIntegerField()
-    description = models.TextField(blank=True)
-
-    class Meta:
-        default_permissions = ()
-        verbose_name = 'Расовое чувство'
-        verbose_name_plural = 'Расовые чувства'
-
-
 # TODO Make this model plain choices
 class SpellSchool(models.Model):
     name = models.CharField(max_length=64, db_index=True, unique=True)
