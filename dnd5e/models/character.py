@@ -49,6 +49,7 @@ class Character(models.Model):
     weapon_proficiency = GM2MField(WeaponCategory, Weapon, verbose_name='Владение оружием')
     known_maneuvers = models.ManyToManyField(Maneuver, related_name='+', verbose_name='Известные приёмы', editable=False)
     spellcasting_rules = models.CharField(max_length=512, null=True, default=None, editable=False)
+    known_spells = models.ManyToManyField(verbose_name='Известные заклинания', to=Spell, related_name='+')
 
     class Meta:
         ordering = ['name', 'level']
