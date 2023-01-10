@@ -25,4 +25,6 @@ function on_detail_tab_click (event, content) {
             on_detail_tab_click.call(this, event, content);
         });
     });
+
+    document.querySelector('.character-detail-tab.active').click();
 })();

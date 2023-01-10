@@ -45,9 +45,7 @@
                     <li class="nav-item"><a href="{% url 'dnd5e:adventure:character:detail_info' adventure.id char.id %}" class="nav-link character-detail-tab active">Info</a></li>
                     <li class="nav-item"><a href="{% url 'dnd5e:adventure:character:detail_spellcasting' adventure.id char.id %}" class="nav-link character-detail-tab">Spellcasting</a></li>
                 </ul>
-                <div id="character-data-content">
-                    {% include "dnd5e/adventures/char/tabs/info.html" %}
-                </div>
+                <div id="character-data-content"></div>
             </div>
         </div>
     </div>
