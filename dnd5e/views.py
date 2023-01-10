@@ -45,13 +45,23 @@ def adventure_detail(request, adv_id):
 
 
 @login_required
-def character_detail(request, adv_id, char_id):
+def character_detail(request, adv_id, char_id, tab=None):
+    if tab == 'spellcasting':
+        return render(request, 'dnd5e/adventures/char/tabs/spellcasting.html', {})
+
+    # TODO select related
     char = get_object_or_404(Character, id=char_id)
     adventure = get_object_or_404(Adventure, id=adv_id)
     choices = char.choices.select_related('choice')
 
     context = {'char': char, 'adventure': adventure, 'choices': choices}
     context.update(choices.aggregate_blocking_choices())
+
+    if tab == 'info':
+        return render(request, 'dnd5e/adventures/char/tabs/info.html', context)
+
+    if tab == 'spellcasting':
+        return render(request, 'dnd5e/adventures/char/tabs/spellcasting.html', {})
 
     return render(request, 'dnd5e/adventures/char/detail.html', context)
 

@@ -1,0 +1,32 @@
+<ul class="list-unstyled">
+    <li><strong>Раса: </strong>{% if char.subrace %}{{ char.subrace }}{% else %}{{ char.race }}{% endif %}</li>
+    <li><strong>Класс: </strong>{% for kls in char.classes.all %}<span>{{ kls }} </span>{% endfor %}</li>
+    <li><strong>Пол: </strong>{{ char.get_gender_display }}</li>
+    <li><strong>Возраст: </strong>{{ char.age }}</li>
+    <li><strong>Мировозрение: </strong>{{ char.get_alignment_display }}</li>
+    <li><strong>Владение языками: </strong>{% for lang in char.languages.all %}{{ lang.name }} {% endfor %}</li>
+    {% spaceless %}
+    <li>
+        <strong>Владение инструментами: </strong>
+        {% for tool in char.tools_proficiency.all %}
+            {% if tool.competence %}<b>&#8251;</b>{% endif %}
+            <span>{{ tool|capfirst }}{% if not forloop.last %}, {% endif %}</span>
+        {% empty %}Нет
+        {% endfor %}
+    </li>{% endspaceless %}
+    {% spaceless %}
+    <li>
+        <strong>Владение оружием: </strong>
+        {% for weapon in char.weapon_proficiency.all %}<span>{{ weapon }} </span>{% endfor %}
+    </li>
+    {% endspaceless %}
+    {% spaceless %}
+    <li>
+        <strong>Владение доспехами: </strong>
+        {% for armor in char.armor_proficiency.all %}<span>{{ armor }} </span>{% endfor %}
+    </li>
+    {% endspaceless %}
+    <li><strong>Кости здоровья: </strong>{% for dice in char.dices.all %}{% if dice.dtype == 'hit' %}{{ dice }} {% endif %}{% endfor %}</li>{# FIXME dirty values spaces #}
+    <li><strong>Умения и особенности: </strong></li>
+    {% for feat in char.features.all %}<li><span class="badge badge-light">{{ feat.feature.source.name }}</span>{{ feat.feature }} {% if feat.max_charges %}{{ feat.max_charges }}{% endif %}</li>{% endfor %}
+</ul>
