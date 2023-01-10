@@ -46,9 +46,6 @@ def adventure_detail(request, adv_id):
 
 @login_required
 def character_detail(request, adv_id, char_id, tab=None):
-    if tab == 'spellcasting':
-        return render(request, 'dnd5e/adventures/char/tabs/spellcasting.html', {})
-
     # TODO select related
     char = get_object_or_404(Character, id=char_id)
     adventure = get_object_or_404(Adventure, id=adv_id)
@@ -61,7 +58,7 @@ def character_detail(request, adv_id, char_id, tab=None):
         return render(request, 'dnd5e/adventures/char/tabs/info.html', context)
 
     if tab == 'spellcasting':
-        return render(request, 'dnd5e/adventures/char/tabs/spellcasting.html', {})
+        return render(request, 'dnd5e/adventures/char/tabs/spellcasting.html', context)
 
     return render(request, 'dnd5e/adventures/char/detail.html', context)
 

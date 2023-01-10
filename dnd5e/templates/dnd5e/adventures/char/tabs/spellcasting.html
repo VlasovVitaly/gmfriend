@@ -1,0 +1,6 @@
+<div class="">
+    {% for slot in char.spell_slots.all %}
+        {% ifchanged slot.level %}<br>{% endifchanged %}
+        <span>{{ slot.level }}</span>
+    {% endfor %}
+</div>

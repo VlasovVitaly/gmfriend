@@ -150,11 +150,10 @@ class Character(models.Model):
             return
 
         self.spellcasting_rules = klass.codename
-        self.save(update_fields=['spellcasting_rules'])
+        self.save(update_fields=['spellcasting_rules'])  # FIXME seems dont need this field
         for level, count in enumerate(spellcasting[1]['slots'], 1):  # On 1 level of klass since it is init
             for _ in range(count):
                 self.spell_slots.create(level=level)
-        #         # print(f'Creating spell slot in level {slot_lvl} {slot_num}')
 
     def init_new_multiclass(self, klass):  # TODO transaction???
         char_class = CharacterClass.objects.create(
@@ -247,8 +246,8 @@ class CharacterClass(models.Model):
         )
 
     def get_spellcasting_rules(self):
-        spellcasting = dnd.SPELLCASTING.get(self.subclass.codename) if self.subclass else None
-        spellcasting = spellcasting or dnd.SPELLCASTING.get(self.klass.orig_name)
+        spellcasting = dnd.SPELLCASTING.get(self.subclass.codename) if self.subclass_id else None
+        spellcasting = spellcasting or dnd.SPELLCASTING.get(self.klass.orig_name.lower())
 
         return spellcasting
 
@@ -260,8 +259,19 @@ class CharacterClass(models.Model):
 
         # Get spellcasting tables
         spellcasting = self.get_spellcasting_rules()
-        last_level = len(spellcasting[self.level + 1]['slots'])
-        _, _ = CharacterSpellSlot(character_id=self.character_id, level=last_level)
+        spellslots = spellcasting[self.level + 1]['slots']
+
+        aggregations = {}
+        for level, _ in enumerate(spellslots, 1):
+            aggregations[f'spellslot_{level}'] = models.Count('id', filter=models.Q(level=level))
+        char_spellslots = CharacterSpellSlot.objects.filter(character_id=self.character_id).aggregate(**aggregations)
+
+        to_create = []
+        spellcasting = [(lvl, slots - char_spellslots[f'spellslot_{lvl}']) for lvl, slots in enumerate(spellslots, 1)]
+        for lvl, count in spellcasting:
+            to_create.extend([CharacterSpellSlot(character_id=self.character_id, level=lvl) for _ in range(count)])
+
+        _ = CharacterSpellSlot.objects.bulk_create(to_create)
 
         self._increase_hit_dice()
         self.level = models.F('level') + 1
@@ -491,7 +501,7 @@ class CharacterSpellSlot(models.Model):
     spent = models.BooleanField(verbose_name='Потрачен', default=False)
 
     class Meta:
-        ordering = ['character_id', 'spent', '-level']
+        ordering = ['character_id', 'level', 'spent']
         default_permissions = ()
         verbose_name = 'Слот заклинания'
         verbose_name_plural = 'Слоты заклинаний'
