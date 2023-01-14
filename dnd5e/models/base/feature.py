@@ -1,8 +1,10 @@
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.apps import apps
 
-from dnd5e.apps import Dnd5EConfig
+
+dnd5e = apps.app_configs['dnd5e']
 
 
 class Feature(models.Model):
@@ -50,7 +52,7 @@ class Feature(models.Model):
                 char_feat.max_charges = models.F('max_charges') + 1
                 char_feat.save(update_fields=['max_charges'])
         else:
-            _, _ = Dnd5EConfig.get_model('CharacterFeature').objects.get_or_create(character=character, feature=self)
+            _, _ = dnd5e.get_model('CharacterFeature').objects.get_or_create(character=character, feature=self)
 
         if self.post_action:
             from dnd5e.choices import ALL_CHOICES
@@ -95,7 +97,7 @@ class AdvancmentChoice(models.Model):
         verbose_name_plural = 'Выборы для персонажей'
 
     def apply_for_character(self, character, reason):
-        Dnd5EConfig.get_model('CharacterAdvancmentChoice').objects.create(
+        dnd5e.get_model('CharacterAdvancmentChoice').objects.create(
             character=character, choice=self, reason=reason
         )
 

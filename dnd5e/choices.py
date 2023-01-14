@@ -374,7 +374,7 @@ class Choices:
     choices = {}
 
     def add(self, choice):
-        name = choice.__class__.__name__
+        name = choice.__name__
         if name not in self.choices:
             self.choices[name] = choice
 
@@ -383,12 +383,6 @@ class Choices:
 
     def __getitem__(self, name):
         return self.choices[name]()
-
-    def __getattribute__(self, name):
-        if not name.startswith('__'):
-            return self.__getitem__(name)
-
-        raise AttributeError
 
 
 ALL_CHOICES = Choices()
