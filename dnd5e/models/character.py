@@ -85,7 +85,7 @@ class Character(models.Model):
         features = self.race.features.order_by().union(self.background.features.order_by())
         features = features.union(self.subrace.features.order_by()) if self.subrace else features
         for feat in features:
-            CharacterFeature.objects.create(character=self, feature=feat)
+            self.features.create(feature=feat)
 
         for advantage in klass.level_feats.get(level=1).advantages.all():
             advantage.apply_for_character(self)
