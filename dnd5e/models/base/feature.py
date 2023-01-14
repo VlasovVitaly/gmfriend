@@ -1,8 +1,7 @@
+from django.apps import apps
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.apps import apps
-
 
 dnd5e = apps.app_configs['dnd5e']
 
