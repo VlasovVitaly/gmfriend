@@ -46,6 +46,7 @@ class Feature(models.Model):
         verbose_name_plural = 'Умения'
 
     def apply_for_character(self, character, **kwargs):
+        print(kwargs)
         if self.stackable:
             char_feat, created = character.features.get_or_create(feature=self, defaults={'max_charges': 1})
             if not created:
@@ -57,8 +58,7 @@ class Feature(models.Model):
         if self.post_action:
             from dnd5e.choices import ALL_CHOICES
 
-            action = ALL_CHOICES[self.post_action]
-            action.apply(character)
+            ALL_CHOICES[self.post_action].apply(character, **kwargs)
 
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'

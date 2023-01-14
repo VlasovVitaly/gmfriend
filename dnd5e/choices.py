@@ -268,14 +268,14 @@ class CHAR_ADVANCE_005(CharacterChoice):
 
 
 class POST_FEAT_001:
-    def apply(self, character):
+    def apply(self, character, **kwargs):
         wisdom = character.abilities.get(ability__orig_name='Wisdom')
         wisdom.saving_trow_proficiency = True
         wisdom.save(update_fields=['saving_trow_proficiency'])
 
 
 class POST_FEAT_002:
-    def apply(self, character):
+    def apply(self, character, **kwargs):
         char_choices = get_model('characteradvancmentchoice')
         competence_choice = get_model('advancmentchoice').objects.get(code='CLASS_ROG_002')
         reason_obj = get_model('class').objects.get(name='Плут')
@@ -288,7 +288,7 @@ class POST_FEAT_002:
 
 class POST_FEAT_003(POST_FEAT_001):
     """ Убийца """
-    def apply(self, character):
+    def apply(self, character, **kwargs):
         char_tools = get_model('charactertoolproficiency')
         for tool in get_model('tool').objects.filter(name__in=['Инструменты отравителя', 'Набор для грима']):
             _, _ = char_tools.objects.get_or_create(character=character, tool=tool)
@@ -296,7 +296,7 @@ class POST_FEAT_003(POST_FEAT_001):
 
 class POST_FEAT_004:
     """ Комбинатор / Интриган """
-    def apply(self, character):
+    def apply(self, character, **kwargs):
         char_tools = get_model('charactertoolproficiency')
         for tool in get_model('tool').objects.filter(name__in=['Набор для фальсификации', 'Набор для грима']):
             _, _ = char_tools.objects.get_or_create(character=character, tool=tool)
@@ -311,21 +311,21 @@ class POST_FEAT_004:
 
 class POST_FEAT_005:
     """ Скаут / Выживальщик """
-    def apply(self, character):
+    def apply(self, character, **kwargs):
         character.skills.filter(skill__name__in=('Природа', 'Выживание')).update(proficiency=True)
         # NOTE mb need add extra_bonus to CharacterSkill
 
 
 class POST_FEAT_006:
     """ Скаут / Превосходная мобильность """
-    def apply(self, character):
+    def apply(self, character, **kwargs):
         # TODO Add speeds to character model
         pass
 
 
 class POST_WAR_STUDENT_001:
     """ Воин / Ученик войны """
-    def apply(self, character):
+    def apply(self, character, **kwargs):
         # TODO Нужен выбор, где учитываются изученные инструмены персонажа, PROF_TOOLS_003 не умеет
         char_choices = get_model('characteradvancmentchoice')
         char_choices.objects.create(
@@ -337,7 +337,7 @@ class POST_WAR_STUDENT_001:
 
 class POST_COMBAT_SUPERIORITY_001:
     """ Боевое превосходство """
-    def apply(self, character):
+    def apply(self, character, **kwargs):
         get_model('characterdice').objects.create(
             character=character, dtype='superiority', dice='1d8', count=4, maximum=4
         )
@@ -351,13 +351,13 @@ class POST_COMBAT_SUPERIORITY_001:
 
 class POST_COMBAT_SUPERIORITY_002:
     """ Улучшенное боевое превосходство """
-    def apply(self, character):
+    def apply(self, character, **kwargs):
         get_model('characterdice').objects.filter(character=character, dtype='superiority').update(dice='1d10')
 
 
 class POST_COMBAT_SUPERIORITY_003:
     """ Улучшенное боевое превосходство+ """
-    def apply(self, character):
+    def apply(self, character, **kwargs):
         get_model('characterdice').objects.filter(character=character, dtype='superiority').update(dice='1d12')
         get_model('characterfeature').objects.filter(
             character=character, feature__post_action='POST_COMBAT_SUPERIORITY_002'
@@ -366,8 +366,12 @@ class POST_COMBAT_SUPERIORITY_003:
 
 class POST_SPELLCASTING_001:
     """ Использование заклинаний """
-    def apply(self, character):
-        pass
+    def apply(self, character, **kwargs):
+        # Find character class for this class
+        char_class = character.classes.get(klass_id=kwargs['reason'].id)
+        char_class.update_spellslots(char_class.level)
+
+        # TODO add choices to select known spells
 
 
 class Choices:
@@ -412,3 +416,4 @@ ALL_CHOICES.add(POST_FEAT_006)
 ALL_CHOICES.add(PROF_TOOLS_001)
 ALL_CHOICES.add(PROF_TOOLS_002)
 ALL_CHOICES.add(PROF_TOOLS_003)
+ALL_CHOICES.add(POST_SPELLCASTING_001)

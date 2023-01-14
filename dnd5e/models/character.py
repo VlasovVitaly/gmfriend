@@ -145,16 +145,8 @@ class Character(models.Model):
         # Create dices
         CharacterDice.objects.create(character=self, dice=klass.hit_dice)
 
-        # Create spellslots if spellcasting exists
-        spellcasting = dnd.SPELLCASTING.get(klass.codename)
-        if not spellcasting:
-            return
-
         self.spellcasting_rules = klass.codename
         self.save(update_fields=['spellcasting_rules'])  # FIXME seems dont need this field
-        for level, count in enumerate(spellcasting[1]['slots'], 1):  # On 1 level of klass since it is init
-            for _ in range(count):
-                self.spell_slots.create(level=level)
 
     def init_new_multiclass(self, klass):  # TODO transaction???
         char_class = CharacterClass.objects.create(
@@ -238,21 +230,11 @@ class CharacterClass(models.Model):
             count=models.F('count') + 1, maximum=models.F('maximum') + 1
         )
 
-    def get_spellcasting_rules(self):
+    def update_spellslots(self, level):
+        # Get spellcasting tables
         spellcasting = dnd.SPELLCASTING.get(self.subclass.codename) if self.subclass_id else None
         spellcasting = spellcasting or dnd.SPELLCASTING.get(self.klass.orig_name.lower())
-
-        return spellcasting
-
-    def level_up(self):
-        self._apply_class_advantages(self.level + 1)
-
-        if self.subclass_id:
-            self._apply_subclass_advantages(self.level + 1)
-
-        # Get spellcasting tables
-        spellcasting = self.get_spellcasting_rules()
-        spellslots = spellcasting[self.level + 1]['slots']
+        spellslots = spellcasting[level]['slots']
 
         aggregations = {}
         for level, _ in enumerate(spellslots, 1):
@@ -266,7 +248,15 @@ class CharacterClass(models.Model):
 
         _ = CharacterSpellSlot.objects.bulk_create(to_create)
 
+    def level_up(self):
+        self._apply_class_advantages(self.level + 1)
+
+        if self.subclass_id:
+            self._apply_subclass_advantages(self.level + 1)
+
+        self.update_spellslots(self.level + 1)
         self._increase_hit_dice()
+
         self.level = models.F('level') + 1
         self.save(update_fields=['level'])
 
