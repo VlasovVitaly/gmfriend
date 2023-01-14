@@ -365,7 +365,7 @@ class POST_COMBAT_SUPERIORITY_003:
 
 
 class POST_SPELLCASTING_001:
-    """ Использование заклинаний """
+    """ Использование заклинаний (Бард)"""
     def apply(self, character, **kwargs):
         # Find character class for this class
         char_class = character.classes.get(klass_id=kwargs['reason'].id)

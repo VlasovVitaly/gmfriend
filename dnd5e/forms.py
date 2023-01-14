@@ -2,9 +2,11 @@ from django import forms
 
 from .models import (
     Character, CharacterAbilities, CharacterBackground, CharacterSkill,
-    CharacterToolProficiency, Class, Feature, Language, Maneuver, Subclass, Tool
+    CharacterToolProficiency, Class, Feature, Language, Maneuver, Subclass, Tool, Spell
 )
 from .widgets import AbilityListBoxSelect
+
+from dnd5e.dnd import SPELLCASTING
 
 
 class CharacterForm(forms.ModelForm):
@@ -268,3 +270,17 @@ class ManeuversUpgradeForm(forms.Form):
             raise forms.ValidationError(f'Необходимо выбрать ровно {self.limit} приёма')
 
         return append
+
+
+# class KnownSpellsForm(forms.Form):
+#     known_cantrips = forms.ModelMultipleChoiceField(queryset=Spell.objects.none())
+#     known_spells = forms.ModelMultipleChoiceField(querysey=Spell.objects.none())
+# 
+#     def __init__(self, *args, character, spellcasting_rule, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.character = character
+# 
+#         self.max_cantrips = SPELLCASTING[spellcasting_rule]['cantrips']
+#         self.max_spells = SPELLCASTING[spellcasting_rule]['spells']
+# 
+#         # self.fields['known_cantrips'].queryset

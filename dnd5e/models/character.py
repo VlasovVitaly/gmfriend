@@ -1,3 +1,5 @@
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 from gm2m import GM2MField
@@ -398,6 +400,12 @@ class CharacterAdvancmentChoice(models.Model):
     choice = models.ForeignKey(
         AdvancmentChoice, on_delete=models.CASCADE, related_name='+'
     )
+    reason_content_type = models.ForeignKey(
+        ContentType, on_delete=models.CASCADE, editable=False, null=True, default=None,
+        limit_choices_to={'app_label': 'dnd5e', 'model__in': ['characterclass']}
+    )
+    reason_object_id = models.PositiveIntegerField(editable=False, null=True, default=None)
+    reason = GenericForeignKey('reason_content_type', 'reason_object_id')
 
     objects = CharacterAdvancmentChoiceQueryset.as_manager()
 
