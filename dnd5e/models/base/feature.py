@@ -55,7 +55,7 @@ class Feature(models.Model):
         if self.post_action:
             from dnd5e.choices import ALL_CHOICES
 
-            action = ALL_CHOICES[self.post_action]()
+            action = ALL_CHOICES[self.post_action]
             action.apply(character)
 
     def __repr__(self):
