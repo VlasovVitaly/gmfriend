@@ -267,6 +267,13 @@ class CHAR_ADVANCE_005(CharacterChoice):
         data['skills'].update(proficiency=True)
 
 
+class CHAR_SPELLS_BARD(CharacterChoice):
+    form_class = None
+
+    def get_form(self, request):
+        return None
+
+
 class POST_FEAT_001:
     def apply(self, character, **kwargs):
         wisdom = character.abilities.get(ability__orig_name='Wisdom')
@@ -278,12 +285,8 @@ class POST_FEAT_002:
     def apply(self, character, **kwargs):
         char_choices = get_model('characteradvancmentchoice')
         competence_choice = get_model('advancmentchoice').objects.get(code='CLASS_ROG_002')
-        reason_obj = get_model('class').objects.get(name='Плут')
 
-        char_choices.objects.get_or_create(
-            character=character, choice=competence_choice,
-            defaults={'reason': reason_obj}
-        )
+        char_choices.objects.get_or_create(character=character, choice=competence_choice)
 
 
 class POST_FEAT_003(POST_FEAT_001):
@@ -305,7 +308,6 @@ class POST_FEAT_004:
         char_choices.objects.create(
             character=character,
             choice=get_model('advancmentchoice').objects.get(code='CLASS_ROG_003'),
-            reason=get_model('subclass').objects.get(name='Комбинатор')
         )
 
 
@@ -331,7 +333,6 @@ class POST_WAR_STUDENT_001:
         char_choices.objects.create(
             character=character,
             choice=get_model('advancmentchoice').objects.get(code='PROF_TOOLS_003'),
-            reason=get_model('subclass').objects.get(name='Мастер боевых искуств')
         )
 
 
@@ -345,7 +346,6 @@ class POST_COMBAT_SUPERIORITY_001:
         char_choices.objects.create(
             character=character,
             choice=get_model('advancmentchoice').objects.get(code='CLASS_BATTLE_001'),
-            reason=get_model('subclass').objects.get(name='Мастер боевых искуств')
         )
 
 
@@ -371,6 +371,11 @@ class POST_SPELLCASTING_001:
         char_class = character.classes.get(klass_id=kwargs['reason'].id)
         char_class.update_spellslots(char_class.level)
 
+        char_choices = get_model('characteradvancmentchoice')
+        char_choices.objects.create(
+            character=character,
+            choice=get_model('advancmentchoice').objects.get(code='CHAR_SPELLS_BARD'),
+        )
         # TODO add choices to select known spells
 
 
@@ -391,6 +396,7 @@ class Choices:
 
 ALL_CHOICES = Choices()
 
+ALL_CHOICES.add(CHAR_SPELLS_BARD)
 ALL_CHOICES.add(CHAR_ADVANCE_001)
 ALL_CHOICES.add(CHAR_ADVANCE_002)
 ALL_CHOICES.add(CHAR_ADVANCE_003)

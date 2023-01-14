@@ -96,9 +96,9 @@ class AdvancmentChoice(models.Model):
         verbose_name = 'Выбор для персонажа'
         verbose_name_plural = 'Выборы для персонажей'
 
-    def apply_for_character(self, character, reason):
+    def apply_for_character(self, character, **kwargs):
         dnd5e.get_model('CharacterAdvancmentChoice').objects.create(
-            character=character, choice=self, reason=reason
+            character=character, choice=self
         )
 
     def __repr__(self):

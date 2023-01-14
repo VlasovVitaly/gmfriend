@@ -110,33 +110,27 @@ class Character(models.Model):
 
         # Background choices
         for choice in self.background.choices.all():
-            char_choices.append(CharacterAdvancmentChoice(character=self, choice=choice, reason=self.background))
+            char_choices.append(CharacterAdvancmentChoice(character=self, choice=choice))
 
         # Add background languages if need
         if self.background.known_languages:
             char_choices.append(
                 CharacterAdvancmentChoice(
-                    character=self,
-                    choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_003'),
-                    reason=self.background
+                    character=self, choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_003')
                 )
             )
 
         # Skills proficiency choice
         char_choices.append(
             CharacterAdvancmentChoice(
-                character=self,
-                choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_002'),
-                reason=klass
+                character=self, choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_002')
             )
         )
 
         # Background story
         char_choices.append(
             CharacterAdvancmentChoice(
-                character=self,
-                choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_004'),
-                reason=klass
+                character=self, choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_004')
             )
         )
 
@@ -167,7 +161,7 @@ class Character(models.Model):
 
         # Choices
         for choice in profs.filter(content_type__app_label='dnd5e', content_type__model='advancmentchoice'):
-            CharacterAdvancmentChoice.objects.create(character=self, choice=choice.proficiency, reason=klass)
+            CharacterAdvancmentChoice.objects.create(character=self, choice=choice.proficiency)
 
     def get_all_abilities(self):
         return self.abilities.values(
@@ -406,11 +400,6 @@ class CharacterAdvancmentChoice(models.Model):
     choice = models.ForeignKey(
         AdvancmentChoice, on_delete=models.CASCADE, related_name='+'
     )
-
-    # TODO WHY WE NEED REASON
-    reason_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    reason_object_id = models.PositiveIntegerField()
-    reason = GenericForeignKey('reason_content_type', 'reason_object_id')
 
     objects = CharacterAdvancmentChoiceQueryset.as_manager()
 
