@@ -364,6 +364,12 @@ class POST_COMBAT_SUPERIORITY_003:
         ).delete()
 
 
+class POST_SPELLCASTING_001:
+    """ Использование заклинаний """
+    def apply(self, character):
+        pass
+
+
 ALL_CHOICES = {
     'CHAR_ADVANCE_001': CHAR_ADVANCE_001,
     'CHAR_ADVANCE_002': CHAR_ADVANCE_002,

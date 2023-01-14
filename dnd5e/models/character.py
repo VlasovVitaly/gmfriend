@@ -208,14 +208,6 @@ class CharacterClass(models.Model):
     # NOTE let DB calc max_prepared_spells
     prepared_spells = models.ManyToManyField(verbose_name='Подготовленные заклинания', to=Spell, related_name='+')
 
-    # Spellcasting stuff
-    # max_known_cantrips = models.PositiveSmallIntegerField(
-    #    verbose_name='Известные заговоры', null=True, default=None, editable=False
-    # )
-    # max_known_spells = models.PositiveSmallIntegerField(
-    #     verbose_name='Известные заклинания', null=True, default=None, editable=False
-    # )
-
     class Meta:
         ordering = ['character', '-level', 'klass__name']
         unique_together = ['character', 'klass']

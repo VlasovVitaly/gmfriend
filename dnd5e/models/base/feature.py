@@ -27,16 +27,18 @@ class Feature(models.Model):
     rechargeable = models.PositiveSmallIntegerField(choices=RECHARGE_CHOICES, default=RECHARGE_CONSTANT)
 
     content_type = models.ForeignKey(
-        ContentType, on_delete=models.CASCADE, related_name='+', blank=True, null=True, default=None,
+        ContentType, on_delete=models.CASCADE, related_name='+',
         limit_choices_to={'app_label': 'dnd5e', 'model__in': ['class', 'subclass', 'race', 'subrace', 'background']}
     )
-    source_id = models.PositiveIntegerField(blank=True, null=True, default=None)
+    source_id = models.PositiveIntegerField()
     source = GenericForeignKey('content_type', 'source_id')
     post_action = models.CharField(max_length=32, blank=True, null=True, default=None)
+    # If feature has special parameters for ability lookup in tables in dnd # TODO need rename this field
     level_table = models.CharField(max_length=32, blank=True, null=True, default=None)
 
     class Meta:
         ordering = ['name']
+        unique_together = ['name', 'content_type', 'source_id']
         default_permissions = ()
         verbose_name = 'Умение'
         verbose_name_plural = 'Умения'
