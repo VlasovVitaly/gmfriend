@@ -51,10 +51,6 @@ class Character(models.Model):
     spellcasting_rules = models.CharField(max_length=512, null=True, default=None, editable=False)
     known_spells = models.ManyToManyField(verbose_name='Известные заклинания', to=Spell, related_name='+')
 
-    @property
-    def known_cantrips(self):
-        return self.known_spells.filter(level=0)
-
     class Meta:
         ordering = ['name', 'level']
         default_permissions = ()

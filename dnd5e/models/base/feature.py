@@ -45,7 +45,6 @@ class Feature(models.Model):
         verbose_name_plural = 'Умения'
 
     def apply_for_character(self, character, **kwargs):
-        print(kwargs)
         if self.stackable:
             char_feat, created = character.features.get_or_create(feature=self, defaults={'max_charges': 1})
             if not created:

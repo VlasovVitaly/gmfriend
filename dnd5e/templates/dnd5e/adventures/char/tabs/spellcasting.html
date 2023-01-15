@@ -3,4 +3,8 @@
         {% ifchanged slot.level %}<br>{% endifchanged %}
         <span>{{ slot.level }}</span>
     {% endfor %}
+    <h3>Known Spells</h3>
+    {% for spell in char.known_spells.all %}
+        <p>{{ spell.level }} — {{ spell.name }}</p>
+    {% endfor %}
 </div>

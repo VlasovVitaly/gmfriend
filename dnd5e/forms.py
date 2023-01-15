@@ -299,6 +299,6 @@ class KnownSpellsForm(forms.Form):
         return known
 
     def clean(self):
-        self.cleaned_data['spells'] = Spell.objects.union(
-            self.cleaned_data['known_cantrips'], self.cleaned_data['known_spells']
+        self.cleaned_data['spells'] = self.cleaned_data['known_cantrips'].order_by().union(
+            self.cleaned_data['known_spells'].order_by()
         )

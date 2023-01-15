@@ -290,7 +290,7 @@ class CHAR_SPELLS_BARD(CharacterChoice):
         return self.form_class(**form_args)
 
     def apply_data(self, data):
-        self.character.known_spells.set(data['spells'])
+        self.character.known_spells.set(list(data['known_cantrips']) + list(data['known_spells']))
 
 
 class POST_FEAT_001:
