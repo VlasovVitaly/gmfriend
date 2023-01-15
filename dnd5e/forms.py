@@ -6,8 +6,6 @@ from .models import (
 )
 from .widgets import AbilityListBoxSelect
 
-from dnd5e.dnd import SPELLCASTING
-
 
 class CharacterForm(forms.ModelForm):
     klass = forms.ModelChoiceField(label='Класс', queryset=Class.objects.all())
@@ -272,15 +270,35 @@ class ManeuversUpgradeForm(forms.Form):
         return append
 
 
-# class KnownSpellsForm(forms.Form):
-#     known_cantrips = forms.ModelMultipleChoiceField(queryset=Spell.objects.none())
-#     known_spells = forms.ModelMultipleChoiceField(querysey=Spell.objects.none())
-# 
-#     def __init__(self, *args, character, spellcasting_rule, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.character = character
-# 
-#         self.max_cantrips = SPELLCASTING[spellcasting_rule]['cantrips']
-#         self.max_spells = SPELLCASTING[spellcasting_rule]['spells']
-# 
-#         # self.fields['known_cantrips'].queryset
+class KnownSpellsForm(forms.Form):
+    known_cantrips = forms.ModelMultipleChoiceField(queryset=Spell.objects.none())
+    known_spells = forms.ModelMultipleChoiceField(queryset=Spell.objects.none())
+
+    def __init__(self, *args, character, spellcasting, queryset, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.character = character
+
+        self.max_cantrips = spellcasting['cantrips']
+        self.max_spells = spellcasting['spells']
+
+        self.fields['known_cantrips'].queryset = queryset.filter(level=0)
+        self.fields['known_spells'].queryset = queryset.filter(level__gt=0, level__lte=len(spellcasting['slots']))
+
+    def clean_known_cantrips(self):
+        known = self.cleaned_data['known_cantrips']
+        if known.count() != self.max_cantrips:
+            raise forms.ValidationError(f'Необходимо выбрать ровно {self.max_cantrips} заговора')
+
+        return known
+
+    def clean_known_spells(self):
+        known = self.cleaned_data['known_spells']
+        if known.count() != self.max_spells:
+            raise forms.ValidationError(f'Необходимо выбрать ровно {self.max_spells} заклинания')
+
+        return known
+
+    def clean(self):
+        self.cleaned_data['spells'] = Spell.objects.union(
+            self.cleaned_data['known_cantrips'], self.cleaned_data['known_spells']
+        )

@@ -51,6 +51,10 @@ class Character(models.Model):
     spellcasting_rules = models.CharField(max_length=512, null=True, default=None, editable=False)
     known_spells = models.ManyToManyField(verbose_name='Известные заклинания', to=Spell, related_name='+')
 
+    @property
+    def known_cantrips(self):
+        return self.known_spells.filter(level=0)
+
     class Meta:
         ordering = ['name', 'level']
         default_permissions = ()
@@ -224,11 +228,14 @@ class CharacterClass(models.Model):
             count=models.F('count') + 1, maximum=models.F('maximum') + 1
         )
 
-    def update_spellslots(self, level):
-        # Get spellcasting tables
+    def get_spellcasting(self, level=None):
         spellcasting = dnd.SPELLCASTING.get(self.subclass.codename) if self.subclass_id else None
         spellcasting = spellcasting or dnd.SPELLCASTING.get(self.klass.orig_name.lower())
-        spellslots = spellcasting[level]['slots']
+
+        return spellcasting[self.level] if level is None else spellcasting[level]
+
+    def update_spellslots(self, level):
+        spellslots = self.get_spellcasting(level)['slots']
 
         aggregations = {}
         for level, _ in enumerate(spellslots, 1):

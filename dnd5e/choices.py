@@ -3,7 +3,7 @@ from django.apps import apps
 from .forms import (
     AddCharLanguageFromBackground, AddCharSkillProficiency, CharacterBackgroundForm,
     ManeuversSelectForm, ManeuversUpgradeForm, MasterMindIntrigueSelect, SelectAbilityAdvanceForm,
-    SelectCompetenceForm, SelectFeatureForm, SelectSubclassForm, SelectToolProficiency
+    SelectCompetenceForm, SelectFeatureForm, SelectSubclassForm, SelectToolProficiency, KnownSpellsForm
 )
 
 dnd5e_app = apps.app_configs['dnd5e']
@@ -16,8 +16,9 @@ class CharacterChoice:
     selection_limit = None
     pass_char = False  # Pass character to form_class
 
-    def __init__(self, character):
+    def __init__(self, character, **kwargs):
         self.character = character
+        self.extra = kwargs
 
     def get_form(self, request):
         if self.form_class is None:
@@ -268,10 +269,28 @@ class CHAR_ADVANCE_005(CharacterChoice):
 
 
 class CHAR_SPELLS_BARD(CharacterChoice):
-    form_class = None
+    form_class = KnownSpellsForm
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        char_class = self.extra['choice'].reason
+        self.queryset = get_model('spell').objects.filter(classes=char_class.klass_id)
+        self.spellcasting = char_class.get_spellcasting()
 
     def get_form(self, request):
-        return None
+        if self.form_class is None:
+            raise AssertionError('Choice formclass is not set')
+
+        form_args = {'data': request.POST or None, 'files': None}
+        form_args['queryset'] = self.queryset
+        form_args['spellcasting'] = self.spellcasting
+        form_args['character'] = self.character
+
+        return self.form_class(**form_args)
+
+    def apply_data(self, data):
+        self.character.known_spells.set(data['spells'])
 
 
 class POST_FEAT_001:
@@ -365,7 +384,7 @@ class POST_COMBAT_SUPERIORITY_003:
 
 
 class POST_SPELLCASTING_001:
-    """ Использование заклинаний (Бард)"""
+    """ Использование заклинаний """
     def apply(self, character, **kwargs):
         # Find character class for this class
         char_class = character.classes.get(klass_id=kwargs['reason'].id)
@@ -375,8 +394,8 @@ class POST_SPELLCASTING_001:
         char_choices.objects.create(
             character=character,
             choice=get_model('advancmentchoice').objects.get(code='CHAR_SPELLS_BARD'),
+            reason=char_class
         )
-        # TODO add choices to select known spells
 
 
 class Choices:
@@ -387,8 +406,8 @@ class Choices:
         if name not in self.choices:
             self.choices[name] = choice
 
-    def get(self, name, char):
-        return self.choices[name](char)
+    def get(self, name, char, **kwargs):
+        return self.choices[name](char, **kwargs)
 
     def __getitem__(self, name):
         return self.choices[name]()
