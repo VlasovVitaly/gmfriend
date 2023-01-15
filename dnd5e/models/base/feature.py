@@ -87,9 +87,10 @@ class AdvancmentChoice(models.Model):
     code = models.CharField(max_length=24, verbose_name='Код')
     text = models.TextField(verbose_name='Отображаемый текст')
     important = models.BooleanField(verbose_name='В первую очередь', default=False)
+    rejectable = models.BooleanField(verbose_name='Возможность отказаться', default=False)
 
     class Meta:
-        ordering = ['name']
+        ordering = ['important', 'name']
         default_permissions = ()
         verbose_name = 'Выбор для персонажа'
         verbose_name_plural = 'Выборы для персонажей'
