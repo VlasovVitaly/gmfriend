@@ -160,10 +160,14 @@ def level_up_multiclass(request, adv_id, char_id):
 
 @login_required
 @transaction.atomic()
-def resolve_char_choice(request, adv_id, char_id, choice_id):
+def resolve_char_choice(request, adv_id, char_id, choice_id, reject=False):
     adventure = get_object_or_404(Adventure, id=adv_id)
     char = get_object_or_404(Character, id=char_id, adventure=adventure)
     choice = get_object_or_404(CharacterAdvancmentChoice.objects.select_related('choice'), id=choice_id)  # TODO Add char_id fileter
+
+    if reject and choice.choice.rejectable:
+        choice.delete()
+        return redirect(reverse('dnd5e:adventure:character:detail', kwargs={'adv_id': adventure.id, 'char_id': char.id}))
 
     if not choice.choice.important and char.choices.filter(choice__important=True).exists():
         # Can't make choice if more important choice exists for this char
@@ -187,7 +191,6 @@ def resolve_char_choice(request, adv_id, char_id, choice_id):
     return render(request, 'dnd5e/adventures/char/resolve_choices.html', context)
 
 
-@login_required
 def stage_detail(request, stage_id):
     stage = get_object_or_404(Stage.objects.prefetch_detail().annotate_detail(), id=stage_id)
 
