@@ -26,6 +26,7 @@ MULTICLASS_RESTRICTONS = {
 
 SPELLCASTING = {
     'bard': {
+        'replace': {'level': 2, 'count': 1},
         1: {'cantrips': 2, 'spells': 4, 'slots': (2, )},
         2: {'cantrips': 2, 'spells': 5, 'slots': (3, )},
         3: {'cantrips': 2, 'spells': 6, 'slots': (4, 2)},

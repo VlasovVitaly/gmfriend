@@ -270,6 +270,34 @@ class ManeuversUpgradeForm(forms.Form):
         return append
 
 
+class ReplaceKnownSpellsForm(forms.Form):
+    to_replace = forms.ModelMultipleChoiceField(queryset=Spell.objects.none())
+    by_replace = forms.ModelMultipleChoiceField(queryset=Spell.objects.none())
+
+    def __init__(self, *args, character, spellcasting, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        current = character.known_spells.exclude(level=0)
+
+        self.max_replaces = spellcasting['replace']['count']
+
+        self.fields['to_replace'].queryset = current
+        # TODO FOR CHARACTER
+        self.fields['by_replace'].queryset = Spell.objects.exclude(level=0).exclude(id__in=current)
+
+    def clean_to_replace(self):
+        if self.cleaned_data['to_replace'].count() != self.max_replaces:
+            raise forms.ValidationError(f'Необходимо выбрать ровно {self.max_replaces} заклинаний')
+
+        return self.cleaned_data['to_replace']
+
+    def clean_by_replace(self):
+        if self.cleaned_data['by_replace'].count() != self.max_replaces:
+            raise forms.ValidationError(f'Необходимо выбрать ровно {self.max_replaces} заклинаний')
+
+        return self.cleaned_data['by_replace']
+
+
 class KnownSpellsForm(forms.Form):
     known_cantrips = forms.ModelMultipleChoiceField(queryset=Spell.objects.none())
     known_spells = forms.ModelMultipleChoiceField(queryset=Spell.objects.none())

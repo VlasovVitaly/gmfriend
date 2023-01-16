@@ -3,7 +3,7 @@ from django.apps import apps
 from .forms import (
     AddCharLanguageFromBackground, AddCharSkillProficiency, CharacterBackgroundForm,
     ManeuversSelectForm, ManeuversUpgradeForm, MasterMindIntrigueSelect, SelectAbilityAdvanceForm,
-    SelectCompetenceForm, SelectFeatureForm, SelectSubclassForm, SelectToolProficiency, KnownSpellsForm
+    SelectCompetenceForm, SelectFeatureForm, SelectSubclassForm, SelectToolProficiency, KnownSpellsForm, ReplaceKnownSpellsForm
 )
 
 dnd5e_app = apps.app_configs['dnd5e']
@@ -276,12 +276,9 @@ class CHAR_SPELLS_BARD(CharacterChoice):
 
         char_class = self.extra['choice'].reason
         self.queryset = get_model('spell').objects.filter(classes=char_class.klass_id)
-        self.spellcasting = char_class.get_spellcasting()
+        self.spellcasting = char_class.spellcasting[char_class.level]
 
     def get_form(self, request):
-        if self.form_class is None:
-            raise AssertionError('Choice formclass is not set')
-
         form_args = {'data': request.POST or None, 'files': None}
         form_args['queryset'] = self.queryset
         form_args['spellcasting'] = self.spellcasting
@@ -291,6 +288,27 @@ class CHAR_SPELLS_BARD(CharacterChoice):
 
     def apply_data(self, data):
         self.character.known_spells.set(list(data['known_cantrips']) + list(data['known_spells']))
+
+
+class CHAR_SPELLS_REPLACE(CharacterChoice):
+    form_class = ReplaceKnownSpellsForm
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        char_class = self.extra['choice'].reason
+        self.spellcasting = char_class.spellcasting
+
+    def get_form(self, request):
+        form_args = {'data': request.POST or None, 'files': None}
+        form_args['spellcasting'] = self.spellcasting
+        form_args['character'] = self.character
+
+        return self.form_class(**form_args)
+
+    def apply_data(self, data):
+        self.character.known_spells.remove(*data['to_replace'])
+        self.character.known_spells.add(*data['by_replace'])
 
 
 class POST_FEAT_001:
@@ -415,12 +433,13 @@ class Choices:
 
 ALL_CHOICES = Choices()
 
-ALL_CHOICES.add(CHAR_SPELLS_BARD)
 ALL_CHOICES.add(CHAR_ADVANCE_001)
 ALL_CHOICES.add(CHAR_ADVANCE_002)
 ALL_CHOICES.add(CHAR_ADVANCE_003)
 ALL_CHOICES.add(CHAR_ADVANCE_004)
 ALL_CHOICES.add(CHAR_ADVANCE_005)
+ALL_CHOICES.add(CHAR_SPELLS_BARD)
+ALL_CHOICES.add(CHAR_SPELLS_REPLACE)
 ALL_CHOICES.add(CLASS_BATTLE_001)
 ALL_CHOICES.add(CLASS_BATTLE_002)
 ALL_CHOICES.add(CLASS_BATTLE_003)
@@ -438,7 +457,7 @@ ALL_CHOICES.add(POST_FEAT_003)
 ALL_CHOICES.add(POST_FEAT_004)
 ALL_CHOICES.add(POST_FEAT_005)
 ALL_CHOICES.add(POST_FEAT_006)
+ALL_CHOICES.add(POST_SPELLCASTING_001)
 ALL_CHOICES.add(PROF_TOOLS_001)
 ALL_CHOICES.add(PROF_TOOLS_002)
 ALL_CHOICES.add(PROF_TOOLS_003)
-ALL_CHOICES.add(POST_SPELLCASTING_001)

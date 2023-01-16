@@ -57,9 +57,6 @@ class Character(models.Model):
         verbose_name = 'Персонаж'
         verbose_name_plural = 'Персонажи'
 
-    def get_spellcasting_rules(self):
-        raise NotImplementedError
-
     def init(self, klass):
         class_saving_trows = klass.saving_trows.all()
         abilities = []
@@ -224,14 +221,13 @@ class CharacterClass(models.Model):
             count=models.F('count') + 1, maximum=models.F('maximum') + 1
         )
 
-    def get_spellcasting(self, level=None):
+    @property
+    def spellcasting(self):
         spellcasting = dnd.SPELLCASTING.get(self.subclass.codename) if self.subclass_id else None
-        spellcasting = spellcasting or dnd.SPELLCASTING.get(self.klass.orig_name.lower())
-
-        return spellcasting[self.level] if level is None else spellcasting[level]
+        return spellcasting or dnd.SPELLCASTING.get(self.klass.orig_name.lower())
 
     def update_spellslots(self, level):
-        spellslots = self.get_spellcasting(level)['slots']
+        spellslots = self.spellcasting[level]['slots']
 
         aggregations = {}
         for level, _ in enumerate(spellslots, 1):
@@ -251,8 +247,15 @@ class CharacterClass(models.Model):
         if self.subclass_id:
             self._apply_subclass_advantages(self.level + 1)
 
-        self.update_spellslots(self.level + 1)
         self._increase_hit_dice()
+
+        if self.spellcasting:
+            self.update_spellslots(self.level + 1)
+            if self.spellcasting.get('replace') and self.level + 1 >= self.spellcasting['replace']['level']:
+                CharacterAdvancmentChoice.objects.create(
+                    character_id=self.character_id, reason=self,
+                    choice=AdvancmentChoice.objects.get(code='CHAR_SPELLS_REPLACE')
+                )
 
         self.level = models.F('level') + 1
         self.save(update_fields=['level'])
