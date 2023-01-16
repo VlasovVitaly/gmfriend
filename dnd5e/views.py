@@ -165,7 +165,7 @@ def resolve_char_choice(request, adv_id, char_id, choice_id, reject=False):
     char = get_object_or_404(Character, id=char_id, adventure=adventure)
     choice = get_object_or_404(CharacterAdvancmentChoice.objects.select_related('choice'), id=choice_id)  # TODO Add char_id fileter
 
-    if reject and choice.choice.rejectable:
+    if reject and request.method == 'POST' and choice.choice.rejectable:
         choice.delete()
         return redirect(reverse('dnd5e:adventure:character:detail', kwargs={'adv_id': adventure.id, 'char_id': char.id}))
 
