@@ -327,6 +327,23 @@ class KnownSpellsForm(forms.Form):
         return known
 
     def clean(self):
+        print(self.cleaned_data)
         self.cleaned_data['spells'] = self.cleaned_data['known_cantrips'].order_by().union(
             self.cleaned_data['known_spells'].order_by()
         )
+
+
+class AddKnownSpellsForm(forms.Form):
+    spells = forms.ModelMultipleChoiceField(queryset=Spell.objects.none())
+
+    def __init__(self, *args, queryset, limit, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['spells'].queryset = queryset
+        self.limit = limit
+    
+    def clean_spells(self):
+        spells = self.cleaned_data['spells']
+        if spells.count() != self.limit:
+            raise forms.ValidationError(f'Необходимо выбрать ровно {self.limit} заклинаний')
+        
+        return spells

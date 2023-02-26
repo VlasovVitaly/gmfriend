@@ -3,8 +3,12 @@
         {% ifchanged slot.level %}<br>{% endifchanged %}
         <span>{{ slot.level }}</span>
     {% endfor %}
-    <h3>Known Spells</h3>
-    {% for spell in char.known_spells.all %}
+    <p>Max cantrips: {{ char.classes.first.current_spellcasting.cantrips }}, Max spells: {{ char.classes.first.current_spellcasting.spells }}</p>
+    <h3>Known Spells {{ char.known_cantrips.count}} | {{ char.known_spells_only.count }}</h3>
+    {% for spell in char.known_cantrips.all %}
+        <p>{{ spell.level }} — {{ spell.name }}</p>
+    {% endfor %}
+    {% for spell in char.known_spells_only.all %}
         <p>{{ spell.level }} — {{ spell.name }}</p>
     {% endfor %}
 </div>

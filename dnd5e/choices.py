@@ -3,7 +3,7 @@ from django.apps import apps
 from .forms import (
     AddCharLanguageFromBackground, AddCharSkillProficiency, CharacterBackgroundForm,
     ManeuversSelectForm, ManeuversUpgradeForm, MasterMindIntrigueSelect, SelectAbilityAdvanceForm,
-    SelectCompetenceForm, SelectFeatureForm, SelectSubclassForm, SelectToolProficiency, KnownSpellsForm, ReplaceKnownSpellsForm
+    SelectCompetenceForm, SelectFeatureForm, SelectSubclassForm, SelectToolProficiency, KnownSpellsForm, ReplaceKnownSpellsForm, AddKnownSpellsForm
 )
 
 dnd5e_app = apps.app_configs['dnd5e']
@@ -311,6 +311,38 @@ class CHAR_SPELLS_REPLACE(CharacterChoice):
         self.character.known_spells.add(*data['by_replace'])
 
 
+class CHAR_SPELLS_APPEND(CharacterChoice):
+    ''' Add new known spells after level up'''
+    form_class = AddKnownSpellsForm
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        char_class = self.extra['choice'].reason
+        spellcasting = char_class.current_spellcasting
+
+        self.queryset = get_model('spell').objects.filter(classes=char_class.klass_id)
+        self.queryset = self.queryset.filter(level__lte=len(spellcasting['slots'])).exclude(level=0)
+        self.selection_limit = spellcasting['spells'] - self.character.known_spells.exclude(level=0).count()
+        # TODO Check selection limit 0 or less
+
+    def apply_data(self, data):
+        self.character.known_spells.add(*data['spells'])
+
+
+class CHAR_CANTRIPS_APPEND(CHAR_SPELLS_APPEND):
+    ''' Add new known cantrips after level up'''
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        char_class = self.extra['choice'].reason
+        spellcasting = char_class.current_spellcasting
+
+        self.queryset = get_model('spell').objects.filter(classes=char_class.klass_id).filter(level=0)
+        self.selection_limit = spellcasting['cantrips'] - self.character.known_spells.filter(level=0).count()
+        # TODO Check selection limit 0 or less
+
+
 class POST_FEAT_001:
     def apply(self, character, **kwargs):
         wisdom = character.abilities.get(ability__orig_name='Wisdom')
@@ -440,6 +472,8 @@ ALL_CHOICES.add(CHAR_ADVANCE_004)
 ALL_CHOICES.add(CHAR_ADVANCE_005)
 ALL_CHOICES.add(CHAR_SPELLS_BARD)
 ALL_CHOICES.add(CHAR_SPELLS_REPLACE)
+ALL_CHOICES.add(CHAR_SPELLS_APPEND)
+ALL_CHOICES.add(CHAR_CANTRIPS_APPEND)
 ALL_CHOICES.add(CLASS_BATTLE_001)
 ALL_CHOICES.add(CLASS_BATTLE_002)
 ALL_CHOICES.add(CLASS_BATTLE_003)

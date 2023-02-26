@@ -226,6 +226,11 @@ class CharacterClass(models.Model):
         spellcasting = dnd.SPELLCASTING.get(self.subclass.codename) if self.subclass_id else None
         return spellcasting or dnd.SPELLCASTING.get(self.klass.orig_name.lower())
 
+    @property
+    def current_spellcasting(self):
+        if self.spellcasting:
+            return self.spellcasting[self.level]
+
     def update_spellslots(self, level):
         spellslots = self.spellcasting[level]['slots']
 
@@ -251,11 +256,29 @@ class CharacterClass(models.Model):
 
         if self.spellcasting:
             self.update_spellslots(self.level + 1)
+
+            # Add new spells and cantrips, if need
+            current_cantrips = self.current_spellcasting.get('cantrips')
+            if current_cantrips and current_cantrips < self.spellcasting[self.level + 1]['cantrips']:
+                CharacterAdvancmentChoice.objects.create(
+                    character_id=self.character_id, reason=self,
+                    choice=AdvancmentChoice.objects.get(code='CHAR_CANTRIPS_APPEND')
+                )
+
+            current_spells = self.current_spellcasting.get('spells')
+            if current_spells and current_spells < self.spellcasting[self.level + 1]['spells']:
+                CharacterAdvancmentChoice.objects.create(
+                    character_id=self.character_id, reason=self,
+                    choice=AdvancmentChoice.objects.get(code='CHAR_SPELLS_APPEND')
+                )
+
+            # Replace spells
             if self.spellcasting.get('replace') and self.level + 1 >= self.spellcasting['replace']['level']:
                 CharacterAdvancmentChoice.objects.create(
                     character_id=self.character_id, reason=self,
                     choice=AdvancmentChoice.objects.get(code='CHAR_SPELLS_REPLACE')
                 )
+
 
         self.level = models.F('level') + 1
         self.save(update_fields=['level'])

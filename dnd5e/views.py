@@ -58,6 +58,8 @@ def character_detail(request, adv_id, char_id, tab=None):
         return render(request, 'dnd5e/adventures/char/tabs/info.html', context)
 
     if tab == 'spellcasting':
+        char.known_cantrips = char.known_spells.filter(level=0)
+        char.known_spells_only = char.known_spells.exclude(level=0)
         return render(request, 'dnd5e/adventures/char/tabs/spellcasting.html', context)
 
     return render(request, 'dnd5e/adventures/char/detail.html', context)
