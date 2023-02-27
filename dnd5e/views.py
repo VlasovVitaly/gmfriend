@@ -45,13 +45,22 @@ def adventure_detail(request, adv_id):
 
 
 @login_required
-def character_detail(request, adv_id, char_id):
+def character_detail(request, adv_id, char_id, tab=None):
+    # TODO select related
     char = get_object_or_404(Character, id=char_id)
     adventure = get_object_or_404(Adventure, id=adv_id)
     choices = char.choices.select_related('choice')
 
     context = {'char': char, 'adventure': adventure, 'choices': choices}
     context.update(choices.aggregate_blocking_choices())
+
+    if tab == 'info':
+        return render(request, 'dnd5e/adventures/char/tabs/info.html', context)
+
+    if tab == 'spellcasting':
+        char.known_cantrips = char.known_spells.filter(level=0)
+        char.known_spells_only = char.known_spells.exclude(level=0)
+        return render(request, 'dnd5e/adventures/char/tabs/spellcasting.html', context)
 
     return render(request, 'dnd5e/adventures/char/detail.html', context)
 
@@ -153,17 +162,21 @@ def level_up_multiclass(request, adv_id, char_id):
 
 @login_required
 @transaction.atomic()
-def resolve_char_choice(request, adv_id, char_id, choice_id):
+def resolve_char_choice(request, adv_id, char_id, choice_id, reject=False):
     adventure = get_object_or_404(Adventure, id=adv_id)
     char = get_object_or_404(Character, id=char_id, adventure=adventure)
-    choice = get_object_or_404(CharacterAdvancmentChoice.objects.select_related('choice'), id=choice_id)
+    choice = get_object_or_404(CharacterAdvancmentChoice.objects.select_related('choice'), id=choice_id)  # TODO Add char_id fileter
+
+    if reject and request.method == 'POST' and choice.choice.rejectable:
+        choice.delete()
+        return redirect(reverse('dnd5e:adventure:character:detail', kwargs={'adv_id': adventure.id, 'char_id': char.id}))
 
     if not choice.choice.important and char.choices.filter(choice__important=True).exists():
         # Can't make choice if more important choice exists for this char
         messages.info(request, 'Для этого персонажа нужно сделать более важный выбор')
         return redirect(reverse('dnd5e:adventure:character:detail', kwargs={'adv_id': adventure.id, 'char_id': char.id}))
 
-    selector = ALL_CHOICES[choice.choice.code](char)
+    selector = ALL_CHOICES.get(choice.choice.code, char, choice=choice)
     form = selector.get_form(request)
 
     if form.is_valid():
@@ -180,7 +193,6 @@ def resolve_char_choice(request, adv_id, char_id, choice_id):
     return render(request, 'dnd5e/adventures/char/resolve_choices.html', context)
 
 
-@login_required
 def stage_detail(request, stage_id):
     stage = get_object_or_404(Stage.objects.prefetch_detail().annotate_detail(), id=stage_id)
 

@@ -2,7 +2,7 @@ from django import forms
 
 from .models import (
     Character, CharacterAbilities, CharacterBackground, CharacterSkill,
-    CharacterToolProficiency, Class, Feature, Language, Maneuver, Subclass, Tool
+    CharacterToolProficiency, Class, Feature, Language, Maneuver, Subclass, Tool, Spell
 )
 from .widgets import AbilityListBoxSelect
 
@@ -268,3 +268,82 @@ class ManeuversUpgradeForm(forms.Form):
             raise forms.ValidationError(f'Необходимо выбрать ровно {self.limit} приёма')
 
         return append
+
+
+class ReplaceKnownSpellsForm(forms.Form):
+    to_replace = forms.ModelMultipleChoiceField(queryset=Spell.objects.none())
+    by_replace = forms.ModelMultipleChoiceField(queryset=Spell.objects.none())
+
+    def __init__(self, *args, character, spellcasting, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        current = character.known_spells.exclude(level=0)
+
+        self.max_replaces = spellcasting['replace']['count']
+
+        self.fields['to_replace'].queryset = current
+        # TODO FOR CHARACTER
+        self.fields['by_replace'].queryset = Spell.objects.exclude(level=0).exclude(id__in=current)
+
+    def clean_to_replace(self):
+        if self.cleaned_data['to_replace'].count() != self.max_replaces:
+            raise forms.ValidationError(f'Необходимо выбрать ровно {self.max_replaces} заклинаний')
+
+        return self.cleaned_data['to_replace']
+
+    def clean_by_replace(self):
+        if self.cleaned_data['by_replace'].count() != self.max_replaces:
+            raise forms.ValidationError(f'Необходимо выбрать ровно {self.max_replaces} заклинаний')
+
+        return self.cleaned_data['by_replace']
+
+
+class KnownSpellsForm(forms.Form):
+    known_cantrips = forms.ModelMultipleChoiceField(queryset=Spell.objects.none())
+    known_spells = forms.ModelMultipleChoiceField(queryset=Spell.objects.none())
+
+    def __init__(self, *args, character, spellcasting, queryset, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.character = character
+
+        self.max_cantrips = spellcasting['cantrips']
+        self.max_spells = spellcasting['spells']
+
+        self.fields['known_cantrips'].queryset = queryset.filter(level=0)
+        self.fields['known_spells'].queryset = queryset.filter(level__gt=0, level__lte=len(spellcasting['slots']))
+
+    def clean_known_cantrips(self):
+        known = self.cleaned_data['known_cantrips']
+        if known.count() != self.max_cantrips:
+            raise forms.ValidationError(f'Необходимо выбрать ровно {self.max_cantrips} заговора')
+
+        return known
+
+    def clean_known_spells(self):
+        known = self.cleaned_data['known_spells']
+        if known.count() != self.max_spells:
+            raise forms.ValidationError(f'Необходимо выбрать ровно {self.max_spells} заклинания')
+
+        return known
+
+    def clean(self):
+        print(self.cleaned_data)
+        self.cleaned_data['spells'] = self.cleaned_data['known_cantrips'].order_by().union(
+            self.cleaned_data['known_spells'].order_by()
+        )
+
+
+class AddKnownSpellsForm(forms.Form):
+    spells = forms.ModelMultipleChoiceField(queryset=Spell.objects.none())
+
+    def __init__(self, *args, queryset, limit, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['spells'].queryset = queryset
+        self.limit = limit
+    
+    def clean_spells(self):
+        spells = self.cleaned_data['spells']
+        if spells.count() != self.limit:
+            raise forms.ValidationError(f'Необходимо выбрать ровно {self.limit} заклинаний')
+        
+        return spells

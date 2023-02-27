@@ -49,15 +49,13 @@ class Character(models.Model):
     weapon_proficiency = GM2MField(WeaponCategory, Weapon, verbose_name='Владение оружием')
     known_maneuvers = models.ManyToManyField(Maneuver, related_name='+', verbose_name='Известные приёмы', editable=False)
     spellcasting_rules = models.CharField(max_length=512, null=True, default=None, editable=False)
+    known_spells = models.ManyToManyField(verbose_name='Известные заклинания', to=Spell, related_name='+')
 
     class Meta:
         ordering = ['name', 'level']
         default_permissions = ()
         verbose_name = 'Персонаж'
         verbose_name_plural = 'Персонажи'
-
-    def get_spellcasting_rules(self):
-        raise NotImplementedError
 
     def init(self, klass):
         class_saving_trows = klass.saving_trows.all()
@@ -86,7 +84,7 @@ class Character(models.Model):
         features = self.race.features.order_by().union(self.background.features.order_by())
         features = features.union(self.subrace.features.order_by()) if self.subrace else features
         for feat in features:
-            CharacterFeature.objects.create(character=self, feature=feat)
+            self.features.create(feature=feat)
 
         for advantage in klass.level_feats.get(level=1).advantages.all():
             advantage.apply_for_character(self)
@@ -109,33 +107,27 @@ class Character(models.Model):
 
         # Background choices
         for choice in self.background.choices.all():
-            char_choices.append(CharacterAdvancmentChoice(character=self, choice=choice, reason=self.background))
+            char_choices.append(CharacterAdvancmentChoice(character=self, choice=choice))
 
         # Add background languages if need
         if self.background.known_languages:
             char_choices.append(
                 CharacterAdvancmentChoice(
-                    character=self,
-                    choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_003'),
-                    reason=self.background
+                    character=self, choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_003')
                 )
             )
 
         # Skills proficiency choice
         char_choices.append(
             CharacterAdvancmentChoice(
-                character=self,
-                choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_002'),
-                reason=klass
+                character=self, choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_002')
             )
         )
 
         # Background story
         char_choices.append(
             CharacterAdvancmentChoice(
-                character=self,
-                choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_004'),
-                reason=klass
+                character=self, choice=AdvancmentChoice.objects.get(code='CHAR_ADVANCE_004')
             )
         )
 
@@ -144,17 +136,8 @@ class Character(models.Model):
         # Create dices
         CharacterDice.objects.create(character=self, dice=klass.hit_dice)
 
-        # Create spellslots if spellcasting exists
-        spellcasting = dnd.SPELLCASTING.get(klass.codename)
-        if not spellcasting:
-            return
-
         self.spellcasting_rules = klass.codename
-        self.save(update_fields=['spellcasting_rules'])
-        for level, count in enumerate(spellcasting[1]['slots'], 1):  # On 1 level of klass since it is init
-            for _ in range(count):
-                self.spell_slots.create(level=level)
-        #         # print(f'Creating spell slot in level {slot_lvl} {slot_num}')
+        self.save(update_fields=['spellcasting_rules'])  # FIXME seems dont need this field
 
     def init_new_multiclass(self, klass):  # TODO transaction???
         char_class = CharacterClass.objects.create(
@@ -175,7 +158,7 @@ class Character(models.Model):
 
         # Choices
         for choice in profs.filter(content_type__app_label='dnd5e', content_type__model='advancmentchoice'):
-            CharacterAdvancmentChoice.objects.create(character=self, choice=choice.proficiency, reason=klass)
+            CharacterAdvancmentChoice.objects.create(character=self, choice=choice.proficiency)
 
     def get_all_abilities(self):
         return self.abilities.values(
@@ -208,14 +191,6 @@ class CharacterClass(models.Model):
     # NOTE let DB calc max_prepared_spells
     prepared_spells = models.ManyToManyField(verbose_name='Подготовленные заклинания', to=Spell, related_name='+')
 
-    # Spellcasting stuff
-    # max_known_cantrips = models.PositiveSmallIntegerField(
-    #    verbose_name='Известные заговоры', null=True, default=None, editable=False
-    # )
-    # max_known_spells = models.PositiveSmallIntegerField(
-    #     verbose_name='Известные заклинания', null=True, default=None, editable=False
-    # )
-
     class Meta:
         ordering = ['character', '-level', 'klass__name']
         unique_together = ['character', 'klass']
@@ -246,11 +221,30 @@ class CharacterClass(models.Model):
             count=models.F('count') + 1, maximum=models.F('maximum') + 1
         )
 
-    def get_spellcasting_rules(self):
-        spellcasting = dnd.SPELLCASTING.get(self.subclass.codename) if self.subclass else None
-        spellcasting = spellcasting or dnd.SPELLCASTING.get(self.klass.orig_name)
+    @property
+    def spellcasting(self):
+        spellcasting = dnd.SPELLCASTING.get(self.subclass.codename) if self.subclass_id else None
+        return spellcasting or dnd.SPELLCASTING.get(self.klass.orig_name.lower())
 
-        return spellcasting
+    @property
+    def current_spellcasting(self):
+        if self.spellcasting:
+            return self.spellcasting[self.level]
+
+    def update_spellslots(self, level):
+        spellslots = self.spellcasting[level]['slots']
+
+        aggregations = {}
+        for level, _ in enumerate(spellslots, 1):
+            aggregations[f'spellslot_{level}'] = models.Count('id', filter=models.Q(level=level))
+        char_spellslots = CharacterSpellSlot.objects.filter(character_id=self.character_id).aggregate(**aggregations)
+
+        to_create = []
+        spellcasting = [(lvl, slots - char_spellslots[f'spellslot_{lvl}']) for lvl, slots in enumerate(spellslots, 1)]
+        for lvl, count in spellcasting:
+            to_create.extend([CharacterSpellSlot(character_id=self.character_id, level=lvl) for _ in range(count)])
+
+        _ = CharacterSpellSlot.objects.bulk_create(to_create)
 
     def level_up(self):
         self._apply_class_advantages(self.level + 1)
@@ -258,12 +252,34 @@ class CharacterClass(models.Model):
         if self.subclass_id:
             self._apply_subclass_advantages(self.level + 1)
 
-        # Get spellcasting tables
-        spellcasting = self.get_spellcasting_rules()
-        last_level = len(spellcasting[self.level + 1]['slots'])
-        _, _ = CharacterSpellSlot(character_id=self.character_id, level=last_level)
-
         self._increase_hit_dice()
+
+        if self.spellcasting:
+            self.update_spellslots(self.level + 1)
+
+            # Add new spells and cantrips, if need
+            current_cantrips = self.current_spellcasting.get('cantrips')
+            if current_cantrips and current_cantrips < self.spellcasting[self.level + 1]['cantrips']:
+                CharacterAdvancmentChoice.objects.create(
+                    character_id=self.character_id, reason=self,
+                    choice=AdvancmentChoice.objects.get(code='CHAR_CANTRIPS_APPEND')
+                )
+
+            current_spells = self.current_spellcasting.get('spells')
+            if current_spells and current_spells < self.spellcasting[self.level + 1]['spells']:
+                CharacterAdvancmentChoice.objects.create(
+                    character_id=self.character_id, reason=self,
+                    choice=AdvancmentChoice.objects.get(code='CHAR_SPELLS_APPEND')
+                )
+
+            # Replace spells
+            if self.spellcasting.get('replace') and self.level + 1 >= self.spellcasting['replace']['level']:
+                CharacterAdvancmentChoice.objects.create(
+                    character_id=self.character_id, reason=self,
+                    choice=AdvancmentChoice.objects.get(code='CHAR_SPELLS_REPLACE')
+                )
+
+
         self.level = models.F('level') + 1
         self.save(update_fields=['level'])
 
@@ -413,10 +429,11 @@ class CharacterAdvancmentChoice(models.Model):
     choice = models.ForeignKey(
         AdvancmentChoice, on_delete=models.CASCADE, related_name='+'
     )
-
-    # TODO WHY WE NEED REASON
-    reason_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    reason_object_id = models.PositiveIntegerField()
+    reason_content_type = models.ForeignKey(
+        ContentType, on_delete=models.CASCADE, editable=False, null=True, default=None,
+        limit_choices_to={'app_label': 'dnd5e', 'model__in': ['characterclass']}
+    )
+    reason_object_id = models.PositiveIntegerField(editable=False, null=True, default=None)
     reason = GenericForeignKey('reason_content_type', 'reason_object_id')
 
     objects = CharacterAdvancmentChoiceQueryset.as_manager()
@@ -491,7 +508,7 @@ class CharacterSpellSlot(models.Model):
     spent = models.BooleanField(verbose_name='Потрачен', default=False)
 
     class Meta:
-        ordering = ['character_id', 'spent', '-level']
+        ordering = ['character_id', 'level', 'spent']
         default_permissions = ()
         verbose_name = 'Слот заклинания'
         verbose_name_plural = 'Слоты заклинаний'

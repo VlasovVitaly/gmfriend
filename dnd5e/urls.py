@@ -7,9 +7,12 @@ app_name = 'dnd5e'
 
 character_patterns = ([
     path('create', views.create_character, name='create'),
-    path('<int:char_id>', views.character_detail, name='detail'),
+    path('<int:char_id>/', views.character_detail, name='detail'),
+    path('<int:char_id>/spellcasting-tab', views.character_detail, name='detail_spellcasting', kwargs={'tab': 'spellcasting'}),
+    path('<int:char_id>/info-tab', views.character_detail, name='detail_info', kwargs={'tab': 'info'}),
     path('<int:char_id>/set-stats', views.set_character_stats, name='set_stats'),
     path('<int:char_id>/resolve-choice/<int:choice_id>', views.resolve_char_choice, name='resolve_choice'),
+    path('<int:char_id>/resolve-choice/<int:choice_id>/reject', views.resolve_char_choice, name='reject_choice', kwargs={'reject': True}),
     path('<int:char_id>/levelup', views.level_up, name='level_up'),
     path('<int:char_id>/levelup/<int:class_id>', views.level_up, name='level_up_class'),
     path('<int:char_id>/levelup/multiclass', views.level_up_multiclass, name='level_up_multiclass'),

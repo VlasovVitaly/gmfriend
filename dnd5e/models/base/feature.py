@@ -1,8 +1,9 @@
+from django.apps import apps
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
-from dnd5e.apps import Dnd5EConfig
+dnd5e = apps.app_configs['dnd5e']
 
 
 class Feature(models.Model):
@@ -27,16 +28,18 @@ class Feature(models.Model):
     rechargeable = models.PositiveSmallIntegerField(choices=RECHARGE_CHOICES, default=RECHARGE_CONSTANT)
 
     content_type = models.ForeignKey(
-        ContentType, on_delete=models.CASCADE, related_name='+', blank=True, null=True, default=None,
+        ContentType, on_delete=models.CASCADE, related_name='+',
         limit_choices_to={'app_label': 'dnd5e', 'model__in': ['class', 'subclass', 'race', 'subrace', 'background']}
     )
-    source_id = models.PositiveIntegerField(blank=True, null=True, default=None)
+    source_id = models.PositiveIntegerField()
     source = GenericForeignKey('content_type', 'source_id')
     post_action = models.CharField(max_length=32, blank=True, null=True, default=None)
+    # If feature has special parameters for ability lookup in tables in dnd # TODO need rename this field
     level_table = models.CharField(max_length=32, blank=True, null=True, default=None)
 
     class Meta:
         ordering = ['name']
+        unique_together = ['name', 'content_type', 'source_id']
         default_permissions = ()
         verbose_name = 'Умение'
         verbose_name_plural = 'Умения'
@@ -48,13 +51,12 @@ class Feature(models.Model):
                 char_feat.max_charges = models.F('max_charges') + 1
                 char_feat.save(update_fields=['max_charges'])
         else:
-            _, _ = Dnd5EConfig.get_model('CharacterFeature').objects.get_or_create(character=character, feature=self)
+            _, _ = dnd5e.get_model('CharacterFeature').objects.get_or_create(character=character, feature=self)
 
         if self.post_action:
             from dnd5e.choices import ALL_CHOICES
 
-            action = ALL_CHOICES[self.post_action]()
-            action.apply(character)
+            ALL_CHOICES[self.post_action].apply(character, **kwargs)
 
     def __repr__(self):
         return f'[{self.__class__.__name__}]: {self.id}'
@@ -85,16 +87,17 @@ class AdvancmentChoice(models.Model):
     code = models.CharField(max_length=24, verbose_name='Код')
     text = models.TextField(verbose_name='Отображаемый текст')
     important = models.BooleanField(verbose_name='В первую очередь', default=False)
+    rejectable = models.BooleanField(verbose_name='Возможность отказаться', default=False)
 
     class Meta:
-        ordering = ['name']
+        ordering = ['important', 'name']
         default_permissions = ()
         verbose_name = 'Выбор для персонажа'
         verbose_name_plural = 'Выборы для персонажей'
 
-    def apply_for_character(self, character, reason):
-        Dnd5EConfig.get_model('CharacterAdvancmentChoice').objects.create(
-            character=character, choice=self, reason=reason
+    def apply_for_character(self, character, **kwargs):
+        dnd5e.get_model('CharacterAdvancmentChoice').objects.create(
+            character=character, choice=self
         )
 
     def __repr__(self):
