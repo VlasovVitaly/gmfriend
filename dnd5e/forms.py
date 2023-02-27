@@ -157,14 +157,12 @@ class SelectAbilityAdvanceForm(forms.Form):
 class SelectCompetenceForm(forms.Form):
     skills_limit = 2
     skills = forms.ModelMultipleChoiceField(queryset=CharacterSkill.objects.none())
-    tool = forms.ModelChoiceField(
-        queryset=CharacterToolProficiency.objects.filter(tool__name='Воровские инструменты'), required=False, empty_label=None
-    )
+    tool = forms.ModelChoiceField(queryset=CharacterToolProficiency.objects.none(), required=False, empty_label=None)
 
-    def __init__(self, *args, queryset, **kwargs):
-        # TODO Filter by character
+    def __init__(self, *args, character, queryset, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.fields['tool'].queryset = CharacterToolProficiency.objects.filter(character_id=character.id, tool__name='Воровские инструменты')
         self.fields['skills'].queryset = queryset
 
     def clean_skills(self):

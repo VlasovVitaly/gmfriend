@@ -178,8 +178,10 @@ class CLASS_BATTLE_003(CombatSuperiorityChoice):
 
 
 class CLASS_ROG_002(CharacterChoice):
+    """ Компетентность """
     template = 'dnd5e/adventures/include/choices/rogue_002.html'
     form_class = SelectCompetenceForm
+    pass_char = True
 
     def get_form(self, request):
         self.queryset = self.character.skills.filter(competence=False, proficiency=True)
