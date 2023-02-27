@@ -159,6 +159,9 @@ class SelectCompetenceForm(forms.Form):
     skills = forms.ModelMultipleChoiceField(queryset=CharacterSkill.objects.none())
     tool = forms.ModelChoiceField(queryset=CharacterToolProficiency.objects.none(), required=False, empty_label=None)
 
+    class Media:
+        js = ('js/competence-select.js', )
+
     def __init__(self, *args, character, queryset, **kwargs):
         super().__init__(*args, **kwargs)
 
