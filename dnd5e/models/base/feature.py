@@ -21,7 +21,7 @@ class Feature(models.Model):
         ('fight_style', 'Боевой стиль'),
     )
 
-    name = models.CharField(max_length=64, db_index=True, unique=True)
+    name = models.CharField(max_length=64, db_index=True, unique=False)
     description = models.TextField()
     group = models.CharField(max_length=12, verbose_name='Группа умений', blank=True, choices=GROUP_CHOICES)
     stackable = models.BooleanField(default=False)
