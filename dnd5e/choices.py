@@ -80,13 +80,46 @@ class CLASS_WAR_001(CharacterChoice):
         get_model('characterfeature').objects.create(character=self.character, feature=data['feature'])
 
 
-class CLASS_WAR_002(CharacterChoice):
-    """ Воинский архетип """
-    queryset = get_model('subclass').objects.filter(parent__orig_name='Fighter')
+class CHAR_CLASS_SUBTYPE(CharacterChoice):
+    """ ABS для выбора архетипа """
     form_class = SelectSubclassForm
+    queryset = None
+    level = None
+    class_name = None
+
+    def __init__(self, *args, **kwargs):
+        if self.level is None:
+            raise AssertionError
+
+        if self.class_name is None:
+            raise AssertionError
+
+        self.queryset = get_model('subclass').objects.filter(parent__orig_name=self.class_name)
+        super().__init__(*args, **kwargs)
 
     def apply_data(self, data):
-        self.character.apply_subclass(data['subclass'], 3)  # Fighter select arhtype on level 3
+        char_class = self.character.classes.get(klass__orig_name=self.class_name)
+        char_class.subclass = data['subclass']
+        char_class.save(update_fields=['subclass'])
+        char_class._apply_subclass_advantages(self.level)
+
+
+class CLASS_WAR_002(CHAR_CLASS_SUBTYPE):
+    """ Воинский архетип """
+    level = 3
+    class_name = 'Fighter'
+
+
+class CLASS_ROG_001(CHAR_CLASS_SUBTYPE):
+    """ Архетип плута """
+    level = 3
+    class_name = 'Rogue'
+
+
+class CLASS_BARD_001(CHAR_CLASS_SUBTYPE):
+    """ Коллерия Бардов """
+    level = 3
+    class_name = 'Bard'
 
 
 class CombatSuperiorityChoice(CharacterChoice):
@@ -142,15 +175,6 @@ class CLASS_BATTLE_003(CombatSuperiorityChoice):
     def apply_data(self, data):
         # self.improve_dice('1d10')
         self.add_maneuvers(data)
-
-
-class CLASS_ROG_001(CharacterChoice):
-    """ Rogue archtype selection """
-    queryset = get_model('subclass').objects.filter(parent__orig_name='Rogue')
-    form_class = SelectSubclassForm
-
-    def apply_data(self, data):
-        self.character.apply_subclass(data['subclass'], 3)  # Rogue select arhtype on level 3
 
 
 class CLASS_ROG_002(CharacterChoice):
@@ -474,6 +498,7 @@ ALL_CHOICES.add(CHAR_SPELLS_BARD)
 ALL_CHOICES.add(CHAR_SPELLS_REPLACE)
 ALL_CHOICES.add(CHAR_SPELLS_APPEND)
 ALL_CHOICES.add(CHAR_CANTRIPS_APPEND)
+ALL_CHOICES.add(CLASS_BARD_001)
 ALL_CHOICES.add(CLASS_BATTLE_001)
 ALL_CHOICES.add(CLASS_BATTLE_002)
 ALL_CHOICES.add(CLASS_BATTLE_003)
