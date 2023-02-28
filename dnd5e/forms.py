@@ -154,19 +154,36 @@ class SelectAbilityAdvanceForm(forms.Form):
         self.fields['abilities'].queryset = queryset
 
 
-class SelectCompetenceForm(forms.Form):
-    skills_limit = 2
+class CompetenceForm(forms.Form):
     skills = forms.ModelMultipleChoiceField(queryset=CharacterSkill.objects.none())
-    tool = forms.ModelChoiceField(queryset=CharacterToolProficiency.objects.none(), required=False, empty_label=None)
 
     class Media:
         js = ('js/competence-select.js', )
 
-    def __init__(self, *args, character, queryset, **kwargs):
+    def __init__(self, *args, queryset, limit, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields['tool'].queryset = CharacterToolProficiency.objects.filter(character_id=character.id, tool__name='Воровские инструменты')
+        self.skills_limit = limit
         self.fields['skills'].queryset = queryset
+
+    def clean_skills(self):
+        skills = self.cleaned_data['skills']
+
+        if skills.count() != self.skills_limit:
+            raise forms.ValidationError(f'Нужно выбрать ровно {self.skills_limit} навыка')
+
+        return skills
+
+
+class RogueCompetenceForm(CompetenceForm):
+    tool = forms.ModelChoiceField(queryset=CharacterToolProficiency.objects.none(), required=False, empty_label=None)
+
+    def __init__(self, *args, character, queryset, limit, **kwargs):
+        super().__init__(*args, queryset=queryset, limit=limit, **kwargs)
+
+        self.fields['tool'].queryset = CharacterToolProficiency.objects.filter(
+            character_id=character.id, tool__name='Воровские инструменты'
+        )
 
     def clean_skills(self):
         skills = self.cleaned_data['skills']
@@ -341,10 +358,10 @@ class AddKnownSpellsForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.fields['spells'].queryset = queryset
         self.limit = limit
-    
+
     def clean_spells(self):
         spells = self.cleaned_data['spells']
         if spells.count() != self.limit:
             raise forms.ValidationError(f'Необходимо выбрать ровно {self.limit} заклинаний')
-        
+
         return spells

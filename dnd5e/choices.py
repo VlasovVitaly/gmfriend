@@ -3,7 +3,7 @@ from django.apps import apps
 from .forms import (
     AddCharLanguageFromBackground, AddCharSkillProficiency, CharacterBackgroundForm,
     ManeuversSelectForm, ManeuversUpgradeForm, MasterMindIntrigueSelect, SelectAbilityAdvanceForm,
-    SelectCompetenceForm, SelectFeatureForm, SelectSubclassForm, SelectToolProficiency, KnownSpellsForm, ReplaceKnownSpellsForm, AddKnownSpellsForm
+    RogueCompetenceForm, CompetenceForm, SelectFeatureForm, SelectSubclassForm, SelectToolProficiency, KnownSpellsForm, ReplaceKnownSpellsForm, AddKnownSpellsForm
 )
 
 dnd5e_app = apps.app_configs['dnd5e']
@@ -122,6 +122,34 @@ class CLASS_BARD_001(CHAR_CLASS_SUBTYPE):
     class_name = 'Bard'
 
 
+class CLASS_COMPETENCE(CharacterChoice):
+    """ Компетентность """
+    template = 'dnd5e/adventures/include/choices/competence.html'
+    form_class = CompetenceForm
+    selection_limit = 2
+
+    def get_form(self, request):
+        self.queryset = self.character.skills.filter(competence=False, proficiency=True)
+
+        return super().get_form(request)
+
+    def apply_data(self, data):
+        data['skills'].update(competence=True)
+
+
+class CLASS_ROG_002(CLASS_COMPETENCE):
+    """ Компетентность Плут """
+    form_class = RogueCompetenceForm
+    pass_char = True
+
+    def apply_data(self, data):
+        super().apply_data(data)
+
+        if data['tool']:
+            data['tool'].competence = True
+            data['tool'].save(update_fields=['competence'])
+
+
 class CombatSuperiorityChoice(CharacterChoice):
     def improve_dice(self, new_value):
         superiority_dice = get_model('characterdice').objects.get(character=self.character, dtype='superiority')
@@ -175,24 +203,6 @@ class CLASS_BATTLE_003(CombatSuperiorityChoice):
     def apply_data(self, data):
         # self.improve_dice('1d10')
         self.add_maneuvers(data)
-
-
-class CLASS_ROG_002(CharacterChoice):
-    """ Компетентность """
-    template = 'dnd5e/adventures/include/choices/rogue_002.html'
-    form_class = SelectCompetenceForm
-    pass_char = True
-
-    def get_form(self, request):
-        self.queryset = self.character.skills.filter(competence=False, proficiency=True)
-
-        return super().get_form(request)
-
-    def apply_data(self, data):
-        data['skills'].update(competence=True)
-        if data['tool']:
-            data['tool'].competence = True
-            data['tool'].save(update_fields=['competence'])
 
 
 class CLASS_ROG_003(CharacterChoice):
@@ -377,11 +387,20 @@ class POST_FEAT_001:
 
 
 class POST_FEAT_002:
+    """ После получения умения компетенции Плута """
     def apply(self, character, **kwargs):
         char_choices = get_model('characteradvancmentchoice')
         competence_choice = get_model('advancmentchoice').objects.get(code='CLASS_ROG_002')
 
         char_choices.objects.get_or_create(character=character, choice=competence_choice)
+
+
+class POST_FEAT_002_01:
+    """ После получания умения компетенции Барда """
+    def apply(self, character, **kwargs):
+        get_model('characteradvancmentchoice').objects.get_or_create(
+            character=character, choice=get_model('advancmentchoice').objects.get(code='CLASS_COMPETENCE')
+        )
 
 
 class POST_FEAT_003(POST_FEAT_001):
@@ -501,6 +520,7 @@ ALL_CHOICES.add(CHAR_SPELLS_REPLACE)
 ALL_CHOICES.add(CHAR_SPELLS_APPEND)
 ALL_CHOICES.add(CHAR_CANTRIPS_APPEND)
 ALL_CHOICES.add(CLASS_BARD_001)
+ALL_CHOICES.add(CLASS_COMPETENCE)
 ALL_CHOICES.add(CLASS_BATTLE_001)
 ALL_CHOICES.add(CLASS_BATTLE_002)
 ALL_CHOICES.add(CLASS_BATTLE_003)
@@ -514,6 +534,7 @@ ALL_CHOICES.add(POST_COMBAT_SUPERIORITY_002)
 ALL_CHOICES.add(POST_COMBAT_SUPERIORITY_003)
 ALL_CHOICES.add(POST_FEAT_001)
 ALL_CHOICES.add(POST_FEAT_002)
+ALL_CHOICES.add(POST_FEAT_002_01)
 ALL_CHOICES.add(POST_FEAT_003)
 ALL_CHOICES.add(POST_FEAT_004)
 ALL_CHOICES.add(POST_FEAT_005)
