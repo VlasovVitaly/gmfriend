@@ -287,7 +287,7 @@ class Treasure(models.Model):
         return f'[{self.__class__.__name__}]: {self.id}'
 
     def __str__(self):
-        if self.quantity != 1 and self.what_ct != ContentType.objects.get_for_model('MoneyAmount'):
+        if self.quantity != 1 and self.what_ct != ContentType.objects.get_for_model(MoneyAmount):
             return f'{self.quantity} \u00D7 {self.what}'
         return f'{self.what}'
 
